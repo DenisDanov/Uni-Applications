@@ -1,0 +1,15 @@
+package bg.duosoft.uniapplicationdemo.services.impl;
+
+import bg.duosoft.uniapplicationdemo.mappers.SpecialtySubjectInfoMapper;
+import bg.duosoft.uniapplicationdemo.models.dtos.SpecialtySubjectInfoDTO;
+import bg.duosoft.uniapplicationdemo.models.entities.SpecialtySubjectInfoEntity;
+import bg.duosoft.uniapplicationdemo.models.entities.compositeKeys.SpecialtiesSubjectsId;
+import bg.duosoft.uniapplicationdemo.repositories.SpecialtySubjectInfoRepository;
+import bg.duosoft.uniapplicationdemo.services.SpecialtySubjectInfoService;
+import bg.duosoft.uniapplicationdemo.services.base.BaseServiceImpl;
+import bg.duosoft.uniapplicationdemo.validators.SpecialtySubjectInfoValidator;
+import org.springframework.stereotype.Service;
+
+@Service
+public class SpecialtySubjectInfoServiceImpl extends BaseServiceImpl<SpecialtiesSubjectsId, SpecialtySubjectInfoDTO, SpecialtySubjectInfoEntity, SpecialtySubjectInfoMapper, SpecialtySubjectInfoValidator, SpecialtySubjectInfoRepository> implements SpecialtySubjectInfoService {
+}
