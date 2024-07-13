@@ -75,7 +75,6 @@ const ApplicationForm: React.FC = () => {
         },
         validationSchema: validationSchemaApplication(formRequirements),
         onSubmit: (values) => {
-            console.log(values);
 
             if (selectedFiles.length === 0) {
                 setError("Please upload files first.");

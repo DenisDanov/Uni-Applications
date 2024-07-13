@@ -10,6 +10,7 @@ import Profile from "./Profile";
 import ManageStudentApplications from "./ManageStudentApplications";
 import ManageUsers from "./ManageUsers";
 import EvaluateApplication from "./EvaluateApplication";
+import RequirementsTests from "./RequirementsTests";
 
 const HomeRoute: React.FC = () => <Home/>;
 const ProfileRoute: React.FC = () => <Profile/>;
@@ -19,6 +20,7 @@ const Apply: React.FC = () => <Application/>
 const ManageStudentApplicationsRoute: React.FC = () => <ManageStudentApplications/>;
 const ManageUsersRoute: React.FC = () => <ManageUsers/>;
 const EvaluateApplicationRoute: React.FC = () => <EvaluateApplication/>
+const RequirementsTestsRoute: React.FC = () => <RequirementsTests/>
 
 const Login: React.FC = () => {
     const {keycloak} = useKeycloak();
@@ -108,6 +110,19 @@ const routes = [
                 displayOnUnauthorized={<Navigate to="/"/>}
             >
                 <EvaluateApplicationRoute/>
+            </SecurityGuard>
+        )
+    },
+    {
+        path: "/requirements-tests",
+        element: (
+            <SecurityGuard
+                doCheck={true}
+                checkForRoles={['student']}
+                loginOnUnauthorized={false}
+                displayOnUnauthorized={<Navigate to="/"/>}
+            >
+                <RequirementsTestsRoute/>
             </SecurityGuard>
         )
     }

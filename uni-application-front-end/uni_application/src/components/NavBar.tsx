@@ -72,6 +72,11 @@ const NavBar: React.FC = () => {
                                 Apply
                             </MenuItem>)
                         }
+                        {keycloak.authenticated && keycloak.hasRealmRole("student") &&
+                            <MenuItem onClick={handleClose} component={RouterLink} to="/requirements-tests">
+                                Requirements Tests
+                            </MenuItem>
+                        }
                         {keycloak.authenticated && keycloak.hasRealmRole("admin") &&
                             <MenuItem onClick={handleClose} component={RouterLink} to="/manage-applications">
                                 Manage Applications
