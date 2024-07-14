@@ -33,7 +33,7 @@ public abstract class BaseServiceImpl<ID extends Serializable, DTO extends BaseD
     @Override
     @Caching(evict = {
             @CacheEvict(cacheResolver = "crudCacheResolver", key = "#root.targetClass.simpleName"),
-            @CacheEvict(cacheResolver = "crudCacheResolver", key = "#dto.id")
+            @CacheEvict(cacheResolver = "crudCacheResolver", condition = "#dto.id != null", key = "#dto.id")
     })
     public DTO create(DTO dto) {
         if (Objects.isNull(dto)) {

@@ -1,11 +1,10 @@
 package bg.duosoft.uniapplicationdemo.controllers;
 
-import bg.duosoft.uniapplicationdemo.services.impl.KafkaProducerService;
+import bg.duosoft.uniapplicationdemo.models.dtos.TestStateDTO;
+import bg.duosoft.uniapplicationdemo.services.impl.TestStateService;
+import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -14,13 +13,18 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class TestStateController {
 
-    private final KafkaProducerService kafkaProducerService;
+    private final TestStateService testStateService;
 
     @PostMapping("/save-test-state")
     public String saveTestState(@RequestBody Map<String, Object> request) {
-        String username = (String) request.get("username");
-
-        kafkaProducerService.sendMessage(username, request);
+        testStateService.saveTestState((String) request.get("username"), request, (Integer) request.get("secondsLeft"));
         return "State saved";
+    }
+
+    @GetMapping("/get/{username}")
+    public TestStateDTO getTestState(@PathVariable String username) {
+        String stateJson = testStateService.getTestState(username);
+        TestStateDTO testStateDTO = new Gson().fromJson(stateJson, TestStateDTO.class);
+        return testStateDTO == null ? new TestStateDTO() : testStateDTO;
     }
 }

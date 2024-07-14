@@ -30,14 +30,18 @@ public class StudentsRequirementsResultsValidator implements Validator<StudentsR
         rejectIfEmptyString(errors, dto.getUsername(), "username", "Username is empty.");
 
         if(errors.isEmpty()){
-            rejectIfTrue(errors, dto.getStandardizedTestResult() == null || dto.getStandardizedTestResult() < 0, "standardizedTestResult",
-                    "Standardized test result is less than 0.");
-            rejectIfTrue(errors, dto.getLanguageProficiencyTestResult() == null || dto.getLanguageProficiencyTestResult() < 0, "languageProficiencyTestResult",
-                    "Language proficiency test result is less than 0.");
+            if (dto.getStandardizedTestResult() != null) {
+                rejectIfTrue(errors, dto.getStandardizedTestResult() < 0, "standardizedTestResult",
+                        "Standardized test result is less than 0.");
+            }
+            if (dto.getLanguageProficiencyTestResult() != null) {
+                rejectIfTrue(errors,  dto.getLanguageProficiencyTestResult() < 0, "languageProficiencyTestResult",
+                        "Language proficiency test result is less than 0.");
+            }
         }
 
         if (errors.isEmpty() && isCreate != null && isCreate) {
-            rejectIfTrue(errors, studentsRequirementsResultsRepository.getById(dto.getUsername()) != null, "username", "Test results for this user already exist.");
+            rejectIfTrue(errors, studentsRequirementsResultsRepository.findById(dto.getUsername()).isPresent(), "username", "Test results for this user already exist.");
         }
 
         return errors;

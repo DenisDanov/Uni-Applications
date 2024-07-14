@@ -22,7 +22,7 @@ spring:
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
     consumer:
       auto-offset-reset: earliest
-      group-id: test-
+      group-id: my-group-id
 
   # Receipts generator
   freemarker:
@@ -65,6 +65,10 @@ spring:
   cache:
     jcache:
       config: classpath:config/ehcache.xml
+  data:
+    redis:
+      host: localhost
+      port: 6379
 
 # Hibernate Configuration
 jpa:
