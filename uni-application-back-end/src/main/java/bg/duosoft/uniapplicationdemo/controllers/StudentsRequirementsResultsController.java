@@ -1,8 +1,10 @@
 package bg.duosoft.uniapplicationdemo.controllers;
 
 import bg.duosoft.uniapplicationdemo.controllers.base.CrudController;
+import bg.duosoft.uniapplicationdemo.mappers.StudentsRequirementsResultsMapper;
 import bg.duosoft.uniapplicationdemo.models.dtos.StudentsRequirementsResultsDTO;
 import bg.duosoft.uniapplicationdemo.models.dtos.TestResultsDTO;
+import bg.duosoft.uniapplicationdemo.repositories.StudentsRequirementsResultsRepository;
 import bg.duosoft.uniapplicationdemo.services.StudentsRequirementsResultsService;
 import bg.duosoft.uniapplicationdemo.services.impl.TestStateService;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,10 @@ public class StudentsRequirementsResultsController extends CrudController<String
 
     private final TestStateService testStateService;
 
+    private final StudentsRequirementsResultsRepository requirementsResultsRepository;
+
+    private final StudentsRequirementsResultsMapper requirementsResultsMapper;
+
     @Override
     public StudentsRequirementsResultsDTO getById(String id) {
         StudentsRequirementsResultsDTO resultsDTO = super.getService().getById(id);
@@ -27,14 +33,21 @@ public class StudentsRequirementsResultsController extends CrudController<String
 
     @PostMapping("/submit-test")
     public ResponseEntity<StudentsRequirementsResultsDTO> submitTestResults(@RequestBody TestResultsDTO testResultsDTO) {
-        StudentsRequirementsResultsDTO studentsRequirementsResultsDTO = super.getService().create(new StudentsRequirementsResultsDTO(testResultsDTO.getUsername(),
-                testResultsDTO.getTestName().equals("language") ? Double.parseDouble(String.valueOf(testResultsDTO.getResult() * 10)) : null,
-                testResultsDTO.getTestName().equals("standard") ? Double.parseDouble(String.valueOf(testResultsDTO.getResult() * 10)) : null));
+        testStateService.deleteTestState(testResultsDTO.getUsername());
+        StudentsRequirementsResultsDTO resultsDTO = super.getService().getById(testResultsDTO.getUsername());
+        if (resultsDTO != null) {
+            if (testResultsDTO.getTestName().equals("language")) {
+                resultsDTO.setLanguageProficiencyTestResult((double) (testResultsDTO.getResult() * 10));
+            } else {
+                resultsDTO.setStandardizedTestResult((double) (testResultsDTO.getResult() * 10));
+            }
 
-        if (studentsRequirementsResultsDTO != null) {
-            testStateService.deleteTestState(studentsRequirementsResultsDTO.getUsername());
+            super.getService().update(resultsDTO);
+        } else {
+            return ResponseEntity.ok().body(super.getService().create(new StudentsRequirementsResultsDTO(testResultsDTO.getUsername(),
+                    testResultsDTO.getTestName().equals("language") ? Double.parseDouble(String.valueOf(testResultsDTO.getResult() * 10)) : null,
+                    testResultsDTO.getTestName().equals("standard") ? Double.parseDouble(String.valueOf(testResultsDTO.getResult() * 10)) : null)));
         }
-
-        return ResponseEntity.ok().body(studentsRequirementsResultsDTO);
+        return ResponseEntity.ok().body(resultsDTO);
     }
 }

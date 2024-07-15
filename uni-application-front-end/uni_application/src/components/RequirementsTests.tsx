@@ -70,7 +70,7 @@ const RequirementsTests: React.FC = () => {
                     setTestStartTime(testStartTime);
 
                     const timeElapsed = moment().unix() - testStartTime;
-                    const remainingTime = 3600 - timeElapsed;
+                    const remainingTime = 3599 - timeElapsed;
                     setTimeRemaining(remainingTime > 0 ? remainingTime : 0);
 
                     if (testName === 'language') {
@@ -85,7 +85,7 @@ const RequirementsTests: React.FC = () => {
             });
     };
 
-    const saveTestState = (newAnswers: number[], testOpen: boolean, startTime: number | null, testName: string | null) => {
+    const saveTestState = (newAnswers: number[], testOpen: boolean, startTime: number | null, testName: string | null, timeRemaining: number | null) => {
         if (testOpen && startTime !== null) {
             axiosClientDefault
                 .post('/test/save-test-state', {
@@ -115,7 +115,7 @@ const RequirementsTests: React.FC = () => {
         } else {
             setStandardTestOpen(true);
         }
-        saveTestState(new Array(languageProficiencyQuestions.length).fill(-1), true, startTime, testType);
+        saveTestState(new Array(languageProficiencyQuestions.length).fill(-1), true, startTime, testType, 3599);
     };
 
     const handleTimeExpired = () => {
@@ -129,9 +129,19 @@ const RequirementsTests: React.FC = () => {
             })
             .then((response) => {
                 console.log('Test submitted:', response.data);
+                setResults(response.data);
+                if (response.data.testName === 'language') {
+                    setLanguageTestOpen(false);
+                } else {
+                    setStandardTestOpen(false);
+                }
+                setSubmissionSuccess("Test submitted, you can check your result from the profile page.")
+                setTimeout(() => setSubmissionSuccess(null), 5000);
             })
             .catch((error) => {
                 console.error('Error submitting test:', error);
+                setSubmissionError("Error submitting test: " + error);
+                setTimeout(() => setSubmissionError(null), 5000);
             });
     };
 
@@ -156,7 +166,11 @@ const RequirementsTests: React.FC = () => {
             .then((response) => {
                 console.log('Test submitted:', response.data);
                 setResults(response.data);
-                setLanguageTestOpen(false);
+                if (response.data.testName === 'language') {
+                    setLanguageTestOpen(false);
+                } else {
+                    setStandardTestOpen(false);
+                }
                 setSubmissionSuccess("Test submitted, you can check your result from the profile page.")
                 setTimeout(() => setSubmissionSuccess(null), 5000);
             })
@@ -183,7 +197,7 @@ const RequirementsTests: React.FC = () => {
         const newAnswers = [...answers];
         newAnswers[questionIndex] = answerIndex;
         setAnswers(newAnswers);
-        saveTestState(newAnswers, true, testStartTime, testName);
+        saveTestState(newAnswers, true, testStartTime, testName, timeRemaining);
     };
 
     const formatTime = (seconds: number) => {
