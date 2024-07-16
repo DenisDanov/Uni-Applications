@@ -1,6 +1,7 @@
 package bg.duosoft.uniapplicationdemo.controllers;
 
 import bg.duosoft.uniapplicationdemo.models.dtos.TestStateDTO;
+import bg.duosoft.uniapplicationdemo.models.dtos.TestStateDTOFinal;
 import bg.duosoft.uniapplicationdemo.services.impl.TestStateService;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
@@ -16,8 +17,8 @@ public class TestStateController {
     private final TestStateService testStateService;
 
     @PostMapping("/save-test-state")
-    public String saveTestState(@RequestBody Map<String, Object> request) {
-        testStateService.saveTestState((String) request.get("username"), request, (Integer) request.get("secondsLeft"));
+    public String saveTestState(@RequestBody TestStateDTOFinal request) {
+        testStateService.saveTestState(request.getUsername(), request);
         return "State saved";
     }
 

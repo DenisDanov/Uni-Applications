@@ -43,12 +43,11 @@ public abstract class BaseServiceImpl<ID extends Serializable, DTO extends BaseD
         if (!CollectionUtils.isEmpty(errors)) {
             throw new ValidationErrorException(errors);
         }
-        DTO saved = mapper.toDto(repository.save(mapper.toEntity(dto)));
-        return saved;
+        return mapper.toDto(repository.save(mapper.toEntity(dto)));
     }
 
     @Override
-    @Cacheable(cacheResolver = "crudCacheResolver", key = "#id")
+    @Cacheable(cacheResolver = "crudCacheResolver",condition = "#id != null", key = "#id")
     public DTO getById(ID id) {
         return mapper.toDto(repository.findById(id).orElse(null));
     }
@@ -56,7 +55,7 @@ public abstract class BaseServiceImpl<ID extends Serializable, DTO extends BaseD
     @Override
     @Caching(evict = {
             @CacheEvict(cacheResolver = "crudCacheResolver", key = "#root.targetClass.simpleName"),
-            @CacheEvict(cacheResolver = "crudCacheResolver", key = "#dto.id")
+            @CacheEvict(cacheResolver = "crudCacheResolver",condition = "#dto.id != null", key = "#dto.id")
     })
     public DTO update(DTO dto) {
         if (Objects.isNull(dto)) {
@@ -66,14 +65,13 @@ public abstract class BaseServiceImpl<ID extends Serializable, DTO extends BaseD
         if (!CollectionUtils.isEmpty(errors)) {
             throw new ValidationErrorException(errors);
         }
-        DTO saved = mapper.toDto(repository.save(mapper.toEntity(dto)));
-        return saved;
+        return mapper.toDto(repository.save(mapper.toEntity(dto)));
     }
 
     @Override
     @Caching(evict = {
             @CacheEvict(cacheResolver = "crudCacheResolver", key = "#root.targetClass.simpleName"),
-            @CacheEvict(cacheResolver = "crudCacheResolver", key = "#dto.id")
+            @CacheEvict(cacheResolver = "crudCacheResolver",condition = "#dto.id != null", key = "#dto.id")
     })
     public void delete(DTO dto) {
         repository.delete(mapper.toEntity(dto));
@@ -82,7 +80,7 @@ public abstract class BaseServiceImpl<ID extends Serializable, DTO extends BaseD
     @Override
     @Caching(evict = {
             @CacheEvict(cacheResolver = "crudCacheResolver", key = "#root.targetClass.simpleName"),
-            @CacheEvict(cacheResolver = "crudCacheResolver", key = "#id")
+            @CacheEvict(cacheResolver = "crudCacheResolver",condition = "#id != null", key = "#id")
     })
     public void deleteById(ID id) {
         repository.deleteById(id);

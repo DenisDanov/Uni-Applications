@@ -5,6 +5,8 @@ import bg.duosoft.uniapplicationdemo.services.base.BaseService;
 
 public interface StudentsRequirementsResultsService extends BaseService<String, StudentsRequirementsResultsDTO> {
 
+    void processTestResults(String jsonString);
+
     @Override
     default boolean isCachingEnabled() {
         return false;
