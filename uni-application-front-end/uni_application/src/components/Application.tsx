@@ -3,13 +3,12 @@ import {
     MenuItem,
     Select,
     TextField,
-    Button,
     Grid,
     Box,
     Typography,
     Alert,
     FormControl,
-    FormHelperText
+    FormHelperText, Card, CardContent, Button, IconButton, InputLabel
 } from '@mui/material';
 import {useFormik} from 'formik';
 import {Specialty} from "../types/Specialty";
@@ -23,6 +22,14 @@ import {getSpecialtiesByFaculty, submitApplication} from "../axios/requests";
 import {StudentsRequirementsResultsDTO} from "../types/StudentRequirementsResultsDTO";
 import {axiosClientDefault} from "../axios/axiosClient";
 import {useKeycloak} from "../keycloak";
+import {LicenseInfo} from "@mui/x-license-pro";
+import {LoadingButton} from "@mui/lab";
+import UploadFileIcon from '@mui/icons-material/UploadFile';
+import {getFileIcon} from "../types/fileIcons";
+import DocumentUploadMenu from "./DocumentUploadMenu";
+import DeleteIcon from "@mui/icons-material/Delete";
+
+LicenseInfo.setLicenseKey('e0d9bb8070ce0054c9d9ecb6e82cb58fTz0wLEU9MzI0NzIxNDQwMDAwMDAsUz1wcmVtaXVtLExNPXBlcnBldHVhbCxLVj0y');
 
 const useFetchSpecialties = (facultyId: number | null): Specialty[] => {
     const [specialties, setSpecialties] = useState<Specialty[]>([]);
@@ -52,6 +59,8 @@ const ApplicationForm: React.FC = () => {
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
     const {keycloak} = useKeycloak();
+    const allowedExtensions = ['pdf', 'doc', 'docx', 'txt'];
+    const [loading, setLoading] = useState<boolean>(false);
 
     const [results, setResults] = useState({
         languageProficiencyTestResult: null,
@@ -99,19 +108,21 @@ const ApplicationForm: React.FC = () => {
             avgGrade: 0,
             languageProficiencyTestResult: '',
             standardizedTestResult: 0,
-            letterOfRecommendation: '',
+            letterOfRecommendation: null as File | null,
             personalStatement: ''
         },
         validationSchema: validationSchemaApplication(formRequirements),
         onSubmit: (values) => {
-            if (selectedFiles.length === 0) {
-                setError("Please upload files first.");
-                setTimeout(() => setError(null), 5000);
+            console.log(formRequirements.isLetterOfRecommendationRequired);
+            console.log(values.letterOfRecommendation === null);
+            if (formRequirements.isLetterOfRecommendationRequired && !values.letterOfRecommendation) {
+                setError('Please upload letter of recommendation');
                 return;
             }
 
             setError(null);
-            const {specialty, facultyName, ...dataValues} = values;
+            setLoading(true);
+            const {letterOfRecommendation, specialty, facultyName, ...dataValues} = values;
 
             const formDataValues = {
                 ...dataValues,
@@ -124,6 +135,9 @@ const ApplicationForm: React.FC = () => {
 
             const formData = new FormData();
             selectedFiles.forEach((file, index) => formData.append(`file${index}`, file));
+            if (formRequirements.isLetterOfRecommendationRequired && values.letterOfRecommendation) {
+                formData.append('letterOfRecommendation', values.letterOfRecommendation);
+            }
             formData.append('studentApplicationCreateDTO', JSON.stringify(formDataValues));
             formData.append('specialtyName', values.specialty.specialtyName);
             formData.append('facultyName', values.facultyName);
@@ -152,7 +166,9 @@ const ApplicationForm: React.FC = () => {
                     formik.setErrors(serverErrors);
                     setError(err.errors?.[0]?.message || "An error occurred.");
                     setTimeout(() => setError(null), 5000);
-                });
+                }).finally(() => {
+                setLoading(false);
+            });
         }
     });
 
@@ -197,7 +213,7 @@ const ApplicationForm: React.FC = () => {
         });
 
         if (!specialty.specialtyRequirement.letterOfRecommendationRequired) {
-            formik.values.letterOfRecommendation = '';
+            formik.values.letterOfRecommendation = null;
         }
         if (!specialty.specialtyRequirement.languageProficiencyTestMinResult) {
             // @ts-ignore
@@ -206,6 +222,22 @@ const ApplicationForm: React.FC = () => {
 
         formik.setFieldValue('specialtyId', specialtyId);
         formik.setFieldValue('specialty', specialty);
+    };
+
+    const handleLetterOfRecommendationChange = (event: ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files) {
+            const file = event.target.files[0];
+            if (file) {
+                const fileExtension = file.name.split('.').pop()?.toLowerCase();
+                if (fileExtension && allowedExtensions.includes(fileExtension)) {
+                    formik.setFieldValue('letterOfRecommendation', file);
+                    setError(null);
+                } else {
+                    setError('Unsupported file type. Please upload a PDF, DOC, DOCX, or TXT file.');
+                    setTimeout(() => setError(null), 5000);
+                }
+            }
+        }
     };
 
     return (
@@ -320,16 +352,65 @@ const ApplicationForm: React.FC = () => {
                             </Grid>
                             {formRequirements.isLetterOfRecommendationRequired && (
                                 <Grid item xs={12} sm={6}>
-                                    <TextField
-                                        fullWidth
-                                        label="Letter of Recommendation"
-                                        name="letterOfRecommendation"
-                                        value={formik.values.letterOfRecommendation}
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
-                                        error={formik.touched.letterOfRecommendation && Boolean(formik.errors.letterOfRecommendation)}
-                                        helperText={formik.touched.letterOfRecommendation && formik.errors.letterOfRecommendation}
-                                    />
+                                    <FormControl fullWidth>
+                                        <TextField
+                                            label="Letter of Recommendation"
+                                            fullWidth
+                                            InputProps={{
+                                                readOnly: true,
+                                                startAdornment: (
+                                                    <Box
+                                                        display="flex"
+                                                        alignItems="center"
+                                                        width="100%"
+                                                        p={1}
+                                                        border={1}
+                                                        borderColor="grey.300"
+                                                        borderRadius={1}
+                                                        bgcolor="background.paper"
+                                                    >
+                                                        {formik.values.letterOfRecommendation ? (
+                                                            <>
+                                                                {getFileIcon(formik.values.letterOfRecommendation.name)}
+                                                                <Typography ml={1}>{formik.values.letterOfRecommendation.name}</Typography>
+                                                                <IconButton
+                                                                    aria-label="delete"
+                                                                    size="small"
+                                                                    onClick={() => formik.setFieldValue('letterOfRecommendation', null)}
+                                                                    style={{ marginLeft: 'auto' }}
+                                                                >
+                                                                    <DeleteIcon fontSize="inherit" />
+                                                                </IconButton>
+                                                            </>
+                                                        ) : (
+                                                            <Typography variant="body2" color="textSecondary">No file uploaded</Typography>
+                                                        )}
+                                                    </Box>
+                                                ),
+                                                endAdornment: (
+                                                    <Box position="relative">
+                                                        <Button
+                                                            variant="contained"
+                                                            component="label"
+                                                            color="primary"
+                                                            startIcon={<UploadFileIcon />}
+                                                        >
+                                                            Upload
+                                                            <input
+                                                                type="file"
+                                                                hidden
+                                                                accept=".pdf,.doc,.docx,.txt"
+                                                                onChange={handleLetterOfRecommendationChange}
+                                                            />
+                                                        </Button>
+                                                    </Box>
+                                                ),
+                                            }}
+                                            InputLabelProps={{
+                                                shrink: true, // Ensures the label is always in the floating position
+                                            }}
+                                        />
+                                    </FormControl>
                                 </Grid>
                             )}
                             {formRequirements.isPersonalStatementRequired && (
@@ -346,11 +427,18 @@ const ApplicationForm: React.FC = () => {
                                     />
                                 </Grid>
                             )}
-                            <FileUpload handleFileChange={handleFileChange}/>
+                            <FileUpload error={setError} handleFileChange={handleFileChange}/>
                             <Grid item xs={12}>
-                                <Button color="primary" variant="contained" type="submit">
+                                <LoadingButton
+                                    color="primary"
+                                    variant="contained"
+                                    type="submit"
+                                    loading={loading}
+                                    loadingPosition="start"
+                                    startIcon={<UploadFileIcon/>}
+                                >
                                     Submit Application
-                                </Button>
+                                </LoadingButton>
                             </Grid>
                         </>
                     )}

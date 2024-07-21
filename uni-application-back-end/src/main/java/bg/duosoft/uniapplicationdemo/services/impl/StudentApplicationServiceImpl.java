@@ -163,6 +163,9 @@ public class StudentApplicationServiceImpl extends BaseServiceImpl<StudentsAppli
         // Convert the JSON string to DTO
         ObjectMapper objectMapper = new ObjectMapper();
         StudentApplicationDTO studentApplicationCreateDTO = objectMapper.readValue(dtoJsonString, StudentApplicationDTO.class);
+        if (request.getMultiFileMap().get("letterOfRecommendation") != null) {
+            studentApplicationCreateDTO.setLetterOfRecommendation(request.getMultiFileMap().get("letterOfRecommendation").get(0).getBytes());
+        }
         studentApplicationCreateDTO.setUsername(principal.getClaim("preferred_username"));
 
         this.create(studentApplicationCreateDTO);

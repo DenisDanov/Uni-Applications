@@ -64,7 +64,7 @@ public class StudentApplicationValidator implements Validator<StudentApplication
                     rejectIfEmptyString(errors, applicationDTO.getPersonalStatement(), "personalStatement", "The personal statement cannot be empty.");
                 }
                 if (requirementEntity.getLetterOfRecommendationRequired()) {
-                    rejectIfEmptyString(errors, applicationDTO.getLetterOfRecommendation(), "letterOfRecommendation", "The letter of recommendation cannot be empty.");
+                    rejectIfEmpty(errors, applicationDTO.getLetterOfRecommendation(), "letterOfRecommendation", "The letter of recommendation cannot be empty.");
                 }
                 if (requirementEntity.getLanguageProficiencyTestMinResult() != null) {
                     rejectIfTrue(errors, applicationDTO.getLanguageProficiencyTestResult() == null, "languageProficiencyTestResult", "The language proficiency test result is invalid.");

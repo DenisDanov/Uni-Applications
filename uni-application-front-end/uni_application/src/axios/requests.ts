@@ -12,6 +12,28 @@ export const getSpecialtiesByFaculty = async (facultyId: number): Promise<Specia
     }
 };
 
+export const downloadFile = async (application: any) => {
+    try {
+        const response = await axiosClientDefault.get(`files/download-file/test/${application.username}/${application.facultyName}/${application.specialtyName}`, {
+            responseType: 'blob', // Important to get the file as a Blob
+        });
+
+        // Create a URL for the file and link it
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', 'letter_of_recommendation.pdf'); // Set the file name
+        document.body.appendChild(link);
+        link.click();
+
+        // Clean up the URL object after download
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(link);
+    } catch (error) {
+        console.error('Error downloading the file', error);
+    }
+};
+
 export const getSpecialtyById = async (specialtyId: number): Promise<Specialty> => {
     try {
         const response = await axiosClientDefault.get<Specialty>(`/specialty/${specialtyId}`);

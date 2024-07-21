@@ -1,5 +1,5 @@
-import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {RootState} from "../store";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { RootState } from '../store';
 
 interface FileState {
     selectedFiles: File[];
@@ -20,6 +20,14 @@ const fileSlice = createSlice({
         addFiles: (state, action: PayloadAction<{ files: File[]; fileNames: string[] }>) => {
             state.selectedFiles = [...state.selectedFiles, ...action.payload.files];
             state.selectedFileNames = [...state.selectedFileNames, ...action.payload.fileNames];
+            state.fileError = null; // Clear any existing error when files are added
+        },
+        removeFile: (state, action: PayloadAction<string>) => {
+            const index = state.selectedFileNames.indexOf(action.payload);
+            if (index !== -1) {
+                state.selectedFileNames.splice(index, 1);
+                state.selectedFiles.splice(index, 1);
+            }
         },
         setFileError: (state, action: PayloadAction<string | null>) => {
             state.fileError = action.payload;
@@ -27,11 +35,13 @@ const fileSlice = createSlice({
         clearFiles: (state) => {
             state.selectedFiles = [];
             state.selectedFileNames = [];
+            state.fileError = null; // Clear any existing error when files are cleared
         },
     },
 });
 
-export const {addFiles, setFileError, clearFiles} = fileSlice.actions;
+export const { addFiles, setFileError, clearFiles, removeFile } = fileSlice.actions;
 export default fileSlice.reducer;
 export const selectSelectedFileNames = (state: RootState) => state.file.selectedFileNames;
+export const selectFileError = (state: RootState) => state.file.fileError;
 export const selectSelectedFiles = (state: RootState) => state.file.selectedFiles;

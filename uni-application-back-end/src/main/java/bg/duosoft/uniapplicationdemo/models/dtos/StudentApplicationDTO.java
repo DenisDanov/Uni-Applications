@@ -32,7 +32,7 @@ public class StudentApplicationDTO extends BaseDTO<StudentsApplicationsId> imple
 
     private Double standardizedTestResult;
 
-    private String letterOfRecommendation;
+    private byte[] letterOfRecommendation;
 
     private String personalStatement;
 

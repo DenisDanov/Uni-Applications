@@ -1,0 +1,70 @@
+{
+  "home": {
+    "welcomeTitle": "Добре дошли в Портала за кандидатстване в университета",
+    "subTitle": "Вашият път към светло бъдеще започва тук",
+    "description": "Разгледайте различни факултети и специалности, които нашият университет предлага. Създайте акаунт, за да започнете процеса на кандидатстване.",
+    "exploreFaculties": "Разгледайте факултетите",
+    "discoverSpecialties": "Открийте специалности",
+    "startApplication": "Започнете вашето заявление"
+  },
+  "menu": {
+    "title": "Меню",
+    "home": "Начало",
+    "login": "Вход",
+    "logout": "Изход",
+    "profile": "Профил",
+    "faculties": "Факултети",
+    "specialties": "Специалности",
+    "apply": "Кандидатствай",
+    "requirementsTests": "Изпити по изисквания",
+    "manageApplications": "Управление на кандидатури",
+    "manageUsers": "Управление на потребители"
+  },
+  "breadcrumbs": {
+    "home": "Начало",
+    "faculties": "Факултети",
+    "specialties": "Специалности",
+    "apply": "Кандидатствай",
+    "requirementsTests": "Изпити по изисквания",
+    "manageApplications": "Управление на кандидатури",
+    "manageUsers": "Управление на потребители",
+    "profile": "Профил",
+    "login": "Вход"
+  },
+  "profile": {
+    "title": "Профил",
+    "username": "Потребителско име",
+    "email": "Имейл",
+    "dateOfBirth": "Дата на раждане",
+    "firstName": "Първо име",
+    "middleName": "Средно име",
+    "lastName": "Фамилно име",
+    "phoneNumber": "Телефонен номер",
+    "accountType": "Тип акаунт",
+    "accessLevel": "Ниво на достъп",
+    "saveChanges": "Запази промените",
+    "studentApplications": "Студентски заявления",
+    "application": "Заявление #{{index}} - {{specialtyName}}",
+    "faculty": "Факултет: {{facultyName}}",
+    "sent": "Изпратено: {{date}}",
+    "description": "Описание: {{description}}",
+    "averageGrade": "Среден успех: {{avgGrade}}",
+    "languageTest": "Тест по език: {{languageTest}}",
+    "standardizedTest": "Стандартизиран тест: {{standardizedTest}}",
+    "recommendationLetter": "Препоръчително писмо:",
+    "download": "Изтегли",
+    "personalStatement": "Лична декларация: {{personalStatement}}",
+    "downloadProgram": "Изтегли учебна програма",
+    "noApplications": "Няма заявления за показване.",
+    "specialties": {
+      "Computer Engineering": "Компютърни науки",
+      "Fine Arts": "Изящни изкуства",
+      "Medical Doctor": "Медицински доктор"
+    },
+    "faculties": {
+      "Faculty of Computer Science": "Факултет по компютърни науки",
+      "Faculty of Arts": "Факултет по изящни изкуства",
+      "Faculty of Medicine": "Факултет по медицина"
+    }
+  }
+}

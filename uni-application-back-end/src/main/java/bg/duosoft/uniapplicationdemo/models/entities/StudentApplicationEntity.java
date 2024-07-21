@@ -52,7 +52,7 @@ public class StudentApplicationEntity implements Serializable {
     private Double standardizedTestResult;
 
     @Column(name = "letter_of_recommendation")
-    private String letterOfRecommendation;
+    private byte[] letterOfRecommendation;
 
     @Column(name = "personal_statement")
     private String personalStatement;

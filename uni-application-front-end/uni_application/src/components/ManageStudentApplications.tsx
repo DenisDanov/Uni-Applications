@@ -18,7 +18,7 @@ import AttachedFilesMenu from "./AttachedFilesMenu";
 import {
     acceptApplication,
     declineApplication,
-    deleteApplication,
+    deleteApplication, downloadFile,
     fetchFilteredStudentApplications,
     fetchStudentApplications,
     generateApplicationReceipt
@@ -210,7 +210,13 @@ const ManageStudentApplications: React.FC = () => {
                                 </Typography>
                                 {application.letterOfRecommendation && (
                                     <Typography variant="body2" mt={2}>
-                                        Letter of Recommendation: {application.letterOfRecommendation}
+                                        Recommendation Letter:
+                                        <Button
+                                            color="primary"
+                                            onClick={() => downloadFile(application)}
+                                        >
+                                            Download
+                                        </Button>
                                     </Typography>
                                 )}
                                 {application.personalStatement && (

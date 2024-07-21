@@ -118,13 +118,23 @@ const EvaluateApplication: React.FC = () => {
                         <Typography variant="subtitle1" color="textSecondary">
                             Status Description:
                         </Typography>
-                        <Typography variant="body1">{application.applicationStatus.applicationDescription}</Typography>
+                        <Typography style={{
+                            wordBreak: 'break-all',
+                            wordWrap: 'break-word',
+                            whiteSpace: 'normal',
+                            maxWidth: '400px'
+                        }} variant="body1">{application.applicationStatus.applicationDescription}</Typography>
                     </Grid>
                     <Grid item xs={12}>
                         <Typography variant="subtitle1" color="textSecondary">
                             Application Description:
                         </Typography>
-                        <Typography variant="body1">{application.applicationDescription}</Typography>
+                        <Typography style={{
+                            wordBreak: 'break-all',
+                            wordWrap: 'break-word',
+                            whiteSpace: 'normal',
+                            maxWidth: '400px'
+                        }} variant="body1">{application.applicationDescription}</Typography>
                     </Grid>
                     <Grid item xs={12}>
                         <Box display="flex" alignItems="center" mt={2}>

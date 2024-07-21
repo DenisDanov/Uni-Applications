@@ -5,6 +5,7 @@ import bg.duosoft.uniapplicationdemo.models.dtos.SpecialtySubjectInfoDTO;
 import bg.duosoft.uniapplicationdemo.models.dtos.StudentApplicationDTOUsers;
 import bg.duosoft.uniapplicationdemo.services.SpecialtyService;
 import bg.duosoft.uniapplicationdemo.services.SpecialtySubjectInfoService;
+import bg.duosoft.uniapplicationdemo.services.StudentApplicationService;
 import bg.duosoft.uniapplicationdemo.services.TeacherService;
 import bg.duosoft.uniapplicationdemo.services.impl.MinioService;
 import com.lowagie.text.DocumentException;
@@ -21,6 +22,7 @@ import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 import org.springframework.web.bind.annotation.*;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -42,7 +44,34 @@ public class FileController {
 
     private final SpecialtySubjectInfoService specialtySubjectInfoService;
 
+    private final StudentApplicationService studentApplicationService;
+
     private final TeacherService teacherService;
+
+    @GetMapping("/download-file/test/{username}/{facultyName}/{specialtyName}")
+    public ResponseEntity<InputStreamResource> downloadFileTest(@PathVariable String username, @PathVariable String facultyName, @PathVariable String specialtyName) {
+        try {
+            // Retrieve the byte array from the database
+            byte[] fileData = studentApplicationService.findByStudentUsernameAndFacultyAndSpecialty(username, facultyName, specialtyName)
+                    .get(0)
+                    .getLetterOfRecommendation();
+
+            // Convert the byte array to InputStream
+            InputStream inputStream = new ByteArrayInputStream(fileData);
+
+            // Set the headers for file download
+            HttpHeaders headers = new HttpHeaders();
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"letter_of_recommendation.pdf\"");
+
+            // Return the file as an InputStreamResource
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .body(new InputStreamResource(inputStream));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
 
     @GetMapping("/download-file")
     public ResponseEntity<InputStreamResource> downloadFile(@RequestParam String objectName) {

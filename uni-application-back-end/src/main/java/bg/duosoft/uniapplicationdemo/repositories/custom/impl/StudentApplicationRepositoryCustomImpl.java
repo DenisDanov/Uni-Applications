@@ -33,7 +33,6 @@ public class StudentApplicationRepositoryCustomImpl extends BaseRepositoryCustom
         Double avgGrade = filter.getAvgGrade();
         Double languageProficiencyTestResult = filter.getLanguageProficiencyTestResult();
         Double standardizedTestResult = filter.getStandardizedTestResult();
-        String letterOfRecommendation = filter.getLetterOfRecommendation();
         String personalStatement = filter.getPersonalStatement();
 
         Map<String, Object> queryParams = new HashMap<>();
@@ -73,10 +72,6 @@ public class StudentApplicationRepositoryCustomImpl extends BaseRepositoryCustom
         if (standardizedTestResult != null) {
             queryBuilder.append(" and sa.standardizedTestResult = :standardizedTestResult");
             queryParams.put("standardizedTestResult", standardizedTestResult);
-        }
-        if (StringUtils.hasText(letterOfRecommendation)) {
-            queryBuilder.append(" and sa.letterOfRecommendation = :letterOfRecommendation");
-            queryParams.put("letterOfRecommendation", letterOfRecommendation);
         }
         if (StringUtils.hasText(personalStatement)) {
             queryBuilder.append(" and sa.personalStatement = :personalStatement");
