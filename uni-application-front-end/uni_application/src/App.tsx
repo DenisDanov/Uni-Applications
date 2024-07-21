@@ -11,7 +11,7 @@ import store from "./store";
 
 const App: React.FC = () => {
     return (
-        <BrowserRouter basename="/uni-app">
+        <BrowserRouter basename="/">
             <AppSecurityProvider authClient={keycloakInitObject}>
                 <Provider store={store}>
                 <Box display="flex" flexDirection="column" minHeight="100vh">

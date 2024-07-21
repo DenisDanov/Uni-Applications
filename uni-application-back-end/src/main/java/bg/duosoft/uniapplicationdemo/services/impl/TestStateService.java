@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.concurrent.*;
 
 @Service
@@ -38,7 +39,7 @@ public class TestStateService {
     public void saveTestState(String username, TestStateDTOFinal request) {
         String key = TEST_KEY_PREFIX + username;
         redisTemplate.opsForValue().set(key, gson.toJson(request));
-        scheduleExpirationTask(username);
+        scheduleExpirationTask(username, request.getTestStartTime());
     }
 
     public String getTestState(String username) {
@@ -54,9 +55,18 @@ public class TestStateService {
         cancelScheduledTask(username);
     }
 
-    private void scheduleExpirationTask(String username) {
+    private synchronized void scheduleExpirationTask(String username, long deadline) {
         ScheduledFuture<?> existingTask = scheduledTasks.get(username);
-        if (existingTask == null || existingTask.isDone()) {
+        if (existingTask == null || existingTask.isDone() || existingTask.isCancelled()) {
+            // Calculate delay in milliseconds from the current time to the deadline
+            long currentTime = Instant.now().getEpochSecond();
+            long delayInSeconds = deadline - currentTime + 5;
+
+            // Ensure the delay is not negative
+            if (delayInSeconds < 0) {
+                delayInSeconds = 0;
+            }
+
             Runnable task = () -> {
                 String key = TEST_KEY_PREFIX + username;
                 String json = redisTemplate.opsForValue().get(key);
@@ -67,18 +77,20 @@ public class TestStateService {
                 } else {
                     logger.info("Expired key: {}, Value: Not found or already deleted", key);
                 }
+                cancelScheduledTask(username); // Ensure the task is removed after execution
             };
 
-            ScheduledFuture<?> scheduledTask = scheduler.schedule(task, 3601, TimeUnit.SECONDS);
+            ScheduledFuture<?> scheduledTask = scheduler.schedule(task, delayInSeconds, TimeUnit.SECONDS);
             scheduledTasks.put(username, scheduledTask);
             logger.info("Scheduled expiration task for user: {}", username);
         }
     }
 
-    private void cancelScheduledTask(String username) {
+    private synchronized void cancelScheduledTask(String username) {
         ScheduledFuture<?> scheduledTask = scheduledTasks.remove(username);
         if (scheduledTask != null) {
             scheduledTask.cancel(true);
+            logger.info(scheduledTask.isCancelled() ? "Canceled expiration task for user: {}" : "Failed to cancel expiration task for user: {}", username);
         }
     }
 }

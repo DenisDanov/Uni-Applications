@@ -38,7 +38,6 @@ public class KeycloakUserServiceImpl implements KeycloakUserService {
         this.realm = realm;
     }
 
-    // TODO Refactor
     @Override
     public Response createUser(String username, String email, String firstName, String middleName, String lastName, String password, Date dateOfBirth, String phoneNumber, RoleDTO roleDTO) {
         UsersResource usersResource = keycloak.realm(realm).users();

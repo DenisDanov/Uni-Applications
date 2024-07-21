@@ -2,7 +2,7 @@
 server:
   port: 8081
 
-  # Email server
+# Email server
 mail:
   smtp:
     host: smtp.gmail.com

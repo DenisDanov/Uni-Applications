@@ -1,5 +1,6 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import moment from 'moment';
+import Countdown, {zeroPad} from 'react-countdown';
 import {
     Button,
     Card,
@@ -19,15 +20,14 @@ import {axiosClientDefault} from '../axios/axiosClient';
 import {useKeycloak} from '../keycloak';
 import {StudentsRequirementsResultsDTO} from '../types/StudentRequirementsResultsDTO';
 import {languageProficiencyQuestions} from '../types/LanguageProficiencyTestQuestions';
+import {entranceExamQuestions} from '../types/StandartTestQuestions';
 
 const RequirementsTests: React.FC = () => {
     const [results, setResults] = useState<StudentsRequirementsResultsDTO | null>(null);
     const [languageTestOpen, setLanguageTestOpen] = useState(false);
     const [standardTestOpen, setStandardTestOpen] = useState(false);
-    const [timeRemaining, setTimeRemaining] = useState<number | null>(null);
-    const timerRef = useRef<NodeJS.Timeout | null>(null);
+    const [deadline, setDeadline] = useState<Date | null>(null);
     const [answers, setAnswers] = useState<number[]>([]);
-    const [testStartTime, setTestStartTime] = useState<number | null>(null);
     const {keycloak} = useKeycloak();
     const [testName, setTestName] = useState<string | null>(null);
     const [submissionError, setSubmissionError] = useState<string | null>(null);
@@ -47,18 +47,6 @@ const RequirementsTests: React.FC = () => {
             });
     }, [keycloak.tokenParsed?.preferred_username]);
 
-    useEffect(() => {
-        if (timeRemaining !== null && (languageTestOpen || standardTestOpen)) {
-            if (timeRemaining > 0) {
-                timerRef.current = setTimeout(() => {
-                    setTimeRemaining(timeRemaining - 1);
-                }, 1000);
-            } else {
-                handleTimeExpired();
-            }
-        }
-    }, [timeRemaining, languageTestOpen, standardTestOpen]);
-
     const checkExistingTestState = () => {
         axiosClientDefault
             .get(`/test/get/${keycloak.tokenParsed?.preferred_username}`)
@@ -67,11 +55,10 @@ const RequirementsTests: React.FC = () => {
                 if (answers !== null && testStartTime !== null && testName !== null) {
                     setTestName(testName);
                     setAnswers(answers);
-                    setTestStartTime(testStartTime);
 
-                    const timeElapsed = moment().unix() - testStartTime;
-                    const remainingTime = 3599 - timeElapsed;
-                    setTimeRemaining(remainingTime > 0 ? remainingTime : 0);
+                    const startTime = moment.unix(testStartTime).toDate();
+                    const deadline = moment(startTime).toDate();
+                    setDeadline(deadline);
 
                     if (testName === 'language') {
                         setLanguageTestOpen(true);
@@ -85,15 +72,14 @@ const RequirementsTests: React.FC = () => {
             });
     };
 
-    const saveTestState = (newAnswers: number[], testOpen: boolean, startTime: number | null, testName: string | null, timeRemaining: number | null) => {
-        if (testOpen && startTime !== null) {
+    const saveTestState = (newAnswers: number[], testOpen: boolean, deadline: Date | null, testName: string | null) => {
+        if (testOpen && deadline !== null) {
             axiosClientDefault
                 .post('/test/save-test-state', {
                     username: keycloak.tokenParsed?.preferred_username,
                     answers: newAnswers,
-                    testStartTime: startTime,
+                    testStartTime: moment(deadline).unix(),
                     testName: testName,
-                    secondsLeft: timeRemaining
                 })
                 .then((response) => {
                     console.log('Test state saved:', response.data);
@@ -105,17 +91,17 @@ const RequirementsTests: React.FC = () => {
     };
 
     const handleStartTest = (testType: 'language' | 'standard') => {
-        const startTime = moment().unix();
+        const startTime = new Date();
         setAnswers(new Array(languageProficiencyQuestions.length).fill(-1));
-        setTestStartTime(startTime);
-        setTimeRemaining(3599); // 1 hour in seconds
+        const deadline = moment(startTime).add(1, 'minute').subtract(1, "second").toDate();
+        setDeadline(deadline);
         setTestName(testType);
         if (testType === 'language') {
             setLanguageTestOpen(true);
         } else {
             setStandardTestOpen(true);
         }
-        saveTestState(new Array(languageProficiencyQuestions.length).fill(-1), true, startTime, testType, 3599);
+        saveTestState(new Array(languageProficiencyQuestions.length).fill(-1), true, deadline, testType);
     };
 
     const handleTimeExpired = () => {
@@ -130,11 +116,6 @@ const RequirementsTests: React.FC = () => {
             .then((response) => {
                 console.log('Test submitted:', response.data);
                 setResults(response.data);
-                if (response.data.testName === 'language') {
-                    setLanguageTestOpen(false);
-                } else {
-                    setStandardTestOpen(false);
-                }
                 setSubmissionSuccess("Test submitted, you can check your result from the profile page.")
                 setTimeout(() => setSubmissionSuccess(null), 5000);
             })
@@ -166,12 +147,12 @@ const RequirementsTests: React.FC = () => {
             .then((response) => {
                 console.log('Test submitted:', response.data);
                 setResults(response.data);
-                if (response.data.testName === 'language') {
+                setSubmissionSuccess("Test submitted, you can check your result from the profile page.")
+                if (languageTestOpen) {
                     setLanguageTestOpen(false);
                 } else {
                     setStandardTestOpen(false);
                 }
-                setSubmissionSuccess("Test submitted, you can check your result from the profile page.")
                 setTimeout(() => setSubmissionSuccess(null), 5000);
             })
             .catch((error) => {
@@ -189,6 +170,12 @@ const RequirementsTests: React.FC = () => {
                     correctAnswers += 1;
                 }
             });
+        } else {
+            entranceExamQuestions.forEach((question, index) => {
+                if (answers[index] === question.correctAnswer) {
+                    correctAnswers += 1;
+                }
+            });
         }
         return correctAnswers;
     };
@@ -197,12 +184,20 @@ const RequirementsTests: React.FC = () => {
         const newAnswers = [...answers];
         newAnswers[questionIndex] = answerIndex;
         setAnswers(newAnswers);
-        saveTestState(newAnswers, true, testStartTime, testName, timeRemaining);
+        saveTestState(newAnswers, true, deadline, testName);
     };
 
-    const formatTime = (seconds: number) => {
-        const duration = moment.duration(seconds, 'seconds');
-        return `${duration.minutes() < 10 ? 0 : ''}${duration.minutes()}:${duration.seconds() < 10 ? 0 : ''}${duration.seconds()}`;
+    const renderCountdown = ({minutes, seconds, completed}: any) => {
+        if (completed) {
+            handleTimeExpired();
+            return <Alert severity="error">Time expired</Alert>;
+        } else {
+            return (
+                <Typography variant="body2" align="center">
+                    Time Remaining: {zeroPad(minutes)}:{zeroPad(seconds)}
+                </Typography>
+            );
+        }
     };
 
     return (
@@ -223,7 +218,7 @@ const RequirementsTests: React.FC = () => {
                                     {!languageTestOpen ? (
                                         <Box sx={{textAlign: 'center'}}>
                                             <Typography variant="body2">Time to complete: 1 hr</Typography>
-                                            <Button variant="contained" color="primary"
+                                            <Button id={'start-language-test'} variant="contained" color="primary"
                                                     disabled={standardTestOpen}
                                                     onClick={() => handleStartTest('language')}>
                                                 Start Test
@@ -232,8 +227,10 @@ const RequirementsTests: React.FC = () => {
                                     ) : (
                                         <Collapse in={languageTestOpen}>
                                             <Box>
-                                                <Typography variant="body2" align="center">Time
-                                                    Remaining: {formatTime(timeRemaining!)}</Typography>
+                                                <Countdown
+                                                    date={deadline!}
+                                                    renderer={renderCountdown}
+                                                />
                                                 <FormControl component="fieldset" fullWidth>
                                                     {languageProficiencyQuestions.map((q, index) => (
                                                         <Box key={index} sx={{mt: 2}}>
@@ -256,11 +253,12 @@ const RequirementsTests: React.FC = () => {
                                                         variant="contained"
                                                         color="secondary"
                                                         onClick={handleSubmit}
-                                                        disabled={timeRemaining === 0}
+                                                        // @ts-ignore
+                                                        disabled={deadline && new Date() > deadline}
                                                     >
                                                         Submit
                                                     </Button>
-                                                    {timeRemaining === 0 &&
+                                                    {deadline && new Date() > deadline &&
                                                         <Alert severity="error">Time expired</Alert>}
                                                 </Box>
                                             </Box>
@@ -276,7 +274,7 @@ const RequirementsTests: React.FC = () => {
                                     {!standardTestOpen ? (
                                         <Box sx={{textAlign: 'center'}}>
                                             <Typography variant="body2">Time to complete: 1 hr</Typography>
-                                            <Button variant="contained" color="primary"
+                                            <Button id={'start-standard-test'} variant="contained" color="primary"
                                                     disabled={languageTestOpen}
                                                     onClick={() => handleStartTest('standard')}>
                                                 Start Test
@@ -285,15 +283,34 @@ const RequirementsTests: React.FC = () => {
                                     ) : (
                                         <Collapse in={standardTestOpen}>
                                             <Box>
-                                                <Typography variant="body2" align="center">Time
-                                                    Remaining: {formatTime(timeRemaining!)}</Typography>
-                                                {/* Test questions go here */}
+                                                <Countdown
+                                                    date={deadline!}
+                                                    renderer={renderCountdown}
+                                                />
+                                                <FormControl component="fieldset" fullWidth>
+                                                    {entranceExamQuestions.map((q, index) => (
+                                                        <Box key={index} sx={{mt: 2}}>
+                                                            <FormLabel component="legend">{q.question}</FormLabel>
+                                                            <RadioGroup
+                                                                value={answers[index]}
+                                                                onChange={(e) => handleAnswerChange(index, parseInt(e.target.value))}
+                                                            >
+                                                                {q.options.map((option, i) => (
+                                                                    <FormControlLabel key={i} value={i}
+                                                                                      control={<Radio/>}
+                                                                                      label={option}/>
+                                                                ))}
+                                                            </RadioGroup>
+                                                        </Box>
+                                                    ))}
+                                                </FormControl>
                                                 <Box sx={{textAlign: 'center', mt: 2}}>
                                                     <Button variant="contained" color="secondary" onClick={handleSubmit}
-                                                            disabled={timeRemaining === 0}>
+                                                        // @ts-ignore
+                                                            disabled={deadline && new Date() > deadline}>
                                                         Submit
                                                     </Button>
-                                                    {timeRemaining === 0 &&
+                                                    {deadline && new Date() > deadline &&
                                                         <Alert severity="error">Time expired</Alert>}
                                                 </Box>
                                             </Box>
@@ -302,6 +319,10 @@ const RequirementsTests: React.FC = () => {
                                 </CardContent>
                             </Card>
                         )}
+                        {(results.languageProficiencyTestResult !== null && results.standardizedTestResult !== null) &&
+                            <Alert severity="success">You have successfully completed all tests. Check your results on
+                                the profile page.</Alert>
+                        }
                     </>
                 )}
             </Box>

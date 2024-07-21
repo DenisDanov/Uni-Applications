@@ -35,9 +35,9 @@ export const validationSchemaApplication = (formRequirements: any) => {
         applicationDescription: Yup.string().required('Application Description is required.'),
         avgGrade: Yup.number().required('Average Grade is required.').min(3, 'Average Grade must be at least 3.').max(6, "Average Grade must not exceed 6."),
         languageProficiencyTestResult: formRequirements.isLanguageProficiencyRequired
-            ? Yup.number().required('Language Proficiency Test Result is required.').min(0, "Language Proficiency Test Result must be at least 0.")
+            ? Yup.string().required("You need to complete the Language Proficiency Test before applying.")
             : Yup.string().nullable(),
-        standardizedTestResult: Yup.number().required('Standardized Test Result is required.').min(0, 'Standardized Test Result must be at least 0.'),
+        standardizedTestResult: Yup.number().required('Standardized Test Result is required.').min(0,'You need to complete the Standardized Test before applying.'),
         letterOfRecommendation: formRequirements.isLetterOfRecommendationRequired
             ? Yup.string().required('Letter of Recommendation is required.')
             : Yup.string().nullable(),

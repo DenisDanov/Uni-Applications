@@ -189,7 +189,12 @@ const ManageStudentApplications: React.FC = () => {
                                 <Typography variant="body2" mt={2}>
                                     Status Description: {application.applicationStatus.applicationDescription}
                                 </Typography>
-                                <Typography variant="body2" mt={2}>
+                                <Typography style={{
+                                    wordBreak: 'break-all',
+                                    wordWrap: 'break-word',
+                                    whiteSpace: 'normal',
+                                    maxWidth: '400px'
+                                }} variant="body2" mt={2}>
                                     Application Description: {application.applicationDescription}
                                 </Typography>
                                 <Typography variant="body2" mt={2}>
@@ -209,7 +214,12 @@ const ManageStudentApplications: React.FC = () => {
                                     </Typography>
                                 )}
                                 {application.personalStatement && (
-                                    <Typography variant="body2" mt={2}>
+                                    <Typography style={{
+                                        wordBreak: 'break-all',
+                                        wordWrap: 'break-word',
+                                        whiteSpace: 'normal',
+                                        maxWidth: '400px'
+                                    }} variant="body2" mt={2}>
                                         Personal Statement: {application.personalStatement}
                                     </Typography>
                                 )}
@@ -222,7 +232,7 @@ const ManageStudentApplications: React.FC = () => {
                                     }}
                                 />
                             </CardContent>
-                            <CardActions sx={{display: 'flex', justifyContent: 'center',flexWrap: 'wrap', gap: 1}}>
+                            <CardActions sx={{display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: 1}}>
                                 <Button
                                     disabled={!keycloak.hasRealmRole("FULL_ACCESS")}
                                     size="small"

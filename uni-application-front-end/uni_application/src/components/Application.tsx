@@ -20,6 +20,9 @@ import FileUpload from "./FileUpload";
 import {validationSchemaApplication} from "../types/validationSchema";
 import {fetchFaculties} from '../slices/facultySlice';
 import {getSpecialtiesByFaculty, submitApplication} from "../axios/requests";
+import {StudentsRequirementsResultsDTO} from "../types/StudentRequirementsResultsDTO";
+import {axiosClientDefault} from "../axios/axiosClient";
+import {useKeycloak} from "../keycloak";
 
 const useFetchSpecialties = (facultyId: number | null): Specialty[] => {
     const [specialties, setSpecialties] = useState<Specialty[]>([]);
@@ -46,9 +49,14 @@ const ApplicationForm: React.FC = () => {
     const specialties = useFetchSpecialties(selectedFacultyId);
     const selectedFiles = useSelector(selectSelectedFiles);
     const selectedFileNames = useSelector(selectSelectedFileNames);
-
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
+    const {keycloak} = useKeycloak();
+
+    const [results, setResults] = useState({
+        languageProficiencyTestResult: null,
+        standardizedTestResult: null
+    });
 
     const [formRequirements, setFormRequirements] = useState({
         isLanguageProficiencyRequired: false,
@@ -59,6 +67,27 @@ const ApplicationForm: React.FC = () => {
     useEffect(() => {
         dispatch(fetchFaculties());
     }, [dispatch]);
+
+    useEffect(() => {
+        axiosClientDefault
+            .get<StudentsRequirementsResultsDTO>(`/students-requirements-results/${keycloak.tokenParsed?.preferred_username}`)
+            .then((response: any) => {
+                formik.setFieldValue("standardizedTestResult", response.data.standardizedTestResult === null ? -1 : response.data.standardizedTestResult);
+                formik.setFieldValue("languageProficiencyTestResult", response.data.languageProficiencyTestResult);
+                formik.touched.standardizedTestResult = true;
+                formik.touched.languageProficiencyTestResult = true;
+
+                setResults(response.data);
+
+                if (formRequirements.isLanguageProficiencyRequired && response.data.languageProficiencyTestResult === null) {
+                    formik.validateField('languageProficiencyTestResult');
+                }
+            })
+            .catch((error) => {
+                console.error('Error fetching results:', error);
+            });
+    }, [keycloak.tokenParsed?.preferred_username, formRequirements.isLanguageProficiencyRequired]);
+
 
     const formik = useFormik({
         initialValues: {
@@ -75,7 +104,6 @@ const ApplicationForm: React.FC = () => {
         },
         validationSchema: validationSchemaApplication(formRequirements),
         onSubmit: (values) => {
-
             if (selectedFiles.length === 0) {
                 setError("Please upload files first.");
                 setTimeout(() => setError(null), 5000);
@@ -104,7 +132,10 @@ const ApplicationForm: React.FC = () => {
                 .then(() => {
                     setSuccess("Application submitted successfully");
                     setTimeout(() => setSuccess(null), 5000);
+                    const languageProficiencyResult = formik.values.languageProficiencyTestResult;
+                    console.log(languageProficiencyResult);
                     formik.resetForm();
+                    formik.setFieldValue("languageProficiencyTestResult", languageProficiencyResult);
                     const selectedFaculty = faculties.find(faculty => faculty.id === values.facultyId);
                     const facultyName = selectedFaculty ? selectedFaculty.facultyName : '';
                     formik.setFieldValue("facultyId", values.facultyId);
@@ -169,7 +200,8 @@ const ApplicationForm: React.FC = () => {
             formik.values.letterOfRecommendation = '';
         }
         if (!specialty.specialtyRequirement.languageProficiencyTestMinResult) {
-            formik.values.languageProficiencyTestResult = '';
+            // @ts-ignore
+            formik.values.languageProficiencyTestResult = null;
         }
 
         formik.setFieldValue('specialtyId', specialtyId);
@@ -263,11 +295,12 @@ const ApplicationForm: React.FC = () => {
                                         label="Language Proficiency Test Result"
                                         name="languageProficiencyTestResult"
                                         type="number"
-                                        value={formik.values.languageProficiencyTestResult}
+                                        value={results.languageProficiencyTestResult ?? ''}
                                         onChange={formik.handleChange}
                                         onBlur={formik.handleBlur}
                                         error={formik.touched.languageProficiencyTestResult && Boolean(formik.errors.languageProficiencyTestResult)}
                                         helperText={formik.touched.languageProficiencyTestResult && formik.errors.languageProficiencyTestResult}
+                                        disabled
                                     />
                                 </Grid>
                             )}
@@ -277,11 +310,12 @@ const ApplicationForm: React.FC = () => {
                                     label="Standardized Test Result"
                                     name="standardizedTestResult"
                                     type="number"
-                                    value={formik.values.standardizedTestResult}
+                                    value={results.standardizedTestResult ?? ''}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                     error={formik.touched.standardizedTestResult && Boolean(formik.errors.standardizedTestResult)}
                                     helperText={formik.touched.standardizedTestResult && formik.errors.standardizedTestResult}
+                                    disabled
                                 />
                             </Grid>
                             {formRequirements.isLetterOfRecommendationRequired && (

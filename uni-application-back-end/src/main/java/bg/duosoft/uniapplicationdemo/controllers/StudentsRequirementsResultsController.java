@@ -1,10 +1,8 @@
 package bg.duosoft.uniapplicationdemo.controllers;
 
 import bg.duosoft.uniapplicationdemo.controllers.base.CrudController;
-import bg.duosoft.uniapplicationdemo.mappers.StudentsRequirementsResultsMapper;
 import bg.duosoft.uniapplicationdemo.models.dtos.StudentsRequirementsResultsDTO;
 import bg.duosoft.uniapplicationdemo.models.dtos.TestResultsDTO;
-import bg.duosoft.uniapplicationdemo.repositories.StudentsRequirementsResultsRepository;
 import bg.duosoft.uniapplicationdemo.services.StudentsRequirementsResultsService;
 import bg.duosoft.uniapplicationdemo.services.impl.TestStateService;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class StudentsRequirementsResultsController extends CrudController<String, StudentsRequirementsResultsDTO, StudentsRequirementsResultsService> {
 
     private final TestStateService testStateService;
-
-    private final StudentsRequirementsResultsRepository requirementsResultsRepository;
-
-    private final StudentsRequirementsResultsMapper requirementsResultsMapper;
 
     @Override
     public StudentsRequirementsResultsDTO getById(String id) {

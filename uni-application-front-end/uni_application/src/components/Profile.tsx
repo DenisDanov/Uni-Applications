@@ -265,14 +265,24 @@ const Profile: React.FC = () => {
                                         }
                                     />
                                 </Box>
-                                <Typography>Description: {application.applicationDescription}</Typography>
+                                <Typography style={{
+                                    wordBreak: 'break-all',
+                                    wordWrap: 'break-word',
+                                    whiteSpace: 'normal',
+                                    maxWidth: '400px'
+                                }}>Description: {application.applicationDescription}</Typography>
                                 <Typography>Average Grade: {application.avgGrade}</Typography>
                                 {application.languageProficiencyTestResult &&
                                     <Typography>Language Test: {application.languageProficiencyTestResult}</Typography>}
                                 <Typography>Standardized Test: {application.standardizedTestResult}</Typography>
                                 {application.letterOfRecommendation && <Typography>Recommendation
                                     Letter: {application.letterOfRecommendation}</Typography>}
-                                <Typography>Personal Statement: {application.personalStatement}</Typography>
+                                <Typography style={{
+                                    wordBreak: 'break-all',
+                                    wordWrap: 'break-word',
+                                    whiteSpace: 'normal',
+                                    maxWidth: '400px'
+                                }}>Personal Statement: {application.personalStatement}</Typography>
                                 <AttachedFilesMenu
                                     application={application}
                                     setExpanded={(expanded) => {
