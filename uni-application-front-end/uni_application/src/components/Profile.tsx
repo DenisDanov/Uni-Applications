@@ -17,10 +17,10 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import AttachedFilesMenu from "./AttachedFilesMenu";
 import {validationSchemaProfile} from "../types/validationSchema";
 import {downloadFile, generateApplicationProgram, getUserData, handleSubmit} from "../axios/requests";
-import { useTranslation } from 'react-i18next';
+import {useTranslation} from 'react-i18next';
 
 const Profile: React.FC = () => {
-    const { t, i18n } = useTranslation(); // i18n hook for translations
+    const {t, i18n} = useTranslation();
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [errorUpdate, setErrorUpdate] = useState<string | null>(null);
@@ -75,7 +75,7 @@ const Profile: React.FC = () => {
                 roleDescription: "",
             },
         },
-        validationSchema: () => validationSchemaProfile(formik.values),
+        validationSchema: () => validationSchemaProfile(formik.values, localStorage.getItem('language') ? localStorage.getItem('language') : 'en'),
         onSubmit: async (values) => {
             try {
                 await handleSubmit(values, formik, setSuccess, setErrorUpdate);
@@ -256,16 +256,16 @@ const Profile: React.FC = () => {
                                 <Typography>
                                     {isBgLanguage ? t('profile.application', {
                                         index: index + 1,
-                                        specialtyName: t(`profile.specialties.${application.specialtyName}`, { defaultValue: application.specialtyName })
+                                        specialtyName: t(`profile.specialties.${application.specialtyName}`, {defaultValue: application.specialtyName})
                                     }) : `Application #${index + 1} - ${application.specialtyName}`}
                                 </Typography>
                             </AccordionSummary>
                             <AccordionDetails>
                                 <Typography color="textSecondary" gutterBottom>
-                                    {isBgLanguage ? t('profile.faculty', { facultyName: t(`profile.faculties.${application.facultyName}`, { defaultValue: application.facultyName }) }) : `Faculty: ${application.facultyName}`}
+                                    {isBgLanguage ? t('profile.faculty', {facultyName: t(`profile.faculties.${application.facultyName}`, {defaultValue: application.facultyName})}) : `Faculty: ${application.facultyName}`}
                                 </Typography>
                                 <Typography color="textSecondary">
-                                    {isBgLanguage ? t('profile.sent', { date: new Date(application.applicationSentDate).toLocaleDateString() }) : `Sent: ${new Date(application.applicationSentDate).toLocaleDateString()}`}
+                                    {isBgLanguage ? t('profile.sent', {date: new Date(application.applicationSentDate).toLocaleDateString()}) : `Sent: ${new Date(application.applicationSentDate).toLocaleDateString()}`}
                                 </Typography>
                                 <Box mt={1} mb={1}>
                                     <Chip
@@ -285,17 +285,17 @@ const Profile: React.FC = () => {
                                     whiteSpace: 'normal',
                                     maxWidth: '400px'
                                 }}>
-                                    {isBgLanguage ? t('profile.description', { description: application.applicationDescription }) : `Description: ${application.applicationDescription}`}
+                                    {isBgLanguage ? t('profile.description', {description: application.applicationDescription}) : `Description: ${application.applicationDescription}`}
                                 </Typography>
                                 <Typography>
-                                    {isBgLanguage ? t('profile.averageGrade', { avgGrade: application.avgGrade }) : `Average Grade: ${application.avgGrade}`}
+                                    {isBgLanguage ? t('profile.averageGrade', {avgGrade: application.avgGrade}) : `Average Grade: ${application.avgGrade}`}
                                 </Typography>
                                 {application.languageProficiencyTestResult &&
                                     <Typography>
-                                        {isBgLanguage ? t('profile.languageTest', { languageTest: application.languageProficiencyTestResult }) : `Language Test: ${application.languageProficiencyTestResult}`}
+                                        {isBgLanguage ? t('profile.languageTest', {languageTest: application.languageProficiencyTestResult}) : `Language Test: ${application.languageProficiencyTestResult}`}
                                     </Typography>}
                                 <Typography>
-                                    {isBgLanguage ? t('profile.standardizedTest', { standardizedTest: application.standardizedTestResult }) : `Standardized Test: ${application.standardizedTestResult}`}
+                                    {isBgLanguage ? t('profile.standardizedTest', {standardizedTest: application.standardizedTestResult}) : `Standardized Test: ${application.standardizedTestResult}`}
                                 </Typography>
                                 {application.letterOfRecommendation && (
                                     <Typography>
@@ -314,7 +314,7 @@ const Profile: React.FC = () => {
                                     whiteSpace: 'normal',
                                     maxWidth: '400px'
                                 }}>
-                                    {isBgLanguage ? t('profile.personalStatement', { personalStatement: application.personalStatement }) : `Personal Statement: ${application.personalStatement}`}
+                                    {isBgLanguage ? t('profile.personalStatement', {personalStatement: application.personalStatement}) : `Personal Statement: ${application.personalStatement}`}
                                 </Typography>
                                 <AttachedFilesMenu
                                     application={application}

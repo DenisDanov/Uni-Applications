@@ -1,3 +1,4 @@
+// src/i18n.ts
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import bgTranslations from './locales/bg/translation.json';
@@ -11,6 +12,8 @@ i18n
                 translation: bgTranslations
             }
         },
+        lng: localStorage.getItem('language') || 'bg', // Use stored language or default to 'bg'
+        fallbackLng: 'bg', // Fallback language
         interpolation: {
             escapeValue: false // React already does escaping
         }

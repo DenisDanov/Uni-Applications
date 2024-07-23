@@ -4,8 +4,9 @@ import { Link as RouterLink } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 
 const Home: React.FC = () => {
-    const { t, i18n } = useTranslation();
-    const isBgLanguage = i18n.language === 'bg'; // Check if the current language is Bulgarian
+    const { t } = useTranslation();
+    const language = localStorage.getItem('language') ? localStorage.getItem('language') : 'en';
+    const isBgLanguage = language === 'bg'; // Check if the current language is Bulgarian
 
     return (
         <Container>

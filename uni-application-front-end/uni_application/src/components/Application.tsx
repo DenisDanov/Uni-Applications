@@ -8,7 +8,9 @@ import {
     Typography,
     Alert,
     FormControl,
-    FormHelperText, Card, CardContent, Button, IconButton, InputLabel
+    FormHelperText,
+    Button,
+    IconButton
 } from '@mui/material';
 import {useFormik} from 'formik';
 import {Specialty} from "../types/Specialty";
@@ -26,8 +28,8 @@ import {LicenseInfo} from "@mui/x-license-pro";
 import {LoadingButton} from "@mui/lab";
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import {getFileIcon} from "../types/fileIcons";
-import DocumentUploadMenu from "./DocumentUploadMenu";
 import DeleteIcon from "@mui/icons-material/Delete";
+import {useTranslation} from 'react-i18next';
 
 LicenseInfo.setLicenseKey('e0d9bb8070ce0054c9d9ecb6e82cb58fTz0wLEU9MzI0NzIxNDQwMDAwMDAsUz1wcmVtaXVtLExNPXBlcnBldHVhbCxLVj0y');
 
@@ -50,6 +52,7 @@ const useFetchSpecialties = (facultyId: number | null): Specialty[] => {
 };
 
 const ApplicationForm: React.FC = () => {
+    const {t, i18n} = useTranslation(); // Initialize translation hook
     const dispatch = useDispatch<AppDispatch>();
     const {faculties} = useSelector((state: RootState) => state.faculties);
     const [selectedFacultyId, setSelectedFacultyId] = useState<number | null>(null);
@@ -97,7 +100,6 @@ const ApplicationForm: React.FC = () => {
             });
     }, [keycloak.tokenParsed?.preferred_username, formRequirements.isLanguageProficiencyRequired]);
 
-
     const formik = useFormik({
         initialValues: {
             specialtyId: 0,
@@ -111,12 +113,10 @@ const ApplicationForm: React.FC = () => {
             letterOfRecommendation: null as File | null,
             personalStatement: ''
         },
-        validationSchema: validationSchemaApplication(formRequirements),
+        validationSchema: validationSchemaApplication(formRequirements, localStorage.getItem('language') ? localStorage.getItem('language') : 'en'),
         onSubmit: (values) => {
-            console.log(formRequirements.isLetterOfRecommendationRequired);
-            console.log(values.letterOfRecommendation === null);
             if (formRequirements.isLetterOfRecommendationRequired && !values.letterOfRecommendation) {
-                setError('Please upload letter of recommendation');
+                setError(t('uploadLetterOfRecommendationError')); // Use translation
                 return;
             }
 
@@ -129,7 +129,7 @@ const ApplicationForm: React.FC = () => {
                 applicationSentDate: new Date(),
                 applicationStatus: {
                     applicationStatus: 'PENDING',
-                    applicationDescription: "Application under review by admissions committee"
+                    applicationDescription: t("applicationUnderReview") // Use translation
                 }
             };
 
@@ -144,10 +144,9 @@ const ApplicationForm: React.FC = () => {
 
             submitApplication(formData)
                 .then(() => {
-                    setSuccess("Application submitted successfully");
+                    setSuccess(t("applicationSubmittedSuccessfully"));
                     setTimeout(() => setSuccess(null), 5000);
                     const languageProficiencyResult = formik.values.languageProficiencyTestResult;
-                    console.log(languageProficiencyResult);
                     formik.resetForm();
                     formik.setFieldValue("languageProficiencyTestResult", languageProficiencyResult);
                     const selectedFaculty = faculties.find(faculty => faculty.id === values.facultyId);
@@ -164,7 +163,7 @@ const ApplicationForm: React.FC = () => {
                         return acc;
                     }, {}) || {};
                     formik.setErrors(serverErrors);
-                    setError(err.errors?.[0]?.message || "An error occurred.");
+                    setError(err.errors?.[0]?.message || t("errorOccurred")); // Use translation
                     setTimeout(() => setError(null), 5000);
                 }).finally(() => {
                 setLoading(false);
@@ -233,16 +232,50 @@ const ApplicationForm: React.FC = () => {
                     formik.setFieldValue('letterOfRecommendation', file);
                     setError(null);
                 } else {
-                    setError('Unsupported file type. Please upload a PDF, DOC, DOCX, or TXT file.');
+                    setError(t('unsupportedFileTypeError')); // Use translation
                     setTimeout(() => setError(null), 5000);
                 }
             }
         }
     };
 
+    const translateFaculty = (facultyName: string) => {
+        const translations = {
+            "Faculty of Computer Science": {
+                bg: "Факултет по компютърни науки"
+            },
+            "Faculty of Arts": {
+                bg: "Факултет по изкуства"
+            },
+            "Faculty of Medicine": {
+                bg: "Факултет по медицина"
+            }
+        };
+
+        // @ts-ignore
+        return translations[facultyName]?.[i18n.language] || facultyName;
+    };
+
+    const translateSpecialty = (specialtyName: string) => {
+        const translations = {
+            "Computer Engineering": {
+                bg: "Компютърно инженерство"
+            },
+            "Fine Arts": {
+                bg: "Изящни изкуства"
+            },
+            "Medical Doctor": {
+                bg: "Медицински доктор"
+            }
+        };
+
+        // @ts-ignore
+        return translations[specialtyName]?.[i18n.language] || specialtyName;
+    };
+
     return (
         <Box p={2}>
-            <Typography variant="h4" mb={2}>Student Application Form</Typography>
+            <Typography variant="h4" mb={2}>{t('studentApplicationFormTitle')}</Typography>
             {error && <Box mb={2}><Alert severity="error">{error}</Alert></Box>}
             {success && <Box mb={2}><Alert severity="success">{success}</Alert></Box>}
             <form onSubmit={formik.handleSubmit}>
@@ -257,9 +290,10 @@ const ApplicationForm: React.FC = () => {
                                 displayEmpty
                                 name="facultyId"
                             >
-                                <MenuItem value="" disabled>Select Faculty</MenuItem>
+                                <MenuItem value="" disabled>{t('selectFaculty')}</MenuItem>
                                 {faculties.map(faculty => (
-                                    <MenuItem key={faculty.id} value={faculty.id}>{faculty.facultyName}</MenuItem>
+                                    <MenuItem key={faculty.id}
+                                              value={faculty.id}>{translateFaculty(faculty.facultyName)}</MenuItem>
                                 ))}
                             </Select>
                             {formik.touched.facultyId && formik.errors.facultyId && (
@@ -279,10 +313,10 @@ const ApplicationForm: React.FC = () => {
                                     displayEmpty
                                     name="specialtyId"
                                 >
-                                    <MenuItem value="" disabled>Select Specialty</MenuItem>
+                                    <MenuItem value="" disabled>{t('selectSpecialty')}</MenuItem>
                                     {specialties.map(specialty => (
                                         <MenuItem key={specialty.id}
-                                                  value={specialty.id}>{specialty.specialtyName}</MenuItem>
+                                                  value={specialty.id}>{translateSpecialty(specialty.specialtyName)}</MenuItem>
                                     ))}
                                 </Select>
                                 {formik.touched.specialtyId && formik.errors.specialtyId && (
@@ -296,7 +330,7 @@ const ApplicationForm: React.FC = () => {
                             <Grid item xs={12}>
                                 <TextField
                                     fullWidth
-                                    label="Application Description"
+                                    label={t('applicationDescription')}
                                     name="applicationDescription"
                                     value={formik.values.applicationDescription}
                                     onChange={formik.handleChange}
@@ -310,7 +344,7 @@ const ApplicationForm: React.FC = () => {
                             <Grid item xs={12} sm={6}>
                                 <TextField
                                     fullWidth
-                                    label="Average Grade"
+                                    label={t('averageGrade')}
                                     name="avgGrade"
                                     type="number"
                                     value={formik.values.avgGrade}
@@ -324,7 +358,7 @@ const ApplicationForm: React.FC = () => {
                                 <Grid item xs={12} sm={6}>
                                     <TextField
                                         fullWidth
-                                        label="Language Proficiency Test Result"
+                                        label={t('languageProficiencyTestResult')}
                                         name="languageProficiencyTestResult"
                                         type="number"
                                         value={results.languageProficiencyTestResult ?? ''}
@@ -339,7 +373,7 @@ const ApplicationForm: React.FC = () => {
                             <Grid item xs={12} sm={6}>
                                 <TextField
                                     fullWidth
-                                    label="Standardized Test Result"
+                                    label={t('standardizedTestResult')}
                                     name="standardizedTestResult"
                                     type="number"
                                     value={results.standardizedTestResult ?? ''}
@@ -354,7 +388,7 @@ const ApplicationForm: React.FC = () => {
                                 <Grid item xs={12} sm={6}>
                                     <FormControl fullWidth>
                                         <TextField
-                                            label="Letter of Recommendation"
+                                            label={t('letterOfRecommendation')}
                                             fullWidth
                                             InputProps={{
                                                 readOnly: true,
@@ -372,18 +406,20 @@ const ApplicationForm: React.FC = () => {
                                                         {formik.values.letterOfRecommendation ? (
                                                             <>
                                                                 {getFileIcon(formik.values.letterOfRecommendation.name)}
-                                                                <Typography ml={1}>{formik.values.letterOfRecommendation.name}</Typography>
+                                                                <Typography
+                                                                    ml={1}>{formik.values.letterOfRecommendation.name}</Typography>
                                                                 <IconButton
                                                                     aria-label="delete"
                                                                     size="small"
                                                                     onClick={() => formik.setFieldValue('letterOfRecommendation', null)}
-                                                                    style={{ marginLeft: 'auto' }}
+                                                                    style={{marginLeft: 'auto'}}
                                                                 >
-                                                                    <DeleteIcon fontSize="inherit" />
+                                                                    <DeleteIcon fontSize="inherit"/>
                                                                 </IconButton>
                                                             </>
                                                         ) : (
-                                                            <Typography variant="body2" color="textSecondary">No file uploaded</Typography>
+                                                            <Typography variant="body2"
+                                                                        color="textSecondary">{t('noFileUploaded')}</Typography>
                                                         )}
                                                     </Box>
                                                 ),
@@ -393,9 +429,9 @@ const ApplicationForm: React.FC = () => {
                                                             variant="contained"
                                                             component="label"
                                                             color="primary"
-                                                            startIcon={<UploadFileIcon />}
+                                                            startIcon={<UploadFileIcon/>}
                                                         >
-                                                            Upload
+                                                            {t('upload')}
                                                             <input
                                                                 type="file"
                                                                 hidden
@@ -407,7 +443,7 @@ const ApplicationForm: React.FC = () => {
                                                 ),
                                             }}
                                             InputLabelProps={{
-                                                shrink: true, // Ensures the label is always in the floating position
+                                                shrink: true,
                                             }}
                                         />
                                     </FormControl>
@@ -417,7 +453,7 @@ const ApplicationForm: React.FC = () => {
                                 <Grid item xs={12} sm={6}>
                                     <TextField
                                         fullWidth
-                                        label="Personal Statement"
+                                        label={t('personalStatement')}
                                         name="personalStatement"
                                         value={formik.values.personalStatement}
                                         onChange={formik.handleChange}
@@ -437,7 +473,7 @@ const ApplicationForm: React.FC = () => {
                                     loadingPosition="start"
                                     startIcon={<UploadFileIcon/>}
                                 >
-                                    Submit Application
+                                    {t('submitApplication')}
                                 </LoadingButton>
                             </Grid>
                         </>

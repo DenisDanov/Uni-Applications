@@ -19,6 +19,7 @@ public class CorsConfig {
         config.getAllowedOrigins().addAll(List.of("http://localhost:5173", "http://localhost:5174"));
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
+        config.addExposedHeader("Content-Disposition");
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);

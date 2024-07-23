@@ -1,6 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import moment from 'moment';
-import Countdown, {zeroPad} from 'react-countdown';
+import Countdown, { zeroPad } from 'react-countdown';
 import {
     Button,
     Card,
@@ -16,19 +16,21 @@ import {
     FormLabel,
     Container,
 } from '@mui/material';
-import {axiosClientDefault} from '../axios/axiosClient';
-import {useKeycloak} from '../keycloak';
-import {StudentsRequirementsResultsDTO} from '../types/StudentRequirementsResultsDTO';
-import {languageProficiencyQuestions} from '../types/LanguageProficiencyTestQuestions';
-import {entranceExamQuestions} from '../types/StandartTestQuestions';
+import { axiosClientDefault } from '../axios/axiosClient';
+import { useKeycloak } from '../keycloak';
+import { StudentsRequirementsResultsDTO } from '../types/StudentRequirementsResultsDTO';
+import { languageProficiencyQuestions } from '../types/LanguageProficiencyTestQuestions';
+import { entranceExamQuestions } from '../types/StandartTestQuestions';
+import { useTranslation } from 'react-i18next';
 
 const RequirementsTests: React.FC = () => {
+    const { t, i18n } = useTranslation(); // Use i18next for translation
     const [results, setResults] = useState<StudentsRequirementsResultsDTO | null>(null);
     const [languageTestOpen, setLanguageTestOpen] = useState(false);
     const [standardTestOpen, setStandardTestOpen] = useState(false);
     const [deadline, setDeadline] = useState<Date | null>(null);
     const [answers, setAnswers] = useState<number[]>([]);
-    const {keycloak} = useKeycloak();
+    const { keycloak } = useKeycloak();
     const [testName, setTestName] = useState<string | null>(null);
     const [submissionError, setSubmissionError] = useState<string | null>(null);
     const [submissionSuccess, setSubmissionSuccess] = useState<string | null>(null);
@@ -51,7 +53,7 @@ const RequirementsTests: React.FC = () => {
         axiosClientDefault
             .get(`/test/get/${keycloak.tokenParsed?.preferred_username}`)
             .then((response) => {
-                const {answers, testStartTime, testName} = response.data;
+                const { answers, testStartTime, testName } = response.data;
                 if (answers !== null && testStartTime !== null && testName !== null) {
                     setTestName(testName);
                     setAnswers(answers);
@@ -93,7 +95,7 @@ const RequirementsTests: React.FC = () => {
     const handleStartTest = (testType: 'language' | 'standard') => {
         const startTime = new Date();
         setAnswers(new Array(languageProficiencyQuestions.length).fill(-1));
-        const deadline = moment(startTime).add(1, 'minute').subtract(1, "second").toDate();
+        const deadline = moment(startTime).add(1, 'hour').subtract(1, "second").toDate();
         setDeadline(deadline);
         setTestName(testType);
         if (testType === 'language') {
@@ -116,12 +118,12 @@ const RequirementsTests: React.FC = () => {
             .then((response) => {
                 console.log('Test submitted:', response.data);
                 setResults(response.data);
-                setSubmissionSuccess("Test submitted, you can check your result from the profile page.")
+                setSubmissionSuccess(t('testSubmittedSuccess'))
                 setTimeout(() => setSubmissionSuccess(null), 5000);
             })
             .catch((error) => {
                 console.error('Error submitting test:', error);
-                setSubmissionError("Error submitting test: " + error);
+                setSubmissionError(t('errorSubmittingTest') + error);
                 setTimeout(() => setSubmissionError(null), 5000);
             });
     };
@@ -132,7 +134,7 @@ const RequirementsTests: React.FC = () => {
         // Check if all questions are answered
         const unansweredQuestions = answers.includes(-1);
         if (unansweredQuestions) {
-            setSubmissionError("You must answer all the questions before submitting the test.");
+            setSubmissionError(t('mustAnswerAllQuestions'));
             setTimeout(() => setSubmissionError(null), 5000);
             return;
         }
@@ -147,7 +149,7 @@ const RequirementsTests: React.FC = () => {
             .then((response) => {
                 console.log('Test submitted:', response.data);
                 setResults(response.data);
-                setSubmissionSuccess("Test submitted, you can check your result from the profile page.")
+                setSubmissionSuccess(t('testSubmittedSuccess'))
                 if (languageTestOpen) {
                     setLanguageTestOpen(false);
                 } else {
@@ -157,26 +159,21 @@ const RequirementsTests: React.FC = () => {
             })
             .catch((error) => {
                 console.error('Error submitting test:', error);
-                setSubmissionError("Error submitting test: " + error);
+                setSubmissionError(t('errorSubmittingTest') + error);
                 setTimeout(() => setSubmissionError(null), 5000);
             });
     };
 
     const computeTestResult = (answers: number[]) => {
         let correctAnswers = 0;
-        if (testName === 'language') {
-            languageProficiencyQuestions.forEach((question, index) => {
-                if (answers[index] === question.correctAnswer) {
-                    correctAnswers += 1;
-                }
-            });
-        } else {
-            entranceExamQuestions.forEach((question, index) => {
-                if (answers[index] === question.correctAnswer) {
-                    correctAnswers += 1;
-                }
-            });
-        }
+        const questions = testName === 'language' ? languageProficiencyQuestions : entranceExamQuestions;
+
+        questions.forEach((question, index) => {
+            if (answers[index] === question.correctAnswer) {
+                correctAnswers += 1;
+            }
+        });
+
         return correctAnswers;
     };
 
@@ -187,22 +184,30 @@ const RequirementsTests: React.FC = () => {
         saveTestState(newAnswers, true, deadline, testName);
     };
 
-    const renderCountdown = ({minutes, seconds, completed}: any) => {
+    const renderCountdown = ({ minutes, seconds, completed }: any) => {
         if (completed) {
             handleTimeExpired();
-            return <Alert severity="error">Time expired</Alert>;
+            return <Alert severity="error">{t('timeExpired')}</Alert>;
         } else {
             return (
                 <Typography variant="body2" align="center">
-                    Time Remaining: {zeroPad(minutes)}:{zeroPad(seconds)}
+                    {t('timeRemaining')}: {zeroPad(minutes)}:{zeroPad(seconds)}
                 </Typography>
             );
         }
     };
 
+    const getQuestionText = (question: any) => {
+        return question[i18n.language] || question.en;
+    };
+
+    const getOptionText = (option: any) => {
+        return option[i18n.language] || option.en;
+    };
+
     return (
-        <Container sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh'}}>
-            <Box sx={{width: '100%', maxWidth: 600}}>
+        <Container sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
+            <Box sx={{ width: '100%', maxWidth: 600 }}>
                 {submissionError && (
                     <Alert severity="error">{submissionError}</Alert>
                 )}
@@ -212,16 +217,16 @@ const RequirementsTests: React.FC = () => {
                 {results && (
                     <>
                         {results.languageProficiencyTestResult === null && (
-                            <Card sx={{mb: 2}}>
+                            <Card sx={{ mb: 2 }}>
                                 <CardContent>
-                                    <Typography variant="h5" align="center">Language Proficiency Test</Typography>
+                                    <Typography variant="h5" align="center">{t('languageProficiencyTest')}</Typography>
                                     {!languageTestOpen ? (
-                                        <Box sx={{textAlign: 'center'}}>
-                                            <Typography variant="body2">Time to complete: 1 hr</Typography>
+                                        <Box sx={{ textAlign: 'center' }}>
+                                            <Typography variant="body2">{t('timeToComplete')}: 1 hr</Typography>
                                             <Button id={'start-language-test'} variant="contained" color="primary"
                                                     disabled={standardTestOpen}
                                                     onClick={() => handleStartTest('language')}>
-                                                Start Test
+                                                {t('startTest')}
                                             </Button>
                                         </Box>
                                     ) : (
@@ -233,7 +238,7 @@ const RequirementsTests: React.FC = () => {
                                                 />
                                                 <FormControl component="fieldset" fullWidth>
                                                     {languageProficiencyQuestions.map((q, index) => (
-                                                        <Box key={index} sx={{mt: 2}}>
+                                                        <Box key={index} sx={{ mt: 2 }}>
                                                             <FormLabel component="legend">{q.question}</FormLabel>
                                                             <RadioGroup
                                                                 value={answers[index]}
@@ -241,14 +246,14 @@ const RequirementsTests: React.FC = () => {
                                                             >
                                                                 {q.options.map((option, i) => (
                                                                     <FormControlLabel key={i} value={i}
-                                                                                      control={<Radio/>}
-                                                                                      label={option}/>
+                                                                                      control={<Radio />}
+                                                                                      label={option} />
                                                                 ))}
                                                             </RadioGroup>
                                                         </Box>
                                                     ))}
                                                 </FormControl>
-                                                <Box sx={{textAlign: 'center', mt: 2}}>
+                                                <Box sx={{ textAlign: 'center', mt: 2 }}>
                                                     <Button
                                                         variant="contained"
                                                         color="secondary"
@@ -256,10 +261,10 @@ const RequirementsTests: React.FC = () => {
                                                         // @ts-ignore
                                                         disabled={deadline && new Date() > deadline}
                                                     >
-                                                        Submit
+                                                        {t('submit')}
                                                     </Button>
                                                     {deadline && new Date() > deadline &&
-                                                        <Alert severity="error">Time expired</Alert>}
+                                                        <Alert severity="error">{t('timeExpired')}</Alert>}
                                                 </Box>
                                             </Box>
                                         </Collapse>
@@ -270,14 +275,14 @@ const RequirementsTests: React.FC = () => {
                         {results.standardizedTestResult === null && (
                             <Card>
                                 <CardContent>
-                                    <Typography variant="h5" align="center">Standardized Test</Typography>
+                                    <Typography variant="h5" align="center">{t('standardizedTest')}</Typography>
                                     {!standardTestOpen ? (
-                                        <Box sx={{textAlign: 'center'}}>
-                                            <Typography variant="body2">Time to complete: 1 hr</Typography>
+                                        <Box sx={{ textAlign: 'center' }}>
+                                            <Typography variant="body2">{t('timeToComplete')}: 1 hr</Typography>
                                             <Button id={'start-standard-test'} variant="contained" color="primary"
                                                     disabled={languageTestOpen}
                                                     onClick={() => handleStartTest('standard')}>
-                                                Start Test
+                                                {t('startTest')}
                                             </Button>
                                         </Box>
                                     ) : (
@@ -289,29 +294,29 @@ const RequirementsTests: React.FC = () => {
                                                 />
                                                 <FormControl component="fieldset" fullWidth>
                                                     {entranceExamQuestions.map((q, index) => (
-                                                        <Box key={index} sx={{mt: 2}}>
-                                                            <FormLabel component="legend">{q.question}</FormLabel>
+                                                        <Box key={index} sx={{ mt: 2 }}>
+                                                            <FormLabel component="legend">{getQuestionText(q.question)}</FormLabel>
                                                             <RadioGroup
                                                                 value={answers[index]}
                                                                 onChange={(e) => handleAnswerChange(index, parseInt(e.target.value))}
                                                             >
                                                                 {q.options.map((option, i) => (
                                                                     <FormControlLabel key={i} value={i}
-                                                                                      control={<Radio/>}
-                                                                                      label={option}/>
+                                                                                      control={<Radio />}
+                                                                                      label={getOptionText(option)} />
                                                                 ))}
                                                             </RadioGroup>
                                                         </Box>
                                                     ))}
                                                 </FormControl>
-                                                <Box sx={{textAlign: 'center', mt: 2}}>
+                                                <Box sx={{ textAlign: 'center', mt: 2 }}>
                                                     <Button variant="contained" color="secondary" onClick={handleSubmit}
-                                                        // @ts-ignore
+                                                            // @ts-ignore
                                                             disabled={deadline && new Date() > deadline}>
-                                                        Submit
+                                                        {t('submit')}
                                                     </Button>
                                                     {deadline && new Date() > deadline &&
-                                                        <Alert severity="error">Time expired</Alert>}
+                                                        <Alert severity="error">{t('timeExpired')}</Alert>}
                                                 </Box>
                                             </Box>
                                         </Collapse>
@@ -320,8 +325,7 @@ const RequirementsTests: React.FC = () => {
                             </Card>
                         )}
                         {(results.languageProficiencyTestResult !== null && results.standardizedTestResult !== null) &&
-                            <Alert severity="success">You have successfully completed all tests. Check your results on
-                                the profile page.</Alert>
+                            <Alert severity="success">{t('allTestsCompleted')}</Alert>
                         }
                     </>
                 )}

@@ -3,11 +3,13 @@ import { useSelector, useDispatch } from "react-redux";
 import { selectSelectedFileNames, removeFile, addFiles } from "../slices/fileSlice";
 import { Description, PictureAsPdf, Delete } from "@mui/icons-material";
 import { Box, Button, Grid, List, ListItem, ListItemIcon, ListItemText, IconButton, Paper, Typography } from "@mui/material";
+import { useTranslation } from 'react-i18next';
 
 const FileUpload: React.FC<{
     handleFileChange: (event: React.ChangeEvent<HTMLInputElement>) => void,
     error?: (message: string | null) => void
 }> = ({ handleFileChange, error }) => {
+    const { t, i18n } = useTranslation();
     const dispatch = useDispatch();
     const selectedFileNames = useSelector(selectSelectedFileNames);
 
@@ -42,7 +44,7 @@ const FileUpload: React.FC<{
             if (filteredFiles.length !== newFiles.length) {
                 // Call the error function passed from the parent
                 if (error) {
-                    error('Unsupported file type. Please upload a PDF, DOC, DOCX, or TXT file.');
+                    error(t('unsupportedFileTypeError'));
                     setTimeout(() => error(null), 5000);
                 }
             } else {
@@ -70,11 +72,11 @@ const FileUpload: React.FC<{
                 hidden
             />
             <label htmlFor="file-input">
-                <Button variant="contained" component="span">Upload additional documents</Button>
+                <Button variant="contained" component="span">{t('uploadAdditionalDocuments')}</Button>
             </label>
             {selectedFileNames.length > 0 ? (
                 <Box mt={2}>
-                    <Typography variant="body1">Selected Files:</Typography>
+                    <Typography variant="body1">{t('selectedFiles')}:</Typography>
                     <List component={Paper}>
                         {selectedFileNames.map((fileName, index) => (
                             <Box key={index} mb={1}>
@@ -93,7 +95,7 @@ const FileUpload: React.FC<{
                     </List>
                 </Box>
             ) : (
-                <Typography style={{ marginTop: '5px' }} variant="body1">No uploaded files.</Typography>
+                <Typography style={{ marginTop: '5px' }} variant="body1">{t('noUploadedFiles')}</Typography>
             )}
         </Grid>
     );

@@ -1,3 +1,4 @@
+// src/components/LanguageSwitcher.tsx
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Menu, MenuItem, IconButton, Tooltip } from '@mui/material';
@@ -16,6 +17,7 @@ const LanguageSwitcher: React.FC = () => {
     };
 
     const handleLanguageChange = (lang: string) => {
+        localStorage.setItem('language', lang); // Save language to localStorage
         i18n.changeLanguage(lang);
         handleClose();
     };
@@ -38,8 +40,8 @@ const LanguageSwitcher: React.FC = () => {
                     },
                 }}
             >
-                <MenuItem onClick={() => handleLanguageChange('en')}>EN</MenuItem>
                 <MenuItem onClick={() => handleLanguageChange('bg')}>BG</MenuItem>
+                <MenuItem onClick={() => handleLanguageChange('en')}>EN</MenuItem>
             </Menu>
         </div>
     );

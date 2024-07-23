@@ -40,6 +40,9 @@
     "middleName": "Средно име",
     "lastName": "Фамилно име",
     "phoneNumber": "Телефонен номер",
+    "status": {
+      "PENDING": "В процес на изчакване"
+    },
     "accountType": "Тип акаунт",
     "accessLevel": "Ниво на достъп",
     "saveChanges": "Запази промените",
@@ -53,7 +56,7 @@
     "standardizedTest": "Стандартизиран тест: {{standardizedTest}}",
     "recommendationLetter": "Препоръчително писмо:",
     "download": "Изтегли",
-    "personalStatement": "Лична декларация: {{personalStatement}}",
+    "personalStatement": "Мотивационно писмо: {{personalStatement}}",
     "downloadProgram": "Изтегли учебна програма",
     "noApplications": "Няма заявления за показване.",
     "specialties": {
@@ -66,5 +69,186 @@
       "Faculty of Arts": "Факултет по изящни изкуства",
       "Faculty of Medicine": "Факултет по медицина"
     }
-  }
+  },
+  "loading": "Зареждане...",
+  "error": "Грешка",
+  "faculty": {
+    "subjectsHeader": "Предмети",
+    "teachers": {
+      "Dr. Smith": "Д-р Смит",
+      "Prof. Johnson": "Проф. Джонсън",
+      "Ms. Williams": "Г-жа Уилямс"
+    },
+    "Faculty of Computer Science": {
+      "title": "Факултет по компютърни науки",
+      "description": "Факултетът по компютърни науки предлага обширна програма по компютърни науки и инженерство.",
+      "establishedOn": "Учреден на",
+      "totalNumberStudents": "Общо студенти",
+      "subjects": {
+        "Computer Science": "Компютърни науки",
+        "Introduction to computer science and programming": "Въведение в компютърните науки и програмирането"
+      },
+      "specialties": {
+        "Computer Engineering": "Компютърно инженерство",
+        "Study of hardware and software systems": "Изучаване на хардуерни и софтуерни системи"
+      },
+      "employmentRate": "Процент на заетост: 85.5%",
+      "degreeType": "Степен: бакалавър",
+      "accreditation": "Акредитация: ABET - Пълна акредитация",
+      "programDuration": "Продължителност на програмата: 2022-09-01 до 2026-06-30",
+      "totalCreditsRequired": "Общо кредити: 120",
+      "standardizedTestMinResult": "Минимален резултат от стандартизиран тест: 70",
+      "languageProficiencyTestMinResult": "Минимален резултат от тест за езикова компетентност: 70",
+      "minimumGrade": "Минимална оценка: 3",
+      "requirementDetails": "Изисквания: Минимална оценка от 3.0",
+      "personalStatementRequired": "Мотивационно писмо: да",
+      "letterOfRecommendationRequired": "Препоръчително писмо: да"
+    },
+    "Faculty of Arts": {
+      "title": "Факултет по изкуства",
+      "description": "Факултетът по изкуства предлага разнообразие от курсове в областта на изобразителното изкуство и креативността.",
+      "establishedOn": "Учреден на",
+      "totalNumberStudents": "Общо студенти",
+      "subjects": {
+        "Drawing": "Рисуване",
+        "Fundamentals of drawing and sketching": "Основи на рисуването и скицирането"
+      },
+      "specialties": {
+        "Fine Arts": "Изящни изкуства",
+        "Creative arts and visual expression": "Креативни изкуства и визуално изразяване"
+      },
+      "employmentRate": "Процент на заетост: 70.2%",
+      "degreeType": "Степен: бакалавър",
+      "accreditation": "Акредитация: AACSB - Статус на акредитация в процес на получаване",
+      "programDuration": "Продължителност на програмата: 2023-01-15 до 2025-12-20",
+      "totalCreditsRequired": "Общо кредити: 90",
+      "standardizedTestMinResult": "Минимален резултат от стандартизиран тест: 50",
+      "languageProficiencyTestMinResult": "Минимален резултат от тест за езикова компетентност: 60",
+      "minimumGrade": "Минимална оценка: 4",
+      "requirementDetails": "Изисквания: Минимална оценка от 4.0",
+      "personalStatementRequired": "Мотивационно писмо: да",
+      "letterOfRecommendationRequired": "Препоръчително писмо: не"
+    },
+    "Faculty of Medicine": {
+      "title": "Факултет по медицина",
+      "description": "Факултетът по медицина предоставя обучение в областта на медицината и клиничното обучение.",
+      "establishedOn": "Учреден на",
+      "totalNumberStudents": "Общо студенти",
+      "subjects": {
+        "Anatomy": "Анатомия",
+        "Study of the structure of living organisms": "Изучаване на структурата на живите организми"
+      },
+      "specialties": {
+        "Medical Doctor": "Медицински доктор",
+        "Medical education and clinical training": "Медицинско образование и клинично обучение"
+      },
+      "employmentRate": "Процент на заетост: 95%",
+      "degreeType": "Степен: магистър",
+      "accreditation": "Акредитация: LCME - Програмата не е акредитирана",
+      "programDuration": "Продължителност на програмата: 2021-08-20 до 2024-05-30",
+      "totalCreditsRequired": "Общо кредити: 180",
+      "standardizedTestMinResult": "Минимален резултат от стандартизиран тест: 60",
+      "languageProficiencyTestMinResult": "Минимален резултат от тест за езикова компетентност: не се изисква",
+      "minimumGrade": "Минимална оценка: 3.5",
+      "requirementDetails": "Изисквания: Минимална оценка от 3.5",
+      "personalStatementRequired": "Мотивационно писмо: да",
+      "letterOfRecommendationRequired": "Препоръчително писмо: да"
+    },
+    "teachersHeader": "Учители",
+    "specialties": "Специалности",
+    "employmentRate": "Процент на заетост",
+    "degreeType": "Степен",
+    "accreditation": "Акредитация",
+    "programDuration": "Продължителност на програмата",
+    "totalCreditsRequired": "Общо кредити",
+    "standardizedTestMinResult": "Минимален резултат от стандартизиран тест",
+    "languageProficiencyTestMinResult": "Минимален резултат от тест за езикова компетентност",
+    "minimumGrade": "Минимална оценка",
+    "requirementDetails": "Изисквания",
+    "personalStatementRequired": "Мотивационно писмо",
+    "letterOfRecommendationRequired": "Препоръчително писмо",
+    "yes": "да",
+    "no": "не"
+  },
+  "specialties": {
+    "Computer Engineering": {
+      "title": "Компютърно инженерство",
+      "description": "Изучаване на хардуерни и софтуерни системи",
+      "degreeType": "Бакалавър",
+      "degreeTypeType": "BACHELOR",
+      "accreditation": "ABET - Пълна акредитация",
+      "subjects": {
+        "Computer Science": "Компютърни науки",
+        "Introduction to computer science and programming": "Въведение в компютърните науки и програмирането"
+      },
+      "requirementDetails": "Минимална оценка от 3.0"
+    },
+    "Fine Arts": {
+      "title": "Изящни изкуства",
+      "description": "Креативни изкуства и визуално изразяване",
+      "degreeType": "Бакалавър",
+      "degreeTypeType": "BACHELOR",
+      "accreditation": "AACSB - Акредитация в процес на получаване",
+      "subjects": {
+        "Drawing": "Рисуване",
+        "Fundamentals of drawing and sketching": "Основи на рисуването и скицирането"
+      },
+      "requirementDetails": "Минимална оценка от 4.0"
+    },
+    "Medical Doctor": {
+      "title": "Медицински доктор",
+      "description": "Медицинско образование и клинично обучение",
+      "degreeType": "Магистър",
+      "degreeTypeType": "MASTER",
+      "accreditation": "LCME - Програмата не е акредитирана",
+      "subjects": {
+        "Anatomy": "Анатомия",
+        "Study of the structure of living organisms": "Изучаване на структурата на живите организми"
+      },
+      "requirementDetails": "Минимална оценка от 3.5"
+    },
+    "subjectsHeader": "Предмети",
+    "employmentRate": "Процент на заетост",
+    "degreeType": "Степен",
+    "accreditation": "Акредитация",
+    "programDuration": "Продължителност на програмата",
+    "totalCreditsRequired": "Общо кредити",
+    "standardizedTestMinResult": "Минимален резултат от стандартизиран тест",
+    "languageProficiencyTestMinResult": "Минимален резултат от тест за езикова компетентност",
+    "minimumGrade": "Минимална оценка",
+    "requirementDetails": "Изисквания",
+    "personalStatementRequired": "Мотивационно писмо",
+    "letterOfRecommendationRequired": "Препоръчително писмо"
+  },
+  "yes": "да",
+  "no": "не",
+  "attachedFiles": "Прикачени файлове",
+  "studentApplicationFormTitle": "Формуляр за кандидатстване на студенти",
+  "selectFaculty": "Изберете факултет",
+  "selectSpecialty": "Изберете специалност",
+  "applicationDescription": "Описание на кандидатурата",
+  "averageGrade": "Средна оценка",
+  "languageProficiencyTestResult": "Резултат от тест за езикова квалификация",
+  "standardizedTestResult": "Резултат от стандартизиран тест",
+  "letterOfRecommendation": "Препоръчително писмо",
+  "personalStatement": "Мотивационно писмо",
+  "upload": "Качване",
+  "noFileUploaded": "Няма качен файл",
+  "submitApplication": "Подайте кандидатурата",
+  "unsupportedFileTypeError": "Неподдържан тип файл. Моля, качете PDF, DOC, DOCX или TXT файл.",
+  "uploadAdditionalDocuments": "Качване на допълнителни документи",
+  "selectedFiles": "Избрани файлове",
+  "noUploadedFiles": "Няма качени файлове.",
+  "applicationSubmittedSuccessfully": "Заявлението ви беше изпратено успешно.",
+  "languageProficiencyTest": "Тест за езикова компетентност",
+  "standardizedTest": "Стандартизиран тест",
+  "startTest": "Започни теста",
+  "timeToComplete": "Време за завършване: 1 ч",
+  "submit": "Изпрати",
+  "timeRemaining": "Оставащо време",
+  "timeExpired": "Изтекло време",
+  "testSubmitted": "Тестът е изпратен, можете да проверите резултата си на страницата на профила.",
+  "testSubmissionError": "Грешка при изпращането на теста: ",
+  "unansweredQuestionsError": "Трябва да отговорите на всички въпроси преди да изпратите теста.",
+  "completedAllTests": "Успешно сте завършили всички тестове. Проверете резултатите си на страницата на профила."
 }

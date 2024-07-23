@@ -31,6 +31,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static bg.duosoft.uniapplicationdemo.util.DetermineFileTypeUtil.detectFileType;
+import static bg.duosoft.uniapplicationdemo.util.DetermineFileTypeUtil.getFileExtension;
+
 @RestController
 @RequestMapping("api/v1/files")
 @RequiredArgsConstructor
@@ -48,25 +51,29 @@ public class FileController {
 
     private final TeacherService teacherService;
 
-    @GetMapping("/download-file/test/{username}/{facultyName}/{specialtyName}")
-    public ResponseEntity<InputStreamResource> downloadFileTest(@PathVariable String username, @PathVariable String facultyName, @PathVariable String specialtyName) {
+    @GetMapping("/download-file/{username}/{facultyName}/{courseName}")
+    public ResponseEntity<InputStreamResource> downloadFileTest(@PathVariable String username, @PathVariable String facultyName, @PathVariable String courseName) {
         try {
             // Retrieve the byte array from the database
-            byte[] fileData = studentApplicationService.findByStudentUsernameAndFacultyAndSpecialty(username, facultyName, specialtyName)
+            byte[] fileData = studentApplicationService.findByStudentUsernameAndFacultyAndSpecialty(username, facultyName, courseName)
                     .get(0)
                     .getLetterOfRecommendation();
+
+            // Detect the file type
+            String contentType = detectFileType(fileData);
 
             // Convert the byte array to InputStream
             InputStream inputStream = new ByteArrayInputStream(fileData);
 
             // Set the headers for file download
             HttpHeaders headers = new HttpHeaders();
-            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"letter_of_recommendation.pdf\"");
+            headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"recommendation_letter." + getFileExtension(contentType) + "\"");
+            headers.add("X-File-Type", contentType);  // Custom header to include the file type
 
             // Return the file as an InputStreamResource
             return ResponseEntity.ok()
                     .headers(headers)
-                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .contentType(MediaType.parseMediaType(contentType))
                     .body(new InputStreamResource(inputStream));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);

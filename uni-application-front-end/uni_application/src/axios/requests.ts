@@ -14,15 +14,25 @@ export const getSpecialtiesByFaculty = async (facultyId: number): Promise<Specia
 
 export const downloadFile = async (application: any) => {
     try {
-        const response = await axiosClientDefault.get(`files/download-file/test/${application.username}/${application.facultyName}/${application.specialtyName}`, {
+        // Send the request to download the file
+        const response = await axiosClientDefault.get(`files/download-file/${application.username}/${application.facultyName}/${application.specialtyName}`, {
             responseType: 'blob', // Important to get the file as a Blob
+            headers: {
+                'Accept': 'application/octet-stream' // Ensure the server knows we expect a file
+            }
         });
 
+        // Extract filename from Content-Disposition header
+        const dispositionHeader = response.headers['content-disposition'];
+        const fileNameMatch = dispositionHeader && dispositionHeader.match(/filename="(.+)"/);
+        const fileName = fileNameMatch[1]; // Default filename if not found
+
         // Create a URL for the file and link it
-        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const fileType = 'application/octet-stream'; // Fallback to octet-stream
+        const url = window.URL.createObjectURL(new Blob([response.data], { type: fileType }));
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', 'letter_of_recommendation.pdf'); // Set the file name
+        link.setAttribute('download', fileName); // Set the filename from the header
         document.body.appendChild(link);
         link.click();
 

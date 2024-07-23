@@ -1,45 +1,53 @@
 import * as Yup from 'yup';
+import {translations} from "./validationSchemaTranslations";
 
-export const validationSchemaProfile = (values: any) => {
+export const validationSchemaProfile = (values: any, language: string | null) => {
+    // @ts-ignore
+    const t = translations[language ? language : 'en'];
+
     return Yup.object().shape({
         username: Yup.string()
-            .required("Username cannot be empty.")
-            .max(255, "Username cannot exceed 255 characters."),
+            .required(t.usernameRequired)
+            .max(255, t.usernameMax),
         email: Yup.string()
-            .matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, "Invalid email format.")
-            .required("Email is required."),
+            .matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, t.emailInvalid)
+            .required(t.emailRequired),
         firstName: Yup.string()
-            .required("First name cannot be empty.")
-            .max(255, "First name cannot exceed 255 characters.")
-            .matches(/^[^0-9]*$/, "First name cannot contain numbers."),
+            .required(t.firstNameRequired)
+            .max(255, t.firstNameMax)
+            .matches(/^[^0-9]*$/, t.firstNameNoNumbers),
         middleName: Yup.string()
-            .max(255, "Middle name cannot exceed 255 characters.")
-            .matches(/^[^0-9]*$/, "Middle name cannot contain numbers."),
+            .required(t.firstNameRequired)
+            .max(255, t.middleNameMax)
+            .matches(/^[^0-9]*$/, t.middleNameNoNumbers),
         lastName: Yup.string()
-            .required("Last name cannot be empty.")
-            .max(255, "Last name cannot exceed 255 characters.")
-            .matches(/^[^0-9]*$/, "Last name cannot contain numbers."),
+            .required(t.lastNameRequired)
+            .max(255, t.lastNameMax)
+            .matches(/^[^0-9]*$/, t.lastNameNoNumbers),
         dateOfBirth: values.roleDTO.role === 'STUDENT' ?
-            Yup.date().required("Date of birth cannot be empty.") : Yup.date().nullable(),
+            Yup.date().required(t.dateOfBirthRequired) : Yup.date().nullable(),
         phoneNumber: values.roleDTO.role === 'STUDENT' ?
             Yup.string()
-                .required("Phone number cannot be empty.")
-                .matches(/^(\+?[1-9]\d{1,14}$|^\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}$)/, "Invalid phone number format.")
+                .required(t.phoneNumberRequired)
+                .matches(/^(\+?[1-9]\d{1,14}$|^\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}$)/, t.phoneNumberInvalid)
             : Yup.string().nullable(),
     });
 };
 
-export const validationSchemaApplication = (formRequirements: any) => {
+export const validationSchemaApplication = (formRequirements: any, language: string | null) => {
+    // @ts-ignore
+    const t = translations[language ? language : 'en'];
+
     return Yup.object().shape({
-        facultyId: Yup.number().required('Faculty is required.').min(1, 'Please select faculty.'),
-        applicationDescription: Yup.string().required('Application Description is required.'),
-        avgGrade: Yup.number().required('Average Grade is required.').min(3, 'Average Grade must be at least 3.').max(6, "Average Grade must not exceed 6."),
+        facultyId: Yup.number().required(t.facultyRequired).min(1, t.facultyMin),
+        applicationDescription: Yup.string().required(t.applicationDescriptionRequired),
+        avgGrade: Yup.number().required(t.avgGradeRequired).min(3, t.avgGradeMin).max(6, t.avgGradeMax),
         languageProficiencyTestResult: formRequirements.isLanguageProficiencyRequired
-            ? Yup.string().required("You need to complete the Language Proficiency Test before applying.")
+            ? Yup.string().required(t.languageProficiencyRequired)
             : Yup.string().nullable(),
-        standardizedTestResult: Yup.number().required('Standardized Test Result is required.').min(0,'You need to complete the Standardized Test before applying.'),
+        standardizedTestResult: Yup.number().required(t.standardizedTestRequired).min(0, t.standardizedTestMin),
         personalStatement: formRequirements.isPersonalStatementRequired
-            ? Yup.string().required('Personal Statement is required.')
+            ? Yup.string().required(t.personalStatementRequired)
             : Yup.string().nullable(),
     });
 };

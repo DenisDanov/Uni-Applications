@@ -1,11 +1,13 @@
-import {configureStore} from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
 import fileReducer from './slices/fileSlice';
 import facultyReducer from './slices/facultySlice';
+import languageReducer from './slices/languageSlice';
 
 const store = configureStore({
     reducer: {
         faculties: facultyReducer,
         file: fileReducer,
+        language: languageReducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
