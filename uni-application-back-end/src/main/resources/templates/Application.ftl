@@ -80,11 +80,11 @@
     </tr>
     <tr>
         <th>Letter of Recommendation</th>
-        <td>${application.letterOfRecommendation?has_content?then(application.letterOfRecommendation, "N/A")?html}</td>
+        <td>${application.letterOfRecommendation?has_content?then('Provided', "N/A")?html}</td>
     </tr>
     <tr>
         <th>Personal Statement</th>
-        <td>${application.personalStatement!"N/A"?html}</td>
+        <td>${application.personalStatement?has_content?then(application.personalStatement, "N/A")?html}</td>
     </tr>
     <#if application.applicationFiles?has_content>
         <tr>

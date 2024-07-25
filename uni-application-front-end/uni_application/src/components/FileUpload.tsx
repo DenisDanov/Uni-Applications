@@ -44,7 +44,7 @@ const FileUpload: React.FC<{
             if (filteredFiles.length !== newFiles.length) {
                 // Call the error function passed from the parent
                 if (error) {
-                    error(t('unsupportedFileTypeError'));
+                    error(t('unsupportedFileTypeError', { defaultValue: 'Unsupported file type.' }));
                     setTimeout(() => error(null), 5000);
                 }
             } else {
@@ -72,11 +72,15 @@ const FileUpload: React.FC<{
                 hidden
             />
             <label htmlFor="file-input">
-                <Button variant="contained" component="span">{t('uploadAdditionalDocuments')}</Button>
+                <Button variant="contained" component="span">
+                    {t('uploadAdditionalDocuments', { defaultValue: 'Upload Additional Documents' })}
+                </Button>
             </label>
             {selectedFileNames.length > 0 ? (
                 <Box mt={2}>
-                    <Typography variant="body1">{t('selectedFiles')}:</Typography>
+                    <Typography variant="body1">
+                        {t('selectedFiles', { defaultValue: 'Selected Files:' })}
+                    </Typography>
                     <List component={Paper}>
                         {selectedFileNames.map((fileName, index) => (
                             <Box key={index} mb={1}>
@@ -95,7 +99,9 @@ const FileUpload: React.FC<{
                     </List>
                 </Box>
             ) : (
-                <Typography style={{ marginTop: '5px' }} variant="body1">{t('noUploadedFiles')}</Typography>
+                <Typography style={{ marginTop: '5px' }} variant="body1">
+                    {t('noUploadedFiles', { defaultValue: 'No uploaded files' })}
+                </Typography>
             )}
         </Grid>
     );

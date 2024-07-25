@@ -15,6 +15,7 @@ import {
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { getSpecialtyById } from "../axios/requests";
+import { useTranslation } from 'react-i18next';
 
 const EvaluateApplication: React.FC = () => {
     const location = useLocation();
@@ -22,12 +23,14 @@ const EvaluateApplication: React.FC = () => {
     const [requirements, setRequirements] = useState<any | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const { t, i18n } = useTranslation();
+
+    const isBgLanguage = i18n.language === 'bg'; // Check if the current language is Bulgarian
 
     useEffect(() => {
         if (application) {
             getSpecialtyById(application.specialtyId)
                 .then((specialty) => {
-                    // @ts-ignore
                     setRequirements(specialty.specialtyRequirement);
                     setLoading(false);
                 })
@@ -66,7 +69,7 @@ const EvaluateApplication: React.FC = () => {
     if (!application) {
         return (
             <Container>
-                <Typography variant="h6">No application data available</Typography>
+                <Typography variant="h6">{isBgLanguage ? t('noApplicationData') : 'No application data available'}</Typography>
             </Container>
         );
     }
@@ -81,65 +84,57 @@ const EvaluateApplication: React.FC = () => {
                 <Divider sx={{ mb: 3 }} />
                 <Grid container spacing={2}>
                     <Grid item xs={12} sm={6}>
-                        <Typography variant="subtitle1" color="textSecondary">
-                            Faculty:
+                        <Typography variant="body2">
+                            {isBgLanguage ? `${t('card.faculty')}: ${t(`faculties.${application.facultyName}`)}` : `Faculty: ${application.facultyName}`} ({application.facultyId})
                         </Typography>
-                        <Typography variant="body1">{application.facultyName} ({application.facultyId})</Typography>
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                        <Typography variant="subtitle1" color="textSecondary">
-                            Specialty:
+                        <Typography variant="body2">
+                            {isBgLanguage ? `${t('card.specialty')}: ${t(`specialties.${application.specialtyName}.title`)}` : `Specialty: ${application.specialtyName}`} ({application.specialtyId})
                         </Typography>
-                        <Typography variant="body1">{application.specialtyName} ({application.specialtyId})</Typography>
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                        <Typography variant="subtitle1" color="textSecondary">
-                            Sent Date:
+                        <Typography variant="body2">
+                            {isBgLanguage ? `${t('card.sentDate')}: ${new Date(application.applicationSentDate).toLocaleDateString()}` : `Sent Date: ${new Date(application.applicationSentDate).toLocaleDateString()}`}
                         </Typography>
-                        <Typography variant="body1">{new Date(application.applicationSentDate).toLocaleDateString()}</Typography>
                     </Grid>
                     <Grid item xs={12} sm={6}>
-                        <Typography variant="subtitle1" color="textSecondary">
-                            Status:
+                        <Typography variant="body2">
+                            {isBgLanguage ? `${t('status')}:` : `Status:`}
+                            <Box mt={2}>
+                                <Chip
+                                    label={isBgLanguage ? t(`profile.status.${application.applicationStatus.applicationStatus}`) : application.applicationStatus.applicationStatus}
+                                    color={
+                                        application.applicationStatus.applicationStatus === "PENDING"
+                                            ? "warning"
+                                            : application.applicationStatus.applicationStatus === "DECLINED"
+                                                ? "error"
+                                                : "success"
+                                    }
+                                />
+                            </Box>
                         </Typography>
-                        <Chip
-                            label={application.applicationStatus.applicationStatus}
-                            color={
-                                application.applicationStatus.applicationStatus === "PENDING"
-                                    ? "warning"
-                                    : application.applicationStatus.applicationStatus === "DECLINED"
-                                        ? "error"
-                                        : "success"
-                            }
-                            sx={{ fontSize: 16 }}
-                        />
+
                     </Grid>
                     <Grid item xs={12}>
-                        <Typography variant="subtitle1" color="textSecondary">
-                            Status Description:
+                        <Typography variant="body2" mt={2}>
+                            {isBgLanguage ? t(`applicationStatus.${application.applicationStatus.applicationStatus}`) : application.applicationStatus.applicationDescription}
                         </Typography>
+                    </Grid>
+                    <Grid item xs={12}>
                         <Typography style={{
                             wordBreak: 'break-all',
                             wordWrap: 'break-word',
                             whiteSpace: 'normal',
                             maxWidth: '400px'
-                        }} variant="body1">{application.applicationStatus.applicationDescription}</Typography>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Typography variant="subtitle1" color="textSecondary">
-                            Application Description:
+                        }} variant="body2" mt={2}>
+                            {isBgLanguage ? `${t('card.applicationDescription')}: ${application.applicationDescription}` : `Application Description: ${application.applicationDescription}`}
                         </Typography>
-                        <Typography style={{
-                            wordBreak: 'break-all',
-                            wordWrap: 'break-word',
-                            whiteSpace: 'normal',
-                            maxWidth: '400px'
-                        }} variant="body1">{application.applicationDescription}</Typography>
                     </Grid>
                     <Grid item xs={12}>
                         <Box display="flex" alignItems="center" mt={2}>
                             <Typography variant="subtitle1" color="textSecondary" mr={1}>
-                                Average Grade:
+                                {isBgLanguage ? t('card.averageGrade') : 'Average Grade'}:
                             </Typography>
                             <Typography variant="body1">{application.avgGrade}</Typography>
                             {meetsRequirement(application.avgGrade, requirements?.minGrade) ? (
@@ -153,7 +148,7 @@ const EvaluateApplication: React.FC = () => {
                         <Grid item xs={12}>
                             <Box display="flex" alignItems="center" mt={2}>
                                 <Typography variant="subtitle1" color="textSecondary" mr={1}>
-                                    Language Proficiency Test Result:
+                                    {isBgLanguage ? t('card.languageProficiencyTestResult') : 'Language Proficiency Test Result'}:
                                 </Typography>
                                 <Typography variant="body1">{application.languageProficiencyTestResult}</Typography>
                                 {meetsRequirement(application.languageProficiencyTestResult, requirements?.languageProficiencyTestMinResult) ? (
@@ -167,7 +162,7 @@ const EvaluateApplication: React.FC = () => {
                     <Grid item xs={12}>
                         <Box display="flex" alignItems="center" mt={2}>
                             <Typography variant="subtitle1" color="textSecondary" mr={1}>
-                                Standardized Test Result:
+                                {isBgLanguage ? t('card.standardizedTestResult') : 'Standardized Test Result'}:
                             </Typography>
                             <Typography variant="body1">{application.standardizedTestResult}</Typography>
                             {meetsRequirement(application.standardizedTestResult, requirements?.standardizedTestMinResult) ? (
@@ -181,9 +176,9 @@ const EvaluateApplication: React.FC = () => {
                         <Grid item xs={12}>
                             <Box display="flex" alignItems="center" mt={2}>
                                 <Typography variant="subtitle1" color="textSecondary" mr={1}>
-                                    Letter of Recommendation:
+                                    {isBgLanguage ? t('letterOfRecommendation') : 'Letter of Recommendation'}:
                                 </Typography>
-                                <Typography variant="body1">{application.letterOfRecommendation ? "Provided" : "Not Provided"}</Typography>
+                                <Typography variant="body1">{application.letterOfRecommendation ? (isBgLanguage ? t('provided') : "Provided") : (isBgLanguage ? t('notProvided') : "Not Provided")}</Typography>
                                 {application.letterOfRecommendation ? (
                                     <CheckCircleIcon color="success" sx={{ ml: 1 }} />
                                 ) : (
@@ -196,9 +191,9 @@ const EvaluateApplication: React.FC = () => {
                         <Grid item xs={12}>
                             <Box display="flex" alignItems="center" mt={2}>
                                 <Typography variant="subtitle1" color="textSecondary" mr={1}>
-                                    Personal Statement:
+                                    {isBgLanguage ? t('card.personalStatement') : 'Personal Statement'}:
                                 </Typography>
-                                <Typography variant="body1">{application.personalStatement ? "Provided" : "Not Provided"}</Typography>
+                                <Typography variant="body1">{application.personalStatement ? (isBgLanguage ? t('provided') : "Provided") : (isBgLanguage ? t('notProvided') : "Not Provided")}</Typography>
                                 {application.personalStatement ? (
                                     <CheckCircleIcon color="success" sx={{ ml: 1 }} />
                                 ) : (
@@ -213,4 +208,4 @@ const EvaluateApplication: React.FC = () => {
     );
 };
 
-export default EvaluateApplication;
+export default EvaluateApplication

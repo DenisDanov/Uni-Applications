@@ -214,7 +214,7 @@ const Profile: React.FC = () => {
                     )}
                     <TextField
                         label={isBgLanguage ? t('profile.accountType') : 'Account Type'}
-                        value={formik.values.roleDTO.role}
+                        value={t(`profile.accountTypeValue.${formik.values.roleDTO.role}`, {defaultValue: formik.values.roleDTO.role})}
                         margin="normal"
                         fullWidth
                         InputProps={{
@@ -224,7 +224,7 @@ const Profile: React.FC = () => {
                     {formik.values.roleDTO.role === 'ADMIN' && (
                         <TextField
                             label={isBgLanguage ? t('profile.accessLevel') : 'Access Level'}
-                            value={formik.values.accessLevel.accessType}
+                            value={t(`profile.accessLevelType.${formik.values.accessLevel.accessType}`, {defaultValue: formik.values.accessLevel.accessType})}
                             margin="normal"
                             fullWidth
                             InputProps={{

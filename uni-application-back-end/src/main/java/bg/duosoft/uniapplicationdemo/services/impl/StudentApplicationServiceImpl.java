@@ -176,7 +176,7 @@ public class StudentApplicationServiceImpl extends BaseServiceImpl<StudentsAppli
             String fileName = fileNames.next();
             List<MultipartFile> files = request.getFiles(fileName);
             for (MultipartFile file : files) {
-                if (file != null) {
+                if (file != null && !fileName.equals("letterOfRecommendation")) {
                     try {
                         minioService.uploadFile(file, principal.getClaim("preferred_username") +
                                 " - Specialty - " + studentApplicationCreateDTO.getSpecialtyId() +

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import {
     Alert,
     Button,
@@ -14,7 +14,7 @@ import {
     Select,
     Typography,
 } from "@mui/material";
-import {useKeycloak} from "../keycloak";
+import { useKeycloak } from "../keycloak";
 import {
     fetchAccessLevels,
     fetchFilteredUsers,
@@ -24,6 +24,7 @@ import {
     updateUserRoles
 } from "../axios/requests";
 import Filter from "./Filter";
+import { useTranslation } from 'react-i18next';
 
 const deepCopy = (obj: any) => JSON.parse(JSON.stringify(obj));
 
@@ -35,13 +36,16 @@ const ManageUsers: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
-    const {keycloak} = useKeycloak();
+    const { keycloak } = useKeycloak();
+    const { t, i18n } = useTranslation();
+
+    const isBgLanguage = i18n.language === 'bg'; // Check if the current language is Bulgarian
 
     const filterConfig = [
-        {name: 'username', type: 'text'},
-        {name: 'email', type: 'text'},
-        {name: 'phoneNumber', type: 'text'},
-        {name: 'maxResults', type: 'number'},
+        { name: 'username', type: 'text' },
+        { name: 'email', type: 'text' },
+        { name: 'phoneNumber', type: 'text' },
+        { name: 'maxResults', type: 'number' },
     ];
 
     useEffect(() => {
@@ -96,11 +100,9 @@ const ManageUsers: React.FC = () => {
         let updatedUser = updatedTempUsers[index];
         updatedUser.accessLevel = {
             accessType: newAccessLevel,
-            accessDescription: `${
-                newAccessLevel === "FULL_ACCESS"
-                    ? "Full access to all resources"
-                    : "Limited access to read only"
-            }`,
+            accessDescription: `${newAccessLevel === "FULL_ACCESS"
+                ? t('fullAccessDescription')
+                : t('limitedAccessDescription')}`,
         };
         setTempUsers(updatedTempUsers);
     };
@@ -118,7 +120,7 @@ const ManageUsers: React.FC = () => {
             updatedTempUsers[index] = updatedUser;
             setTempUsers(deepCopy(updatedTempUsers));
 
-            setSuccess("Successfully updated user.");
+            setSuccess(t('successfullyUpdatedUser', {defaultValue:"Successfully updated user."}));
             setTimeout(() => {
                 setSuccess(null);
             }, 5000);
@@ -145,7 +147,7 @@ const ManageUsers: React.FC = () => {
             updatedTempUsers[index].enabled = !enabled;
             setTempUsers(deepCopy(updatedTempUsers));
 
-            setSuccess(`Successfully ${enabled ? "unblock" : "block"}ed user.`);
+            setSuccess(t(`successfully${enabled ? 'Unblock' : 'Block'}User`));
             setTimeout(() => {
                 setSuccess(null);
             }, 5000);
@@ -160,7 +162,7 @@ const ManageUsers: React.FC = () => {
     if (loading) {
         return (
             <Container>
-                <CircularProgress/>
+                <CircularProgress />
             </Container>
         );
     }
@@ -168,12 +170,12 @@ const ManageUsers: React.FC = () => {
     return (
         <Container>
             {error &&
-                <Container style={{paddingBottom: "10px"}}>
+                <Container style={{ paddingBottom: "10px" }}>
                     <Alert severity="error">{error}</Alert>
                 </Container>
             }
             {success &&
-                <Container style={{paddingBottom: "10px"}}>
+                <Container style={{ paddingBottom: "10px" }}>
                     <Alert severity="success">{success}</Alert>
                 </Container>
             }
@@ -181,25 +183,25 @@ const ManageUsers: React.FC = () => {
                 // @ts-ignore
                 filters={filterConfig}
                 onSearch={handleSearch}
-                filterName={'Filter Users'}/>
+                filterName={isBgLanguage ? t('filterUsers') : 'Filter Users'} />
             <Grid container spacing={3}>
                 {tempUsers.map((user, index) => (
                     <Grid item xs={12} md={6} lg={4} key={index}>
                         <Card>
                             <CardContent>
                                 <Typography variant="h6">{user.username}</Typography>
-                                <Typography variant="body2">Email: {user.email}</Typography>
-                                <Typography variant="body2">First Name: {user.firstName}</Typography>
-                                <Typography variant="body2">Middle Name: {user.middleName}</Typography>
-                                <Typography variant="body2">Last Name: {user.lastName}</Typography>
+                                <Typography variant="body2">{isBgLanguage ? t('email') : 'Email'}: {user.email}</Typography>
+                                <Typography variant="body2">{isBgLanguage ? t('firstName') : 'First Name'}: {user.firstName}</Typography>
+                                <Typography variant="body2">{isBgLanguage ? t('middleName') : 'Middle Name'}: {user.middleName}</Typography>
+                                <Typography variant="body2">{isBgLanguage ? t('lastName') : 'Last Name'}: {user.lastName}</Typography>
                                 {user.dateOfBirth && (
-                                    <Typography variant="body2">Date of Birth: {user.dateOfBirth}</Typography>
+                                    <Typography variant="body2">{isBgLanguage ? t('dateOfBirth') : 'Date of Birth'}: {user.dateOfBirth}</Typography>
                                 )}
                                 {user.phoneNumber && (
-                                    <Typography variant="body2">Phone Number: {user.phoneNumber}</Typography>
+                                    <Typography variant="body2">{isBgLanguage ? t('phoneNumber') : 'Phone Number'}: {user.phoneNumber}</Typography>
                                 )}
                                 <FormControl fullWidth margin="normal">
-                                    <InputLabel>Role</InputLabel>
+                                    <InputLabel>{isBgLanguage ? t('role') : 'Role'}</InputLabel>
                                     <Select
                                         value={user.roleDTO.role}
                                         onChange={(e) => handleRoleChange(index, e.target.value as string)}
@@ -207,17 +209,17 @@ const ManageUsers: React.FC = () => {
                                             !keycloak.hasRealmRole("FULL_ACCESS") ||
                                             (users[index].roleDTO.role === "ADMIN" && users[index].accessLevel?.accessType === "FULL_ACCESS")
                                         }
-                                        label={"Role"}
+                                        label={isBgLanguage ? t('role') : 'Role'}
                                     >
                                         {roles.map((role) => (
                                             <MenuItem key={role.role} value={role.role}>
-                                                {role.roleDescription}
+                                                {isBgLanguage ? t(role.roleDescription) : role.roleDescription}
                                             </MenuItem>
                                         ))}
                                     </Select>
                                 </FormControl>
                                 <FormControl fullWidth margin="normal">
-                                    <InputLabel>Access Level</InputLabel>
+                                    <InputLabel>{isBgLanguage ? t('accessLevel') : 'Access Level'}</InputLabel>
                                     <Select
                                         value={user.accessLevel?.accessType || ""}
                                         onChange={(e) => handleAccessLevelChange(index, e.target.value as string)}
@@ -226,11 +228,11 @@ const ManageUsers: React.FC = () => {
                                             users[index].roleDTO.role === "STUDENT" ||
                                             (users[index].roleDTO.role === "ADMIN" && users[index].accessLevel?.accessType === "FULL_ACCESS")
                                         }
-                                        label={"Access Level"}
+                                        label={isBgLanguage ? t('accessLevel') : 'Access Level'}
                                     >
                                         {accessLevels.map((accessLevel) => (
                                             <MenuItem key={accessLevel.accessType} value={accessLevel.accessType}>
-                                                {accessLevel.accessDescription}
+                                                {isBgLanguage ? t(accessLevel.accessDescription) : accessLevel.accessDescription}
                                             </MenuItem>
                                         ))}
                                     </Select>
@@ -246,7 +248,7 @@ const ManageUsers: React.FC = () => {
                                         (users[index].roleDTO.role === "ADMIN" && users[index].accessLevel?.accessType === "FULL_ACCESS")
                                     }
                                 >
-                                    Update
+                                    {isBgLanguage ? t('update') : 'Update'}
                                 </Button>
                                 {user.enabled ? (
                                     <Button
@@ -258,7 +260,7 @@ const ManageUsers: React.FC = () => {
                                             (users[index].roleDTO.role === "ADMIN" && users[index].accessLevel?.accessType === "FULL_ACCESS")
                                         }
                                     >
-                                        Block User
+                                        {isBgLanguage ? t('blockUser') : 'Block User'}
                                     </Button>
                                 ) : (
                                     <Button
@@ -268,7 +270,7 @@ const ManageUsers: React.FC = () => {
                                         disabled={!keycloak.hasRealmRole("FULL_ACCESS") ||
                                             (users[index].roleDTO.role === "ADMIN" && users[index].accessLevel?.accessType === "FULL_ACCESS")}
                                     >
-                                        Unblock User
+                                        {isBgLanguage ? t('unblockUser') : 'Unblock User'}
                                     </Button>
                                 )}
                             </CardActions>

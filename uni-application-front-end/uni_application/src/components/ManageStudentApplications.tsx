@@ -18,13 +18,15 @@ import AttachedFilesMenu from "./AttachedFilesMenu";
 import {
     acceptApplication,
     declineApplication,
-    deleteApplication, downloadFile,
+    deleteApplication,
+    downloadFile,
     fetchFilteredStudentApplications,
     fetchStudentApplications,
     generateApplicationReceipt
 } from "../axios/requests";
 import Filter from "./Filter";
 import {useNavigate} from "react-router-dom";
+import {useTranslation} from "react-i18next";
 
 const ManageStudentApplications: React.FC = () => {
     const [studentApplications, setStudentApplications] = useState<any[]>([]);
@@ -33,6 +35,9 @@ const ManageStudentApplications: React.FC = () => {
     const {keycloak} = useKeycloak();
     const theme = useTheme();
     const navigate = useNavigate();
+    const {t, i18n} = useTranslation();
+
+    const isBgLanguage = i18n.language === 'bg';
 
     const filterConfig = [
         {name: 'username', type: 'text'},
@@ -139,7 +144,7 @@ const ManageStudentApplications: React.FC = () => {
     if (error) {
         return (
             <Container>
-                <Alert severity="error">{error}</Alert>
+                <Alert severity="error">{t('error.loading')}</Alert>
             </Container>
         );
     }
@@ -150,7 +155,7 @@ const ManageStudentApplications: React.FC = () => {
                 // @ts-ignore
                 filters={filterConfig}
                 onSearch={handleSearch}
-                filterName={'Filter Applications'}
+                filterName={isBgLanguage ? t('filter.name') : 'Filter Applications'}
             />
             <Grid container spacing={3}>
                 {studentApplications.map((application, index) => (
@@ -166,17 +171,14 @@ const ManageStudentApplications: React.FC = () => {
                             <CardContent>
                                 <Typography variant="h6">{application.username}</Typography>
                                 <Typography variant="body2">
-                                    Faculty: {application.facultyName} ({application.facultyId})
+                                    {isBgLanguage ? `${t('card.faculty')}: ${t(`faculties.${application.facultyName}`)}` : `Faculty: ${application.facultyName}`} ({application.facultyId})
                                 </Typography>
                                 <Typography variant="body2">
-                                    Specialty: {application.specialtyName} ({application.specialtyId})
-                                </Typography>
-                                <Typography variant="body2">
-                                    Sent Date: {new Date(application.applicationSentDate).toLocaleDateString()}
+                                    {isBgLanguage ? `${t('card.specialty')}: ${t(`specialties.${application.specialtyName}.title`)}` : `Specialty: ${application.specialtyName}`} ({application.specialtyId})
                                 </Typography>
                                 <Box mt={2}>
                                     <Chip
-                                        label={application.applicationStatus.applicationStatus}
+                                        label={isBgLanguage ? t(`profile.status.${application.applicationStatus.applicationStatus}`) : application.applicationStatus.applicationStatus}
                                         color={
                                             application.applicationStatus.applicationStatus === "PENDING"
                                                 ? "warning"
@@ -187,7 +189,7 @@ const ManageStudentApplications: React.FC = () => {
                                     />
                                 </Box>
                                 <Typography variant="body2" mt={2}>
-                                    Status Description: {application.applicationStatus.applicationDescription}
+                                    {isBgLanguage ? t(`applicationStatus.${application.applicationStatus.applicationStatus}`) : application.applicationStatus.applicationDescription}
                                 </Typography>
                                 <Typography style={{
                                     wordBreak: 'break-all',
@@ -195,27 +197,27 @@ const ManageStudentApplications: React.FC = () => {
                                     whiteSpace: 'normal',
                                     maxWidth: '400px'
                                 }} variant="body2" mt={2}>
-                                    Application Description: {application.applicationDescription}
+                                    {isBgLanguage ? t('card.applicationDescription') : 'Application Description'}: {application.applicationDescription}
                                 </Typography>
                                 <Typography variant="body2" mt={2}>
-                                    Average Grade: {application.avgGrade}
+                                    {isBgLanguage ? t('card.averageGrade') : 'Average Grade'}: {application.avgGrade}
                                 </Typography>
                                 {application.languageProficiencyTestResult && (
                                     <Typography variant="body2" mt={2}>
-                                        Language Proficiency Test Result: {application.languageProficiencyTestResult}
+                                        {isBgLanguage ? t('card.languageProficiencyTestResult') : 'Language Proficiency Test Result'}: {application.languageProficiencyTestResult}
                                     </Typography>
                                 )}
                                 <Typography variant="body2" mt={2}>
-                                    Standardized Test Result: {application.standardizedTestResult}
+                                    {isBgLanguage ? t('card.standardizedTestResult') : 'Standardized Test Result'}: {application.standardizedTestResult}
                                 </Typography>
                                 {application.letterOfRecommendation && (
                                     <Typography variant="body2" mt={2}>
-                                        Recommendation Letter:
+                                        {isBgLanguage ? t('card.recommendationLetter') : 'Recommendation Letter'}:
                                         <Button
                                             color="primary"
                                             onClick={() => downloadFile(application)}
                                         >
-                                            Download
+                                            {isBgLanguage ? t('card.download') : 'Download'}
                                         </Button>
                                     </Typography>
                                 )}
@@ -226,7 +228,7 @@ const ManageStudentApplications: React.FC = () => {
                                         whiteSpace: 'normal',
                                         maxWidth: '400px'
                                     }} variant="body2" mt={2}>
-                                        Personal Statement: {application.personalStatement}
+                                        {isBgLanguage ? t('card.personalStatement') : 'Personal Statement'}: {application.personalStatement}
                                     </Typography>
                                 )}
                                 <AttachedFilesMenu
@@ -245,7 +247,7 @@ const ManageStudentApplications: React.FC = () => {
                                     color="secondary"
                                     onClick={() => handleDelete(index)}
                                 >
-                                    Delete
+                                    {isBgLanguage ? t('actions.delete') : 'Delete'}
                                 </Button>
                                 {application.applicationStatus.applicationStatus === "PENDING" && (
                                     <>
@@ -255,7 +257,7 @@ const ManageStudentApplications: React.FC = () => {
                                             color="primary"
                                             onClick={() => handleAccept(index)}
                                         >
-                                            Accept
+                                            {isBgLanguage ? t('actions.accept') : 'Accept'}
                                         </Button>
                                         <Button
                                             disabled={!keycloak.hasRealmRole("FULL_ACCESS")}
@@ -263,16 +265,16 @@ const ManageStudentApplications: React.FC = () => {
                                             color="error"
                                             onClick={() => handleDecline(index)}
                                         >
-                                            Decline
+                                            {isBgLanguage ? t('actions.decline') : 'Decline'}
                                         </Button>
                                     </>
                                 )}
                                 <Button size="small" color="primary" onClick={() => handleGenerateReceipt(application)}>
-                                    Generate Receipt
+                                    {isBgLanguage ? t('actions.generateReceipt') : 'Generate Receipt'}
                                 </Button>
                                 <Button size="small" color="primary"
                                         onClick={() => handleEvaluateApplication(application)}>
-                                    Evaluate Application
+                                    {isBgLanguage ? t('actions.evaluateApplication') : 'Evaluate Application'}
                                 </Button>
                             </CardActions>
                         </Card>

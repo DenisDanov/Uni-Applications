@@ -44,7 +44,15 @@
       "PENDING": "В процес на изчакване"
     },
     "accountType": "Тип акаунт",
+    "accountTypeValue": {
+      "STUDENT": "СТУДЕНТ",
+      "ADMIN": "АДМИН"
+    },
     "accessLevel": "Ниво на достъп",
+    "accessLevelType": {
+      "FULL_ACCESS": "Пълен достъп",
+      "READ_ONLY_ACCESS": "Достъп за четене"
+    },
     "saveChanges": "Запази промените",
     "studentApplications": "Студентски заявления",
     "application": "Заявление #{{index}} - {{specialtyName}}",
@@ -250,5 +258,71 @@
   "testSubmitted": "Тестът е изпратен, можете да проверите резултата си на страницата на профила.",
   "testSubmissionError": "Грешка при изпращането на теста: ",
   "unansweredQuestionsError": "Трябва да отговорите на всички въпроси преди да изпратите теста.",
-  "completedAllTests": "Успешно сте завършили всички тестове. Проверете резултатите си на страницата на профила."
+  "completedAllTests": "Успешно сте завършили всички тестове. Проверете резултатите си на страницата на профила.",
+  "specialty": "Специалност",
+  "facultyHeader": "Факултет",
+  "filterName": "Филтрирай Заявления",
+  "filterSearch": "Търси",
+  "Username": "Потребителско име",
+  "Faculty Name": "Факултет",
+  "Specialty Name": "Специалност",
+  "Average Grade": "Средна оценка",
+  "Max Results": "Максимален брой резултати",
+  "Email Address": "Имейл адрес",
+  "Phone Number": "Телефонен номер",
+  "Application Status": "Статус на заявлението",
+  "card": {
+    "faculty": "Факултет",
+    "specialty": "Специалност",
+    "sentDate": "Дата на изпращане",
+    "statusDescription": "Описание на статуса",
+    "applicationDescription": "Описание на заявлението",
+    "averageGrade": "Средна оценка",
+    "languageProficiencyTestResult": "Резултат от теста за езиково владеене",
+    "standardizedTestResult": "Резултат от стандартизирания тест",
+    "recommendationLetter": "Препоръка",
+    "download": "Изтегли",
+    "personalStatement": "Мотивационно писмо"
+  },
+  "actions": {
+    "delete": "Изтрий",
+    "accept": "Приеми",
+    "decline": "Откажи",
+    "generateReceipt": "Генерирай разписка",
+    "evaluateApplication": "Оцени заявление"
+  },
+  "applicationStatus": {
+    "PENDING": "Заявлението се разглежда от комисията",
+    "DECLINED": "Заявлението е отхвърлено",
+    "ACCEPTED": "Заявлението е прието"
+  },
+  "faculties": {
+    "Faculty of Medicine": "Факултет по медицина",
+    "Faculty of Arts": "Факултет по изкуствата",
+    "Faculty of Computer Science": "Факултет по компютърни науки"
+  },
+  "filterUsers": "Филтриране на потребители",
+  "successfullyUpdatedUser": "Успешно актуализиран потребител.",
+  "successfullyUnblockUser": "Успешно отключен потребител.",
+  "successfullyBlockUser": "Успешно блокиран потребител.",
+  "email": "Имейл",
+  "firstName": "Първо име",
+  "middleName": "Средно име",
+  "lastName": "Фамилно име",
+  "dateOfBirth": "Дата на раждане",
+  "phoneNumber": "Телефонен номер",
+  "role": "Роля",
+  "accessLevel": "Ниво на достъп",
+  "fullAccessDescription": "Пълен достъп до всички ресурси",
+  "limitedAccessDescription": "Ограничен достъп само за четене",
+  "update": "Актуализиране",
+  "blockUser": "Блокирай потребител",
+  "unblockUser": "Отключи потребител",
+  "noApplicationData": "Няма данни за кандидатурата",
+  "sentDate": "Дата на изпращане",
+  "status": "Статус",
+  "statusDescription": "Описание на статуса",
+  "provided": "Предоставен",
+  "notProvided": "Не предоставен"
 }
+

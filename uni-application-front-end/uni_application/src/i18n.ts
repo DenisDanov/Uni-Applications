@@ -12,10 +12,10 @@ i18n
                 translation: bgTranslations
             }
         },
-        lng: localStorage.getItem('language') || 'bg', // Use stored language or default to 'bg'
-        fallbackLng: 'bg', // Fallback language
+        lng: localStorage.getItem('language') || 'en',
+        fallbackLng: 'en',
         interpolation: {
-            escapeValue: false // React already does escaping
+            escapeValue: false
         }
     });
 
