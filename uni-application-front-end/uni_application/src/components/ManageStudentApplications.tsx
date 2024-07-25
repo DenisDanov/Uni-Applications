@@ -141,16 +141,11 @@ const ManageStudentApplications: React.FC = () => {
         );
     }
 
-    if (error) {
-        return (
-            <Container>
-                <Alert severity="error">{t('error.loading')}</Alert>
-            </Container>
-        );
-    }
-
     return (
         <Container>
+            {error && <Container>
+                <Alert severity="error">{t('error.loading', {defaultValue: error})}</Alert>
+            </Container>}
             <Filter
                 // @ts-ignore
                 filters={filterConfig}

@@ -45,7 +45,7 @@ const AttachedFilesMenu: React.FC<AttachedFilesMenuProps> = ({ application, setE
             </ListItem>
             <Collapse in={application.expanded} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
-                    {application.applicationFiles.map((file: any, fileIndex: number) => (
+                    {application.applicationFiles?.map((file: any, fileIndex: number) => (
                         <ListItem key={fileIndex}>
                             <ListItemIcon>
                                 {getFileIcon(file.fileType)}

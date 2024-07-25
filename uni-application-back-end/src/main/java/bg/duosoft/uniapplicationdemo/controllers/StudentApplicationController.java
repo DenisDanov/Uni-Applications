@@ -92,9 +92,9 @@ public class StudentApplicationController extends CrudController<StudentsApplica
     @PutMapping("/applications/{status}")
     @PreAuthorize("hasRole('ROLE_admin') and hasRole('ROLE_FULL_ACCESS')")
     public ResponseEntity<StudentApplicationDTOUsers> processStudentApplication(@PathVariable String status,
-                                                                          @RequestParam(value = "username") String username,
-                                                                          @RequestParam(value = "faculty") String facultyName,
-                                                                          @RequestParam(value = "specialty") String specialtyName) {
+                                                                                @RequestParam(value = "username") String username,
+                                                                                @RequestParam(value = "faculty") String facultyName,
+                                                                                @RequestParam(value = "specialty") String specialtyName) {
         if (status.equals("accept") || status.equals("decline")) {
             StudentApplicationDTOUsers studentApplicationDTO = super.getService().findByStudentsApplicationsIdAndStatus(username, facultyName, specialtyName);
             if (studentApplicationDTO == null) {
@@ -110,7 +110,12 @@ public class StudentApplicationController extends CrudController<StudentsApplica
                 }
                 super.getService().update(studentApplicationDTO);
                 logger.info("Returning response");
-                logEventsService.logEvent(studentApplicationDTO,studentApplicationDTO.getFacultyName(),studentApplicationDTO.getSpecialtyName(), SecurityUtils.getJwt().getClaim("preferred_username"), LocalDateTime.now());
+                logEventsService.logEvent(studentApplicationDTO,
+                        studentApplicationDTO.getFacultyName(),
+                        studentApplicationDTO.getSpecialtyName(),
+                        SecurityUtils.getJwt().getClaim("preferred_username"),
+                        LocalDateTime.now(),
+                        studentApplicationDTO.getApplicationStatus().getApplicationStatus());
                 return ResponseEntity.ok(studentApplicationDTO);
             }
         } else {
@@ -124,6 +129,7 @@ public class StudentApplicationController extends CrudController<StudentsApplica
                                                            @RequestParam(value = "faculty") String facultyName,
                                                            @RequestParam(value = "specialty") String specialtyName) throws Exception {
         if (super.getService().deleteByUsernameAndAndFacultyAndSpecialty(username, facultyName, specialtyName) == 1) {
+            logEventsService.logDeletionEvent(username, facultyName.split("-")[0], specialtyName.split("-")[0], SecurityUtils.getJwt().getClaim("preferred_username"));
             return ResponseEntity.ok("Deleted successfully.");
         } else {
             return ResponseEntity.status(404).build();

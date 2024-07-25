@@ -194,6 +194,7 @@ public class StudentApplicationServiceImpl extends BaseServiceImpl<StudentsAppli
                 request.getParameter("facultyName"),
                 request.getParameter("specialtyName"),
                 null,
+                null,
                 null);
 
         return studentApplicationCreateDTO;

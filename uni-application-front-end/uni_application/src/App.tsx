@@ -1,5 +1,5 @@
 import React from 'react';
-import {BrowserRouter, Routes, Route} from 'react-router-dom';
+import {BrowserRouter, Routes, Route, Navigate} from 'react-router-dom';
 import Footer from './components/Footer';
 import Header from "./components/Header";
 import AppSecurityProvider from "./providers/AppSecurityProvider";
@@ -14,17 +14,18 @@ const App: React.FC = () => {
         <BrowserRouter basename="/">
             <AppSecurityProvider authClient={keycloakInitObject}>
                 <Provider store={store}>
-                <Box display="flex" flexDirection="column" minHeight="100vh">
-                    <Header/>
-                    <Box component="main" flexGrow={1} m={2}>
-                        <Routes>
-                            {routes.map((route, index) => (
-                                <Route key={index} path={route.path} element={route.element}/>
-                            ))}
-                        </Routes>
+                    <Box display="flex" flexDirection="column" minHeight="100vh">
+                        <Header/>
+                        <Box component="main" flexGrow={1} m={2}>
+                            <Routes>
+                                {routes.map((route, index) => (
+                                    <Route key={index} path={route.path} element={route.element}/>
+                                ))}
+                                <Route path="*" element={<Navigate to="/" replace />} />
+                            </Routes>
+                        </Box>
+                        <Footer/>
                     </Box>
-                    <Footer/>
-                </Box>
                 </Provider>
             </AppSecurityProvider>
         </BrowserRouter>
