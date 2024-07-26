@@ -11,6 +11,7 @@ import ManageStudentApplications from "./ManageStudentApplications";
 import ManageUsers from "./ManageUsers";
 import EvaluateApplication from "./EvaluateApplication";
 import RequirementsTests from "./RequirementsTests";
+import AdminDashboard from "./AdminDashboard";
 
 const HomeRoute: React.FC = () => <Home/>;
 const ProfileRoute: React.FC = () => <Profile/>;
@@ -21,6 +22,7 @@ const ManageStudentApplicationsRoute: React.FC = () => <ManageStudentApplication
 const ManageUsersRoute: React.FC = () => <ManageUsers/>;
 const EvaluateApplicationRoute: React.FC = () => <EvaluateApplication/>
 const RequirementsTestsRoute: React.FC = () => <RequirementsTests/>
+const AdminDashboardRoute: React.FC = () => <AdminDashboard/>
 
 const Login: React.FC = () => {
     const {keycloak} = useKeycloak();
@@ -110,6 +112,19 @@ const routes = [
                 displayOnUnauthorized={<Navigate to="/"/>}
             >
                 <EvaluateApplicationRoute/>
+            </SecurityGuard>
+        )
+    },
+    {
+        path: "/admin-dashboard",
+        element: (
+            <SecurityGuard
+                doCheck={true}
+                checkForRoles={['admin']}
+                loginOnUnauthorized={false}
+                displayOnUnauthorized={<Navigate to="/"/>}
+            >
+                <AdminDashboardRoute/>
             </SecurityGuard>
         )
     },

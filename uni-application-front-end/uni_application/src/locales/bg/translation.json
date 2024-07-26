@@ -18,7 +18,8 @@
     "apply": "Кандидатствай",
     "requirementsTests": "Изпити по изисквания",
     "manageApplications": "Управление на кандидатури",
-    "manageUsers": "Управление на потребители"
+    "manageUsers": "Управление на потребители",
+    "adminDashboard": "Администраторски панел"
   },
   "breadcrumbs": {
     "home": "Начало",
@@ -29,7 +30,9 @@
     "manageApplications": "Управление на кандидатури",
     "manageUsers": "Управление на потребители",
     "profile": "Профил",
-    "login": "Вход"
+    "login": "Вход",
+    "evaluateApplication": "Провери заявление",
+    "adminDashboard": "Администраторски панел"
   },
   "profile": {
     "title": "Профил",
@@ -294,7 +297,8 @@
   "applicationStatus": {
     "PENDING": "Заявлението се разглежда от комисията",
     "DECLINED": "Заявлението е отхвърлено",
-    "ACCEPTED": "Заявлението е прието"
+    "ACCEPTED": "Заявлението е прието",
+    "null": "N/A"
   },
   "faculties": {
     "Faculty of Medicine": "Факултет по медицина",
@@ -323,6 +327,18 @@
   "status": "Статус",
   "statusDescription": "Описание на статуса",
   "provided": "Предоставен",
-  "notProvided": "Не предоставен"
+  "notProvided": "Не предоставен",
+  "submissionTime": "Време на подаване",
+  "processingTime": "Време на обработка",
+  "deletedTime": "Време на изтриване",
+  "All": "Всички",
+  "Creation": "Създадени",
+  "Update": "Актуализирани",
+  "Deletion": "Изтрити",
+  "submittedByUsername": "Подадено от",
+  "processedByUsername": "Променено от",
+  "deletedByUsername": "Изтрито от",
+  "applicationStatusHeader": "Статус",
+  "applicationActivityLogs": "История на активността на приложенията"
 }
 

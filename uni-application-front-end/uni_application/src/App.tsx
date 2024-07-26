@@ -8,6 +8,9 @@ import routes from "./components/Routes";
 import {Box} from '@mui/material';
 import {Provider} from "react-redux";
 import store from "./store";
+import {LicenseInfo} from "@mui/x-license-pro";
+
+LicenseInfo.setLicenseKey('e0d9bb8070ce0054c9d9ecb6e82cb58fTz0wLEU9MzI0NzIxNDQwMDAwMDAsUz1wcmVtaXVtLExNPXBlcnBldHVhbCxLVj0y');
 
 const App: React.FC = () => {
     return (

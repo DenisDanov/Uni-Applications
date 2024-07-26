@@ -24,14 +24,11 @@ import { getSpecialtiesByFaculty, submitApplication } from "../axios/requests";
 import { StudentsRequirementsResultsDTO } from "../types/StudentRequirementsResultsDTO";
 import { axiosClientDefault } from "../axios/axiosClient";
 import { useKeycloak } from "../keycloak";
-import { LicenseInfo } from "@mui/x-license-pro";
 import { LoadingButton } from "@mui/lab";
 import UploadFileIcon from '@mui/icons-material/UploadFile';
 import { getFileIcon } from "../types/fileIcons";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useTranslation } from 'react-i18next';
-
-LicenseInfo.setLicenseKey('e0d9bb8070ce0054c9d9ecb6e82cb58fTz0wLEU9MzI0NzIxNDQwMDAwMDAsUz1wcmVtaXVtLExNPXBlcnBldHVhbCxLVj0y');
 
 const useFetchSpecialties = (facultyId: number | null): Specialty[] => {
     const [specialties, setSpecialties] = useState<Specialty[]>([]);

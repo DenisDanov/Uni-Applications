@@ -15,7 +15,29 @@ public class AsyncConfig {
         executor.setCorePoolSize(10);
         executor.setMaxPoolSize(50);
         executor.setQueueCapacity(100);
-        executor.setThreadNamePrefix("AsyncThread-");
+        executor.setThreadNamePrefix("AsyncThreadEmails-");
+        executor.initialize();
+        return executor;
+    }
+
+    @Bean(name = "threadPoolTaskExecutorLogs")
+    public ThreadPoolTaskExecutor threadPoolTaskExecutorLogs() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(10);
+        executor.setMaxPoolSize(50);
+        executor.setQueueCapacity(100);
+        executor.setThreadNamePrefix("AsyncThreadLogs-");
+        executor.initialize();
+        return executor;
+    }
+
+    @Bean(name = "threadPoolTaskExecutorDeletionLogs")
+    public ThreadPoolTaskExecutor threadPoolTaskExecutorDeletionLogs() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(30);
+        executor.setMaxPoolSize(50);
+        executor.setQueueCapacity(100);
+        executor.setThreadNamePrefix("AsyncThreadDeletionLogs-");
         executor.initialize();
         return executor;
     }
