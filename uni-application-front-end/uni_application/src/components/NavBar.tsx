@@ -94,6 +94,11 @@ const NavBar: React.FC = () => {
                             {isBgLanguage ? t('menu.manageUsers') : 'Manage Users'}
                         </MenuItem>
                     }
+                    {keycloak.authenticated && keycloak.hasRealmRole("admin") &&
+                        <MenuItem onClick={handleClose} component={RouterLink} to="/admin-dashboard">
+                            {isBgLanguage ? t('menu.adminDashboard') : 'Admin Dashboard'}
+                        </MenuItem>
+                    }
                 </Menu>
             </Toolbar>
         </div>

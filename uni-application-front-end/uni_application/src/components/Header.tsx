@@ -20,7 +20,9 @@ const Header: React.FC = () => {
         'manage-applications': isBgLanguage ? t('breadcrumbs.manageApplications') : 'Manage Applications',
         'manage-users': isBgLanguage ? t('breadcrumbs.manageUsers') : 'Manage Users',
         'profile': isBgLanguage ? t('breadcrumbs.profile') : 'Profile',
-        'login': isBgLanguage ? t('breadcrumbs.login') : 'Login'
+        'login': isBgLanguage ? t('breadcrumbs.login') : 'Login',
+        'evaluate-application': isBgLanguage ? t('breadcrumbs.evaluateApplication') : 'Evaluate Application',
+        'admin-dashboard': isBgLanguage ? t('breadcrumbs.adminDashboard') : 'Admin Dashboard',
     };
 
     return (

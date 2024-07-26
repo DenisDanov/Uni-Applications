@@ -4,6 +4,8 @@ import bg.duosoft.uniapplicationdemo.models.dtos.ApplicationLogEventDTO;
 import bg.duosoft.uniapplicationdemo.models.dtos.StudentApplicationDTO;
 import bg.duosoft.uniapplicationdemo.services.LogEventsService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -19,7 +21,9 @@ public class LogEventsServiceImpl implements LogEventsService {
 
     private final KafkaLogRetrieverService kafkaLogRetrieverService;
 
-    @Async("threadPoolTaskExecutor")
+    private static final Logger logger = LoggerFactory.getLogger(LogEventsServiceImpl.class);
+
+    @Async("threadPoolTaskExecutorLogs")
     @Override
     public void logEvent(StudentApplicationDTO studentApplicationDTO, String facultyName, String specialtyName, String processedByUsername, LocalDateTime processingTime, String processStatus) {
         ApplicationLogEventDTO applicationLogEventDTO;
@@ -57,8 +61,9 @@ public class LogEventsServiceImpl implements LogEventsService {
     }
 
     @Override
-    @Async("threadPoolTaskExecutor")
+    @Async("threadPoolTaskExecutorLogs")
     public void logDeletionEvent(String username, String facultyName, String specialtyName, String deletedByUsername) {
+        logger.info("Trying to log deletion event.");
         List<ApplicationLogEventDTO> applicationLogEventDTOS = kafkaLogRetrieverService.retrieveLogs();
 
         List<ApplicationLogEventDTO> filteredLogs = applicationLogEventDTOS.stream()
@@ -79,6 +84,7 @@ public class LogEventsServiceImpl implements LogEventsService {
         latestLog.setDeletedByUsername(deletedByUsername);
 
         // Send the updated log back to Kafka
+        logger.info("Trying to log deletion event. X2");
         kafkaTemplate.send("applications_log", "%s-%s-%s".formatted(latestLog.getSubmittedByUsername(), facultyName, specialtyName), latestLog);
     }
 }
