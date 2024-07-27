@@ -10,8 +10,8 @@ mail:
     auth: true
     starttls:
       enable: true
-    username: ddanov100@gmail.com
-    password: lkxxynplzjgdsifi
+    username: ${MAIL_SMTP_USERNAME}
+    password: ${MAIL_SMTP_PASSWORD}
 
 spring:
   # Apache Kafka Config
@@ -26,7 +26,7 @@ spring:
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
-          spring.json.trusted.packages: '*'
+        spring.json.trusted.packages: '*'
 
   # Receipts generator
   freemarker:
@@ -39,9 +39,9 @@ spring:
 
   # Database Configuration
   datasource:
-    url: jdbc:mysql://localhost:3306/uni_applications?serverTimezone=UTC&useSSL=false
-    username: root
-    password: weather-app23
+    url: jdbc:mysql://localhost:3306/uni_applications?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true
+    username: ${DATASOURCE_USERNAME}
+    password: ${DATASOURCE_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   liquibase:
@@ -59,11 +59,11 @@ spring:
       client:
         provider:
           keycloak:
-            issuer-uri: http://localhost:8080/realms/SpringRealm
+            issuer-uri: http://localhost:8080/realms/${KEYCLOAK_REALM}
             user-name-attribute: preferred_username
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8080/realms/SpringRealm
+          issuer-uri: http://localhost:8080/realms/${KEYCLOAK_REALM}
 
   # Caching config
   cache:
@@ -91,17 +91,12 @@ logging:
 
 keycloak:
   auth-server-url: http://localhost:8080
-  realm: SpringRealm
+  realm: ${KEYCLOAK_REALM}
   resource: spring-realm
   credentials:
-    secret: ToJVr5ieDJBLFfxjU2dOCdPGpmbvpYBa
+    secret: ${KEYCLOAK_CREDENTIALS_SECRET}
 
 # Swagger config
 springdoc:
   api-docs:
     enabled: true
-
-# Mocking payments Spring boot App
-mock:
-  payment:
-    url: "http://localhost:8083"

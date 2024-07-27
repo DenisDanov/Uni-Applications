@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Optional<UserDTO> findByUsername(String username) {
-        UserRepresentation user = keycloakUserService.getUserByUsername(username);
+        UserRepresentation user = keycloakUserService.getUserByUsername(username.toLowerCase());
         if (user == null) {
             return Optional.empty();
         } else {
@@ -127,7 +127,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO getById(String username) {
-        return userMapper.toDto(keycloakUserService.getUserByUsername(username));
+        return userMapper.toDto(keycloakUserService.getUserByUsername(username.toLowerCase()));
     }
 
     @Override

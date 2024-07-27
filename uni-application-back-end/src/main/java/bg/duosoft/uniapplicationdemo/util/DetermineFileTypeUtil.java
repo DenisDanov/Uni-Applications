@@ -32,7 +32,6 @@ public class DetermineFileTypeUtil {
             case MediaType.APPLICATION_PDF_VALUE:
                 return "pdf";
             case MediaType.APPLICATION_OCTET_STREAM_VALUE:
-                // Further differentiate between DOC and DOCX if needed
                 // Default to DOCX for simplicity here
                 return "docx";
             case MediaType.TEXT_PLAIN_VALUE:

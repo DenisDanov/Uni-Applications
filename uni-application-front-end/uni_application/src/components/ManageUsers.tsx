@@ -74,7 +74,7 @@ const ManageUsers: React.FC = () => {
     const handleSearch = (activeFilters: any) => {
         fetchFilteredUsers(activeFilters)
             .then((users) => {
-                setTempUsers(users);
+                setTempUsers(deepCopy(users));
                 setUsers(users);
             })
             .catch((err) => {

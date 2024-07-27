@@ -134,7 +134,7 @@ CREATE TABLE uni_applications.students_applications
     avg_grade                        FLOAT        NOT NULL,
     language_proficiency_test_result FLOAT,
     standardized_test_result         FLOAT        NOT NULL,
-    letter_of_recommendation         TEXT,
+    letter_of_recommendation         LONGBLOB,
     personal_statement               TEXT,
     specialty_id                     INT          NOT NULL,
     faculty_id                       INT          NOT NULL,
@@ -167,15 +167,9 @@ CREATE TABLE uni_applications.declined_student_applications
     FOREIGN KEY (username, specialty_id, faculty_id) REFERENCES uni_applications.students_applications (username, specialty_id, faculty_id) ON DELETE CASCADE
 );
 
-CREATE TABLE uni_applications.student_applications_logs
+CREATE TABLE uni_applications.students_requirements_results
 (
-    id                    INT AUTO_INCREMENT PRIMARY KEY,
-    submitted_by_username VARCHAR(255) NOT NULL,
-    faculty_name          VARCHAR(255) NOT NULL,
-    specialty_name        VARCHAR(255) NOT NULL,
-    submission_time       TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    processed_by_username VARCHAR(255),
-    processing_time       TIMESTAMP,
-    CONSTRAINT unique_application UNIQUE (submitted_by_username, faculty_name, specialty_name)
+    username                         VARCHAR(255) PRIMARY KEY NOT NULL,
+    language_proficiency_test_result FLOAT,
+    standardized_test_result         FLOAT
 );
-

@@ -305,6 +305,7 @@
     "Faculty of Arts": "Факултет по изкуствата",
     "Faculty of Computer Science": "Факултет по компютърни науки"
   },
+  "uploadLetterOfRecommendationError": "Моля качете препоръчително писмо.",
   "filterUsers": "Филтриране на потребители",
   "successfullyUpdatedUser": "Успешно актуализиран потребител.",
   "successfullyUnblockUser": "Успешно отключен потребител.",
@@ -339,6 +340,6 @@
   "processedByUsername": "Променено от",
   "deletedByUsername": "Изтрито от",
   "applicationStatusHeader": "Статус",
-  "applicationActivityLogs": "История на активността на приложенията"
+  "applicationActivityLogs": "История на активността на заявленията"
 }
 

@@ -1,6 +1,7 @@
 --liquibase formatted sql
 
 --changeset denisdanov:0002 splitStatements:true
+
 INSERT INTO uni_applications.roles (role_name, role_description)
 VALUES ('ADMIN', 'Administrator role'),
        ('STUDENT', 'Student role');
@@ -41,9 +42,9 @@ INSERT INTO uni_applications.specialties_requirements (min_grade, requirement_de
                                                        language_proficiency_test_min_result,
                                                        standardized_test_min_result,
                                                        letter_of_recommendation_required, personal_statement_required)
-VALUES (3.0, 'Minimum grade of 3.0 required', 75, 1500, TRUE, TRUE),
-       (4, 'Minimum grade of 4.0 required', 60, 1300, FALSE, TRUE),
-       (3.5, 'Minimum grade of 3.5 required', NULL, 1600, TRUE, TRUE);
+VALUES (3.0, 'Minimum grade of 3.0 required', 75, 50, TRUE, TRUE),
+       (4, 'Minimum grade of 4.0 required', 60, 69, FALSE, TRUE),
+       (3.5, 'Minimum grade of 3.5 required', NULL, 70, TRUE, TRUE);
 
 INSERT INTO uni_applications.specialties (specialty_name, total_credits_required, employment_rate,
                                           specialty_requirement_id, specialty_program_id, faculty_id)

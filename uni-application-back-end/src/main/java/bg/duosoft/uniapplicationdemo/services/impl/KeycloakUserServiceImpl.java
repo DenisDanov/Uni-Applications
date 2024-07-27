@@ -92,7 +92,8 @@ public class KeycloakUserServiceImpl implements KeycloakUserService {
         UsersResource usersResource = keycloak.realm(realm).users();
         List<UserRepresentation> users = usersResource.search(username);
         if (!users.isEmpty()) {
-            return users.stream().filter(userRepresentation -> userRepresentation.getUsername().equals(username)).findFirst().get();
+            Optional<UserRepresentation> user = users.stream().filter(userRepresentation -> userRepresentation.getUsername().equals(username)).findFirst();
+            return user.orElse(null);
         }
         return null;
     }
@@ -101,7 +102,7 @@ public class KeycloakUserServiceImpl implements KeycloakUserService {
     public UserDTO update(UserDTO userDTO) {
         UsersResource usersResource = keycloak.realm(realm).users();
 
-        UserResource userResource = usersResource.get(usersResource.search(userDTO.getUsername()).getFirst().getId());
+        UserResource userResource = usersResource.get(usersResource.search(userDTO.getUsername().toLowerCase()).getFirst().getId());
         UserRepresentation userRepresentation = userResource.toRepresentation();
 
         userRepresentation.setFirstName(userDTO.getFirstName());
@@ -127,7 +128,7 @@ public class KeycloakUserServiceImpl implements KeycloakUserService {
     public UserDTO updateUserRoles(UserDTO userDTO) {
         UsersResource usersResource = keycloak.realm(realm).users();
 
-        UserResource userResource = usersResource.get(usersResource.search(userDTO.getUsername()).getFirst().getId());
+        UserResource userResource = usersResource.get(usersResource.search(userDTO.getUsername().toLowerCase()).getFirst().getId());
         UserRepresentation userRepresentation = userResource.toRepresentation();
         usersResource.get(userRepresentation.getId()).roles().realmLevel().remove(getRealmRoles());
         userRepresentation.getAttributes().put("accessLevel", Collections.singletonList(""));
@@ -167,7 +168,7 @@ public class KeycloakUserServiceImpl implements KeycloakUserService {
         UsersResource usersResource = keycloak.realm(realm).users();
         List<UserRepresentation> users = usersResource.list();
 
-        String username = filterUsersDTO.getUsername();
+        String username = filterUsersDTO.getUsername() != null ? filterUsersDTO.getUsername().toLowerCase() : null;
         String email = filterUsersDTO.getEmail();
         String phoneNumber = filterUsersDTO.getPhoneNumber();
 

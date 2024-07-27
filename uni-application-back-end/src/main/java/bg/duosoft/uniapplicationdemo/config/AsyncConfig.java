@@ -30,15 +30,4 @@ public class AsyncConfig {
         executor.initialize();
         return executor;
     }
-
-    @Bean(name = "threadPoolTaskExecutorDeletionLogs")
-    public ThreadPoolTaskExecutor threadPoolTaskExecutorDeletionLogs() {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(30);
-        executor.setMaxPoolSize(50);
-        executor.setQueueCapacity(100);
-        executor.setThreadNamePrefix("AsyncThreadDeletionLogs-");
-        executor.initialize();
-        return executor;
-    }
 }

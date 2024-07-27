@@ -173,7 +173,7 @@ const ManageStudentApplications: React.FC = () => {
                                 </Typography>
                                 <Box mt={2}>
                                     <Chip
-                                        label={isBgLanguage ? t(`profile.status.${application.applicationStatus.applicationStatus}`) : application.applicationStatus.applicationStatus}
+                                        label={isBgLanguage ? t(`applicationStatus.${application.applicationStatus.applicationStatus}`) : application.applicationStatus.applicationStatus}
                                         color={
                                             application.applicationStatus.applicationStatus === "PENDING"
                                                 ? "warning"
