@@ -8,6 +8,7 @@ import bg.duosoft.uniapplicationdemo.validators.config.ValidationError;
 import bg.duosoft.uniapplicationdemo.validators.config.ValidationErrorException;
 import bg.duosoft.uniapplicationdemo.validators.config.Validator;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -19,6 +20,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Getter
+@Setter
 public abstract class BaseServiceImpl<ID extends Serializable, DTO extends BaseDTO<ID>, E extends Serializable, M extends BaseObjectMapper<E, DTO>, V extends Validator<DTO>, R extends BaseRepository<E, ID>> implements BaseService<ID, DTO> {
 
     @Autowired(required = false)

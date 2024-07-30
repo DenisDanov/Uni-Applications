@@ -8,6 +8,8 @@ import java.io.Serializable;
 @ToString
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class RoleDTO extends BaseDTO<String> implements Serializable {
     private String role;
 

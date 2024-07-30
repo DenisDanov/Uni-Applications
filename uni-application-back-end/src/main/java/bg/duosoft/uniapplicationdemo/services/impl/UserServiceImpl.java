@@ -10,18 +10,15 @@ import bg.duosoft.uniapplicationdemo.services.UserService;
 import bg.duosoft.uniapplicationdemo.validators.UserValidator;
 import bg.duosoft.uniapplicationdemo.validators.config.ValidationError;
 import bg.duosoft.uniapplicationdemo.validators.config.ValidationErrorException;
+import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import org.keycloak.representations.idm.UserRepresentation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
-import jakarta.ws.rs.core.Response;
 
 import java.util.List;
 import java.util.Optional;
@@ -30,9 +27,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-    @Lazy
-    @Autowired
-    private StudentApplicationService studentApplicationService;
+    private final StudentApplicationService studentApplicationService;
 
     private final UserValidator userValidator;
 

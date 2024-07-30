@@ -36,6 +36,7 @@ public abstract class CrudController<ID extends Serializable, DTO extends Serial
     @GetMapping
     public List<DTO> getAll() {
         if (isProtected()) {
+            checkPermissions(getAdminRole());
             checkPermissions(getReadOnlyRole() + "-or-" + getAccessRole());
         }
         return service.getAll();
@@ -44,6 +45,7 @@ public abstract class CrudController<ID extends Serializable, DTO extends Serial
     @PostMapping
     public DTO create(@RequestBody DTO dto) {
         if (isProtected()) {
+            checkPermissions(getAdminRole());
             checkPermissions(getAccessRole() + "-and-" + getAdminRole());
         }
         return service.create(dto);
@@ -52,6 +54,7 @@ public abstract class CrudController<ID extends Serializable, DTO extends Serial
     @PutMapping
     public DTO update(@RequestBody DTO dto) {
         if (isProtected()) {
+            checkPermissions(getAdminRole());
             checkPermissions(getAccessRole()+ "-and-" + getAdminRole());
         }
         return service.update(dto);
@@ -60,6 +63,7 @@ public abstract class CrudController<ID extends Serializable, DTO extends Serial
     @DeleteMapping(value = "/{id}")
     public void delete(@PathVariable("id") ID id) throws Exception {
         if (isProtected()) {
+            checkPermissions(getAdminRole());
             checkPermissions(getAccessRole() + "-and-" + getAdminRole());
         }
         try {

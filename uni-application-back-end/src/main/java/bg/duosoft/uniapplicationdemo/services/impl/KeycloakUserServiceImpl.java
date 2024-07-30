@@ -247,7 +247,7 @@ public class KeycloakUserServiceImpl implements KeycloakUserService {
         return false;
     }
 
-    private void deleteByUsername(String username) {
+    public void deleteByUsername(String username) {
         UsersResource usersResource = keycloak.realm(realm).users();
         List<UserRepresentation> users = usersResource.search(username);
 
@@ -262,7 +262,7 @@ public class KeycloakUserServiceImpl implements KeycloakUserService {
         }
     }
 
-    private List<RoleRepresentation> getRealmRoles() {
+    public List<RoleRepresentation> getRealmRoles() {
         return List.of(keycloak.realm(realm).roles().get("student").toRepresentation(),
                 keycloak.realm(realm).roles().get("admin").toRepresentation(),
                 keycloak.realm(realm).roles().get("READ_ONLY_ACCESS").toRepresentation(),

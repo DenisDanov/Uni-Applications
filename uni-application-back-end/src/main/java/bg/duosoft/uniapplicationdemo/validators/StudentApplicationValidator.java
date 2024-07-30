@@ -12,6 +12,8 @@ import bg.duosoft.uniapplicationdemo.validators.config.ValidationError;
 import bg.duosoft.uniapplicationdemo.validators.config.Validator;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -23,7 +25,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class StudentApplicationValidator implements Validator<StudentApplicationDTO> {
 
-    private final UserService userService;
+    @Lazy
+    @Autowired
+    private UserService userService;
 
     private final SpecialtyRepository specialtyRepository;
 

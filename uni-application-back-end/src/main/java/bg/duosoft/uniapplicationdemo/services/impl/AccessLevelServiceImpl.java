@@ -7,6 +7,8 @@ import bg.duosoft.uniapplicationdemo.repositories.AccessLevelRepository;
 import bg.duosoft.uniapplicationdemo.services.AccessLevelService;
 import bg.duosoft.uniapplicationdemo.services.base.BaseServiceImpl;
 import bg.duosoft.uniapplicationdemo.validators.nomenclatures.AccessLevelValidator;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service

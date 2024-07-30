@@ -4,6 +4,7 @@ import bg.duosoft.uniapplicationdemo.models.dtos.FileMetadataDTO;
 import io.minio.*;
 import io.minio.http.Method;
 import io.minio.messages.Item;
+import lombok.Setter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,10 +13,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@Setter
 @Service
 public class MinioService {
 
-    private final MinioClient minioClient;
+    private MinioClient minioClient;
 
     public MinioService() {
         minioClient = MinioClient.builder()
@@ -65,7 +67,7 @@ public class MinioService {
                 .build());
     }
 
-    private String getFileContentType(String objectName) throws Exception {
+    public String getFileContentType(String objectName) throws Exception {
         StatObjectResponse stat = minioClient.statObject(StatObjectArgs.builder()
                 .bucket("uni-app-files")
                 .object(objectName)
