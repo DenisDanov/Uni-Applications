@@ -1,33 +1,24 @@
 package bg.duosoft.uniapplicationdemo.services;
 
 import bg.duosoft.uniapplicationdemo.models.dtos.FilterUsersDTO;
+import bg.duosoft.uniapplicationdemo.models.dtos.UserDTO;
 import bg.duosoft.uniapplicationdemo.models.dtos.nomenclatures.RoleDTO;
 import bg.duosoft.uniapplicationdemo.services.impl.KeycloakUserServiceImpl;
 import jakarta.ws.rs.core.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.keycloak.admin.client.CreatedResponseUtil;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.RealmResource;
-import org.keycloak.admin.client.resource.RoleMappingResource;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.admin.client.resource.UsersResource;
-import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
-import org.springframework.util.StringUtils;
 
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
@@ -283,5 +274,177 @@ class KeycloakUserServiceImplTest {
         Map<String, List<String>> attributes = new HashMap<>();
         attributes.put("phoneNumber", Collections.singletonList(phoneNumber));
         return attributes;
+    }
+
+    @Test
+    void testGetUserByEmail() {
+        // Arrange
+        UserRepresentation user = new UserRepresentation();
+        user.setEmail("test@example.com");
+        List<UserRepresentation> userList = Collections.singletonList(user);
+
+        when(usersResource.searchByEmail(anyString(), anyBoolean())).thenReturn(userList);
+
+        // Act
+        UserRepresentation foundUser = keycloakUserService.getUserByEmail("test@example.com");
+
+        // Assert
+        assertNotNull(foundUser);
+        assertEquals("test@example.com", foundUser.getEmail());
+        verify(usersResource).searchByEmail("test@example.com", true);
+    }
+
+    @Test
+    void testGetUserByEmailNotFound() {
+        // Arrange
+        when(usersResource.searchByEmail(anyString(), anyBoolean())).thenReturn(Collections.emptyList());
+
+        // Act
+        UserRepresentation foundUser = keycloakUserService.getUserByEmail("nonexistent@example.com");
+
+        // Assert
+        assertNull(foundUser);
+        verify(usersResource).searchByEmail("nonexistent@example.com", true);
+    }
+
+    @Test
+    void testManageBlockingUserBlock() {
+        // Arrange
+        UserRepresentation user = mock(UserRepresentation.class);
+        when(usersResource.search("testUser")).thenReturn(Collections.singletonList(user));
+        when(usersResource.get(user.getId())).thenReturn(userResource);
+        when(userResource.toRepresentation()).thenReturn(user);
+        when(user.isEnabled()).thenReturn(true);
+
+        // Act
+        boolean result = keycloakUserService.manageBlockingUser("testUser", "block");
+
+        // Assert
+        assertTrue(result);
+        verify(userResource).update(user);
+    }
+
+    @Test
+    void testManageBlockingUserUnblock() {
+        // Arrange
+        UserRepresentation user = mock(UserRepresentation.class);
+        when(usersResource.search("testUser")).thenReturn(Collections.singletonList(user));
+        when(usersResource.get(user.getId())).thenReturn(userResource);
+        when(userResource.toRepresentation()).thenReturn(user);
+        when(user.isEnabled()).thenReturn(false);
+
+        // Act
+        boolean result = keycloakUserService.manageBlockingUser("testUser", "unblock");
+
+        // Assert
+        assertTrue(result);
+        verify(userResource).update(user);
+    }
+
+    @Test
+    void testManageBlockingUserNoChange() {
+        // Arrange
+        UserRepresentation user = mock(UserRepresentation.class);
+        when(usersResource.search("testUser")).thenReturn(Collections.singletonList(user));
+        when(usersResource.get(user.getId())).thenReturn(userResource);
+        when(userResource.toRepresentation()).thenReturn(user);
+        when(user.isEnabled()).thenReturn(true);
+
+        // Act
+        boolean result = keycloakUserService.manageBlockingUser("testUser", "unblock");
+
+        // Assert
+        assertFalse(result); // Expecting no change to be made
+        assertTrue(user.isEnabled()); // User should remain enabled
+        verify(userResource, never()).update(any(UserRepresentation.class));
+    }
+
+    @Test
+    void testDeleteByIdSuccess() {
+        // Arrange
+        UserDTO userDTO = new UserDTO();
+        userDTO.setUsername("testUser");
+
+        UserRepresentation user = new UserRepresentation();
+        user.setId("user-id");
+        user.setUsername("testUser");
+        List<UserRepresentation> userList = Collections.singletonList(user);
+
+        when(usersResource.search("testUser")).thenReturn(userList);
+        when(usersResource.get("user-id")).thenReturn(userResource);
+
+        // Act
+        keycloakUserService.deleteById(userDTO.getUsername());
+
+        // Assert
+        verify(usersResource).search("testUser");
+        verify(usersResource).get("user-id");
+        verify(userResource).remove();
+    }
+
+    @Test
+    void testDeleteByIdNotFound() {
+        // Arrange
+        UserDTO userDTO = new UserDTO();
+        userDTO.setUsername("nonExistentUser");
+
+        when(usersResource.search("nonExistentUser")).thenReturn(Collections.emptyList());
+
+        // Act & Assert
+        IllegalArgumentException thrown = assertThrows(IllegalArgumentException.class, () ->
+                keycloakUserService.delete(userDTO));
+        assertEquals("User not found", thrown.getMessage());
+    }
+
+    @Test
+    void testUpdateUser() {
+        // Arrange
+        UserDTO userDTO = new UserDTO();
+        userDTO.setUsername("testUser");
+        userDTO.setFirstName("John");
+        userDTO.setLastName("Doe");
+        userDTO.setEmail("john.doe@example.com");
+        userDTO.setMiddleName("Michael");
+        userDTO.setDateOfBirth(java.sql.Date.valueOf("1990-01-01"));
+        userDTO.setPhoneNumber("1234567890");
+
+        UserRepresentation existingUserRepresentation = new UserRepresentation();
+        existingUserRepresentation.setAttributes(new HashMap<>());
+
+        when(usersResource.search(userDTO.getUsername().toLowerCase())).thenReturn(Collections.singletonList(existingUserRepresentation));
+        when(usersResource.get(existingUserRepresentation.getId())).thenReturn(userResource);
+        when(userResource.toRepresentation()).thenReturn(existingUserRepresentation);
+
+        // Act
+        UserDTO updatedUserDTO = keycloakUserService.update(userDTO);
+
+        // Assert
+        assertEquals(userDTO, updatedUserDTO);
+        verify(userResource).update(existingUserRepresentation);
+
+        // Verify attributes are set correctly
+        Map<String, List<String>> expectedAttributes = new HashMap<>();
+        expectedAttributes.put("middleName", Collections.singletonList("Michael"));
+        expectedAttributes.put("dateOfBirth", Collections.singletonList("1990-01-01"));
+        expectedAttributes.put("phoneNumber", Collections.singletonList("1234567890"));
+
+        assertEquals(expectedAttributes, existingUserRepresentation.getAttributes());
+        assertEquals("John", existingUserRepresentation.getFirstName());
+        assertEquals("Doe", existingUserRepresentation.getLastName());
+        assertEquals("john.doe@example.com", existingUserRepresentation.getEmail());
+    }
+
+    @Test
+    void testUpdateUserNotFound() {
+        // Arrange
+        UserDTO userDTO = new UserDTO();
+        userDTO.setUsername("nonExistentUser");
+
+        when(usersResource.search(anyString())).thenReturn(Collections.emptyList());
+
+        // Act & Assert
+        NoSuchElementException thrown = assertThrows(NoSuchElementException.class, () ->
+                keycloakUserService.update(userDTO));
+        assertEquals(null, thrown.getMessage());
     }
 }
