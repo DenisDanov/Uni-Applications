@@ -1,11 +1,7 @@
 package bg.duosoft.uniapplicationdemo.services.impl;
 
 import bg.duosoft.uniapplicationdemo.models.dtos.ApplicationLogEventDTO;
-import jakarta.annotation.PreDestroy;
-import org.apache.kafka.clients.consumer.ConsumerConfig;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.consumer.*;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.slf4j.Logger;
@@ -17,8 +13,6 @@ import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,14 +20,11 @@ public class KafkaLogRetrieverService {
 
     private static final Logger logger = LoggerFactory.getLogger(KafkaLogRetrieverService.class);
 
-    private KafkaConsumer<String, ApplicationLogEventDTO> consumer;
-
     private final Properties baseConsumerProps;
 
-    // Lock to synchronize access to the consumer
-    private final Lock consumerLock = new ReentrantLock();
-
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+
+    private final TopicPartition topicPartition = new TopicPartition("applications_log", 0);
 
     public KafkaLogRetrieverService() {
         // Configure base properties
@@ -48,59 +39,41 @@ public class KafkaLogRetrieverService {
     }
 
     public List<ApplicationLogEventDTO> retrieveLogs() {
-        consumerLock.lock();
+        List<ApplicationLogEventDTO> logs = new ArrayList<>();
+        Consumer<String, ApplicationLogEventDTO> consumer = creatConsumer();
         try {
-            // Generate a new unique group ID for this retrieval
-            String uniqueGroupId = "log-retriever-group-" + UUID.randomUUID();
-
-            // Create new consumer properties with the unique group ID
-            Properties consumerProps = new Properties();
-            consumerProps.putAll(baseConsumerProps);
-            consumerProps.put(ConsumerConfig.GROUP_ID_CONFIG, uniqueGroupId);
-
-            // Create a new KafkaConsumer with the updated properties
-            consumer = new KafkaConsumer<>(consumerProps);
-            consumer.subscribe(Collections.singletonList("applications_log"));
-
             ConsumerRecords<String, ApplicationLogEventDTO> records = consumer.poll(Duration.ofMillis(1000));
 
-            final KafkaConsumer<String, ApplicationLogEventDTO> finalConsumer = consumer;
+            return records.isEmpty() ? new ArrayList<>() : records.records(topicPartition) // Replace with correct partition handling
+                    .stream()
+                    .map(ConsumerRecord::value)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            logger.error("Error occurred while retrieving logs: {}", e.getMessage(), e);
+        } finally {
             executorService.submit(() -> {
                 try {
-                    finalConsumer.close();
+                    consumer.close();
                     logger.info("Consumer closed.");
                 } catch (Exception e) {
                     logger.error("Error occurred while closing Kafka consumer: {}", e.getMessage(), e);
                 }
             });
-
-            if (records.isEmpty()) {
-                return new ArrayList<>();
-            }
-
-            // Collect all records into a list
-            return records.records(new TopicPartition("applications_log", 0)) // Replace with correct partition handling
-                    .stream()
-                    .map(ConsumerRecord::value)
-                    .collect(Collectors.toList());
-
-        } catch (Exception e) {
-            logger.error("Error occurred while retrieving logs: {}", e.getMessage(), e);
-            return new ArrayList<>();
-        } finally {
-            consumerLock.unlock();
         }
+        return logs;
     }
 
-    @PreDestroy
-    private void close() {
-        try {
-            if (consumer != null) {
-                consumer.close();
-                logger.info("Kafka consumer closed.");
-            }
-        } catch (Exception e) {
-            logger.error("Error occurred while closing Kafka resources: {}", e.getMessage(), e);
-        }
+    private Consumer<String, ApplicationLogEventDTO> creatConsumer() {
+        String uniqueGroupId = "log-retriever-group-" + UUID.randomUUID();
+
+        // Create new consumer properties with the unique group ID
+        Properties consumerProps = new Properties();
+        consumerProps.putAll(baseConsumerProps);
+        consumerProps.put(ConsumerConfig.GROUP_ID_CONFIG, uniqueGroupId);
+
+        Consumer<String, ApplicationLogEventDTO> consumer = new KafkaConsumer<>(consumerProps);
+        consumer.subscribe(Collections.singletonList("applications_log"));
+
+        return consumer;
     }
 }

@@ -107,6 +107,7 @@ public class StudentApplicationController extends CrudController<StudentsApplica
                             "Congratulations ! Your application for %s in %s is accepted.".formatted(specialtyName, facultyName));
                 } else {
                     studentApplicationDTO.setApplicationStatus(applicationStatusService.getById("DECLINED"));
+                    logger.info("Application declined.");
                 }
                 super.getService().update(studentApplicationDTO);
                 logger.info("Returning response");

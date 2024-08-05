@@ -57,7 +57,7 @@ public class LogEventsServiceImpl implements LogEventsService {
                     LocalDateTime.now());
         }
 
-        kafkaTemplate.send("applications_log", "%s-%s-%s".formatted(studentApplicationDTO.getUsername(), facultyName, specialtyName), applicationLogEventDTO);
+        kafkaTemplate.send("applications_log", applicationLogEventDTO);
     }
 
     @Override
@@ -85,6 +85,6 @@ public class LogEventsServiceImpl implements LogEventsService {
 
         // Send the updated log back to Kafka
         logger.info("Trying to log deletion event. X2");
-        kafkaTemplate.send("applications_log", "%s-%s-%s".formatted(username, facultyName, specialtyName), latestLog);
+        kafkaTemplate.send("applications_log", latestLog);
     }
 }
