@@ -56,7 +56,4 @@ public class StudentApplicationEntity implements Serializable {
 
     @Column(name = "personal_statement")
     private String personalStatement;
-
-    @OneToMany(mappedBy = "studentApplication", cascade = CascadeType.ALL)
-    private List<DeclinedStudentApplicationEntity> declinedStudentApplications;
 }

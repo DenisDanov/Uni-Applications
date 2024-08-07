@@ -147,7 +147,7 @@ const ManageUsers: React.FC = () => {
             updatedTempUsers[index].enabled = !enabled;
             setTempUsers(deepCopy(updatedTempUsers));
 
-            setSuccess(t(`successfully${enabled ? 'Unblock' : 'Block'}User`));
+            setSuccess(t(`successfully${enabled ? 'Block' : 'Unblock'}User`, {defaultValue: `Successfully ${enabled ? 'blocked' : 'unblocked'} user.`}));
             setTimeout(() => {
                 setSuccess(null);
             }, 5000);

@@ -22,7 +22,7 @@ public class DeclinedStudentApplicationEntity implements Serializable {
     @Column(name = "delete_date", nullable = false)
     private LocalDate deleteDate;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumns({
             @JoinColumn(name = "username", referencedColumnName = "username"),
             @JoinColumn(name = "specialty_id", referencedColumnName = "specialty_id"),
