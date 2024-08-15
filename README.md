@@ -13,7 +13,8 @@ Our platform offers a user-friendly experience where students can:
 - **Complete Required Tests**: Take necessary tests, such as language proficiency exams, which are prerequisites for certain applications.
 - **Upload Files**: Attach relevant documents or any files necessary for their application, such as resumes or certificates.
 - **Track Application Status**: Stay informed about their application progress with real-time updates.
-
+  - Students will also receive email notifications when their application status changes, ensuring they are always up-to-date.
+- **Edit and Update Details**: Users can manage and update their personal details from their Profile page to keep their information accurate and current.
 ### For Administrators
 
 We provide two types of administrative access to manage the platform effectively:
