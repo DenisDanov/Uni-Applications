@@ -118,7 +118,7 @@ const RequirementsTests: React.FC = () => {
             .then((response) => {
                 console.log('Test submitted:', response.data);
                 setResults(response.data);
-                setSubmissionSuccess(i18n.language === 'bg' ? t('testSubmitted') : 'Test submitted successfully. Check your results on the profile page.');
+                setSubmissionSuccess(i18n.language === 'bg' ? t('testSubmitted') : 'Test submitted successfully.');
                 setTimeout(() => setSubmissionSuccess(null), 5000);
             })
             .catch((error) => {
@@ -149,7 +149,7 @@ const RequirementsTests: React.FC = () => {
             .then((response) => {
                 console.log('Test submitted:', response.data);
                 setResults(response.data);
-                setSubmissionSuccess(i18n.language === 'bg' ? t('testSubmitted') : 'Test submitted successfully. Check your results on the profile page.');
+                setSubmissionSuccess(i18n.language === 'bg' ? t('testSubmitted') : 'Test submitted successfully.');
                 if (languageTestOpen) {
                     setLanguageTestOpen(false);
                 } else {
@@ -335,7 +335,7 @@ const RequirementsTests: React.FC = () => {
                         )}
                         {(results.languageProficiencyTestResult !== null && results.standardizedTestResult !== null) &&
                             <Alert
-                                severity="success">{i18n.language === 'bg' ? t('completedAllTests') : 'You have successfully completed all tests. Check your results on the profile page.'}</Alert>
+                                severity="success">{i18n.language === 'bg' ? t('completedAllTests') : 'You have successfully completed all tests.'}</Alert>
                         }
                     </>
                 )}

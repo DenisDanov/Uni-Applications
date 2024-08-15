@@ -78,7 +78,7 @@ const Profile: React.FC = () => {
         validationSchema: () => validationSchemaProfile(formik.values, localStorage.getItem('language') ? localStorage.getItem('language') : 'en'),
         onSubmit: async (values) => {
             try {
-                await handleSubmit(values, formik, setSuccess, setErrorUpdate);
+                await handleSubmit(values, formik, setSuccess, setErrorUpdate, t);
             } catch (err: any) {
                 setError(err.message);
             }

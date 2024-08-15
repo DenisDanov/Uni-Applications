@@ -12,7 +12,7 @@ const AdminDashboard: React.FC = () => {
 
     useEffect(() => {
         // Fetch logs from your API
-        axiosClientDefault.get('/logs') // Replace with your API endpoint
+        axiosClientDefault.get('/logs')
             .then(response => {
                 if (!response.data) {
                     throw new Error('Network response was not ok');

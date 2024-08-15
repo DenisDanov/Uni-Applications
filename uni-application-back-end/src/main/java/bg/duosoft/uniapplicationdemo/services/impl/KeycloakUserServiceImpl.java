@@ -92,7 +92,7 @@ public class KeycloakUserServiceImpl implements KeycloakUserService {
         UsersResource usersResource = keycloak.realm(realm).users();
         List<UserRepresentation> users = usersResource.search(username);
         if (!users.isEmpty()) {
-            Optional<UserRepresentation> user = users.stream().filter(userRepresentation -> userRepresentation.getUsername().equals(username)).findFirst();
+            Optional<UserRepresentation> user = users.stream().filter(userRepresentation -> userRepresentation.getUsername().equalsIgnoreCase(username)).findFirst();
             return user.orElse(null);
         }
         return null;
@@ -222,7 +222,7 @@ public class KeycloakUserServiceImpl implements KeycloakUserService {
         UsersResource usersResource = keycloak.realm(realm).users();
         List<UserRepresentation> users = usersResource.searchByEmail(email, true);
         if (!users.isEmpty()) {
-            return users.stream().filter(userRepresentation -> userRepresentation.getEmail().equals(email)).findFirst().get();
+            return users.stream().filter(userRepresentation -> userRepresentation.getEmail().equalsIgnoreCase(email)).findFirst().get();
         }
         return null;
     }

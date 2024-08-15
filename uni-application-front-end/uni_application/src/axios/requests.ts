@@ -29,7 +29,7 @@ export const downloadFile = async (application: any) => {
 
         // Create a URL for the file and link it
         const fileType = 'application/octet-stream'; // Fallback to octet-stream
-        const url = window.URL.createObjectURL(new Blob([response.data], { type: fileType }));
+        const url = window.URL.createObjectURL(new Blob([response.data], {type: fileType}));
         const link = document.createElement('a');
         link.href = url;
         link.setAttribute('download', fileName); // Set the filename from the header
@@ -195,16 +195,16 @@ export const toggleBlockStatus = async (username: string, enabled: boolean): Pro
     }
 };
 
-export const updateUser = async (values: any, formik: any, setSuccess: Function, setErrorUpdate: Function): Promise<void> => {
+export const updateUser = async (values: any, formik: any, setSuccess: Function, setErrorUpdate: Function, t: any): Promise<void> => {
     try {
         const response = await axiosClientDefault.put<User>("/user/update", values);
-        setSuccess("Updated data successfully.");
+        setSuccess(t(`updatedProfileData`, {defaultValue: "Updated data successfully."}));
         setTimeout(() => {
             setSuccess(null);
         }, 5000);
         formik.setValues({...response.data, password: ""});
     } catch (error: any) {
-        setErrorUpdate("Failed to update your data, please try again.");
+        setErrorUpdate(t(`updatedProfileDataError`, {defaultValue: "Failed to update your data, please try again."}));
         setTimeout(() => {
             setErrorUpdate(null);
         }, 5000);
@@ -237,9 +237,9 @@ export const getUserData = async (formik: any, setLoading: Function, setStudentA
     }
 };
 
-export const handleSubmit = async (values: any, formik: any, setSuccess: Function, setError: Function): Promise<void> => {
+export const handleSubmit = async (values: any, formik: any, setSuccess: Function, setError: Function, t: any): Promise<void> => {
     try {
-        await updateUser(values, formik, setSuccess, setError);
+        await updateUser(values, formik, setSuccess, setError, t);
     } catch (err: any) {
         setError(err.message);
     }
