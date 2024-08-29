@@ -109,12 +109,8 @@
                 </#list>
             </td>
             <td>
-                <#list teacherInfo as info>
-                    <#list info.subjects as teacherSubject>
-                        <#if subject.id == teacherSubject.id>
-                            ${info.teacherName!"N/A"?html}
-                        </#if>
-                    </#list>
+                <#list subject.teachers as info>
+                    ${info.teacherName!"N/A"?html}
                 </#list>
             </td>
         </tr>

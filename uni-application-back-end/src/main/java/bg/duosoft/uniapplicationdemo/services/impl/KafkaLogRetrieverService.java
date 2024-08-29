@@ -42,7 +42,7 @@ public class KafkaLogRetrieverService {
         List<ApplicationLogEventDTO> logs = new ArrayList<>();
         Consumer<String, ApplicationLogEventDTO> consumer = creatConsumer();
         try {
-            ConsumerRecords<String, ApplicationLogEventDTO> records = consumer.poll(Duration.ofMillis(1000));
+            ConsumerRecords<String, ApplicationLogEventDTO> records = consumer.poll(Duration.ofMillis(5000));
 
             return records.isEmpty() ? new ArrayList<>() : records.records(topicPartition) // Replace with correct partition handling
                     .stream()

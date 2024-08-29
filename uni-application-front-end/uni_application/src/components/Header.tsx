@@ -1,15 +1,15 @@
 import React from 'react';
-import { AppBar, Toolbar, Box, Breadcrumbs, Link } from '@mui/material';
+import {AppBar, Toolbar, Box, Breadcrumbs, Link} from '@mui/material';
 import NavBar from './NavBar';
 import LanguageSwitcher from './LanguageSwitcher';
-import { Link as RouterLink, useLocation } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
+import {Link as RouterLink, useLocation} from 'react-router-dom';
+import {useTranslation} from 'react-i18next';
 
 const Header: React.FC = () => {
     const location = useLocation();
     const pathNames = location.pathname.split('/').filter((x) => x);
-    const { t, i18n } = useTranslation();
-    const isBgLanguage = i18n.language === 'bg'; // Check if the current language is Bulgarian
+    const {t, i18n} = useTranslation();
+    const isBgLanguage = i18n.language === 'bg';
 
     const breadcrumbNameMap: { [key: string]: string } = {
         '': isBgLanguage ? t('breadcrumbs.home') : 'Home',
@@ -23,21 +23,23 @@ const Header: React.FC = () => {
         'login': isBgLanguage ? t('breadcrumbs.login') : 'Login',
         'evaluate-application': isBgLanguage ? t('breadcrumbs.evaluateApplication') : 'Evaluate Application',
         'admin-dashboard': isBgLanguage ? t('breadcrumbs.adminDashboard') : 'Admin Dashboard',
+        'news': isBgLanguage ? t('menu.news') : 'News'
     };
 
     return (
         <>
-            <AppBar position="static" sx={{ boxShadow: 'none' }}>
+            <AppBar position="static"
+                    sx={{display: 'flex', justifyContent: 'center', boxShadow: 'none'}}>
                 <Toolbar>
-                    <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <NavBar />
-                            <LanguageSwitcher />
+                    <Box sx={{paddingTop: '0', flexGrow: 1, display: 'flex', flexDirection: 'column'}}>
+                        <Box sx={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                            <NavBar/>
+                            <LanguageSwitcher/>
                         </Box>
                     </Box>
                 </Toolbar>
             </AppBar>
-            <Box style={{ marginTop: '10px', marginLeft: '1.1%' }}>
+            <Box style={{marginTop: '10px', marginLeft: '1.1%'}}>
                 <Breadcrumbs aria-label="breadcrumb">
                     <Link color="inherit" component={RouterLink} to="/">
                         {breadcrumbNameMap['']}

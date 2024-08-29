@@ -1,3 +1,85 @@
 body {
     margin: 0;
 }
+
+.css-6hp17o-MuiList-root-MuiMenu-list {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+.specialty-link {
+    color: blue;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+@media (width: 408px) {
+    #delete-news-btn {
+        position: relative;
+        bottom: initial;
+        right: -10px;
+    }
+}
+
+@media (max-width: 404px) {
+    #delete-news-btn {
+        position: relative;
+        bottom: initial;
+        right: 0;
+    }
+}
+
+@media (max-width: 600px) {
+    .MuiDialog-container .MuiPaper-root {
+        margin-left: 33px !important;
+    }
+}
+
+.markdown-content p img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+}
+
+.markdown-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1em;
+}
+
+.markdown-content th,
+.markdown-content td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.markdown-content th {
+    background-color: #f2f2f2;
+}
+
+.markdown-content table {
+    overflow-x: auto;
+    display: block;
+}
+
+@media (max-width: 1531px) {
+    .specialties-cards {
+        flex-basis: 40% !important;
+        max-width: none !important;
+    }
+}
+
+@media (max-width: 1050px) {
+    .specialties-cards {
+        flex-basis: 50% !important;
+        max-width: none !important;
+    }
+}
+
+@media (max-width: 780px) {
+    .specialties-cards {
+        flex-basis: 100% !important;
+        max-width: none !important;
+    }
+}

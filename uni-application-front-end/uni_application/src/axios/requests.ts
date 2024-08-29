@@ -1,6 +1,7 @@
 import {axiosClientDefault} from './axiosClient';
 import {Specialty} from '../types/Specialty';
 import {User} from "../types/User";
+import {NewsDTO} from "../types/NewsDTO";
 
 export const getSpecialtiesByFaculty = async (facultyId: number): Promise<Specialty[]> => {
     try {
@@ -220,13 +221,13 @@ export const updateUser = async (values: any, formik: any, setSuccess: Function,
 export const getUserData = async (formik: any, setLoading: Function, setStudentApplications: Function, setError: Function): Promise<void> => {
     try {
         const response = await axiosClientDefault.get<User>("/user/get");
-        setLoading(false);
         formik.setValues({...response.data, password: ""});
         const {roleDTO} = response.data;
         if (roleDTO.role === "STUDENT") {
             const applicationsResponse = await axiosClientDefault.get<any[]>("/student-application/my-applications");
             setStudentApplications(applicationsResponse.data);
         }
+        setLoading(false);
     } catch (error: any) {
         if (error.response && error.response.status === 404) {
             setError("User not found.");
@@ -252,5 +253,34 @@ export const fetchSpecialties = async (setSpecialties: Function): Promise<void> 
     } catch (error) {
         console.error('Error fetching specialties:', error);
         throw error;
+    }
+};
+
+// Fetch all news
+export const fetchNews = async (): Promise<NewsDTO[]> => {
+    try {
+        const response = await axiosClientDefault.get<NewsDTO[]>("/news");
+        return response.data;
+    } catch (error) {
+        throw new Error("Failed to fetch news.");
+    }
+};
+
+// Add news
+export const addNews = async (news: Omit<NewsDTO, "id">): Promise<NewsDTO> => {
+    try {
+        const response = await axiosClientDefault.post<NewsDTO>("/news", news);
+        return response.data;
+    } catch (error) {
+        throw new Error("Failed to add news.");
+    }
+};
+
+// Delete news by ID
+export const deleteNews = async (id: number): Promise<void> => {
+    try {
+        await axiosClientDefault.delete(`/news/${id}`);
+    } catch (error) {
+        throw new Error("Failed to delete news.");
     }
 };

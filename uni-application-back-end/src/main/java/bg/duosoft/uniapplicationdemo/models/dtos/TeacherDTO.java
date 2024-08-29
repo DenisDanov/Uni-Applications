@@ -16,8 +16,6 @@ public class TeacherDTO extends BaseDTO<Long> implements Serializable {
 
     private String teacherName;
 
-    private List<SubjectDTO> subjects;
-
     @Override
     public Long getId() {
         return id;

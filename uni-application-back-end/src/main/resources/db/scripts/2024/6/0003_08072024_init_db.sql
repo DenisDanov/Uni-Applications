@@ -173,3 +173,12 @@ CREATE TABLE uni_applications.students_requirements_results
     language_proficiency_test_result FLOAT,
     standardized_test_result         FLOAT
 );
+
+CREATE TABLE `uni_applications_v2`.`news`
+(
+    `id`              INT AUTO_INCREMENT PRIMARY KEY,
+    `author_username` VARCHAR(255)  NOT NULL,
+    `creation_time`   TIMESTAMP     NOT NULL,
+    `news_header`     VARCHAR(1000) NOT NULL,
+    `news_text`       TEXT          NOT NULL
+)

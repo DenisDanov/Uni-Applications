@@ -53,7 +53,7 @@ const ApplicationForm: React.FC = () => {
     const dispatch = useDispatch<AppDispatch>();
     const { faculties } = useSelector((state: RootState) => state.faculties);
     const [selectedFacultyId, setSelectedFacultyId] = useState<number | null>(null);
-    const specialties = useFetchSpecialties(selectedFacultyId);
+    let specialties = useFetchSpecialties(selectedFacultyId);
     const selectedFiles = useSelector(selectSelectedFiles);
     const selectedFileNames = useSelector(selectSelectedFileNames);
     const [error, setError] = useState<string | null>(null);
@@ -72,6 +72,48 @@ const ApplicationForm: React.FC = () => {
         isLetterOfRecommendationRequired: false,
         isPersonalStatementRequired: false,
     });
+
+    useEffect(() => {
+        // Parse URL parameters
+        const queryParams = new URLSearchParams(location.search);
+        const facultyId = queryParams.get('facultyId');
+        const specialtyId = queryParams.get('specialtyId');
+
+        if (facultyId) {
+            const parsedFacultyId = parseInt(facultyId, 10);
+            setSelectedFacultyId(parsedFacultyId);
+            const selectedFacultyName = faculties.find((f) => f.id === parsedFacultyId);
+            formik.setFieldValue('facultyName', selectedFacultyName?.facultyName);
+            formik.setFieldValue('facultyId', parsedFacultyId);
+
+            // Fetch specialties for the selected faculty
+            getSpecialtiesByFaculty(parsedFacultyId).then(data => {
+                specialties = (data);
+                // Set the specialty if specialtyId is present
+                if (specialtyId) {
+                    const parsedCourseId = parseInt(specialtyId, 10);
+                    formik.setFieldValue('specialtyId', parsedCourseId);
+                    const selectedSpecialty = data.find(specialty => specialty.id === parsedCourseId) || {} as Specialty;
+                    formik.setFieldValue('specialty', selectedSpecialty);
+                    setFormRequirements({
+                        isLanguageProficiencyRequired: !!selectedSpecialty.specialtyRequirement?.languageProficiencyTestMinResult,
+                        isLetterOfRecommendationRequired: !!selectedSpecialty.specialtyRequirement?.letterOfRecommendationRequired,
+                        isPersonalStatementRequired: !!selectedSpecialty.specialtyRequirement?.personalStatementRequired,
+                    });
+
+                    if (!selectedSpecialty.specialtyRequirement.letterOfRecommendationRequired) {
+                        formik.values.letterOfRecommendation = null;
+                    }
+                    if (!selectedSpecialty.specialtyRequirement.languageProficiencyTestMinResult) {
+                        // @ts-ignore
+                        formik.values.languageProficiencyTestResult = null;
+                    }
+                }
+            }).catch(err => {
+                console.log(err);
+            });
+        }
+    }, [location.search]);
 
     useEffect(() => {
         dispatch(fetchFaculties());

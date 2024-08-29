@@ -7,6 +7,7 @@
     "discoverSpecialties": "Открийте специалности",
     "startApplication": "Започнете вашето заявление"
   },
+  "seeAllSpecialties": "Виж всички специалности",
   "menu": {
     "title": "Меню",
     "home": "Начало",
@@ -19,7 +20,8 @@
     "requirementsTests": "Тестове по изисквания",
     "manageApplications": "Управление на кандидатури",
     "manageUsers": "Управление на потребители",
-    "adminDashboard": "Администраторски панел"
+    "adminDashboard": "Администраторски панел",
+    "news": "Новини"
   },
   "breadcrumbs": {
     "home": "Начало",
@@ -35,6 +37,7 @@
     "adminDashboard": "Администраторски панел"
   },
   "profile": {
+    "details": "Детайли",
     "title": "Профил",
     "username": "Потребителско име",
     "email": "Имейл",
@@ -44,7 +47,9 @@
     "lastName": "Фамилно име",
     "phoneNumber": "Телефонен номер",
     "status": {
-      "PENDING": "В процес на изчакване"
+      "PENDING": "В процес на изчакване",
+      "ACCEPTED": "Приет",
+      "DECLINED": "Отхвърлен"
     },
     "accountType": "Тип акаунт",
     "accountTypeValue": {
@@ -93,8 +98,8 @@
     "Faculty of Computer Science": {
       "title": "Факултет по компютърни науки",
       "description": "Факултетът по компютърни науки предлага обширна програма по компютърни науки и инженерство.",
-      "establishedOn": "Учреден на",
-      "totalNumberStudents": "Общо студенти",
+      "establishedOn": "Учреден на: ",
+      "totalNumberStudents": "Общо студенти: ",
       "subjects": {
         "Computer Science": "Компютърни науки",
         "Introduction to computer science and programming": "Въведение в компютърните науки и програмирането"
@@ -118,8 +123,8 @@
     "Faculty of Arts": {
       "title": "Факултет по изкуства",
       "description": "Факултетът по изкуства предлага разнообразие от курсове в областта на изобразителното изкуство и креативността.",
-      "establishedOn": "Учреден на",
-      "totalNumberStudents": "Общо студенти",
+      "establishedOn": "Учреден на:",
+      "totalNumberStudents": "Общо студенти:",
       "subjects": {
         "Drawing": "Рисуване",
         "Fundamentals of drawing and sketching": "Основи на рисуването и скицирането"
@@ -143,8 +148,8 @@
     "Faculty of Medicine": {
       "title": "Факултет по медицина",
       "description": "Факултетът по медицина предоставя обучение в областта на медицината и клиничното обучение.",
-      "establishedOn": "Учреден на",
-      "totalNumberStudents": "Общо студенти",
+      "establishedOn": "Учреден на:",
+      "totalNumberStudents": "Общо студенти:",
       "subjects": {
         "Anatomy": "Анатомия",
         "Study of the structure of living organisms": "Изучаване на структурата на живите организми"
@@ -166,7 +171,7 @@
       "letterOfRecommendationRequired": "Препоръчително писмо: да"
     },
     "teachersHeader": "Учители",
-    "specialties": "Специалности",
+    "specialties": "Специалности:",
     "employmentRate": "Процент на заетост",
     "degreeType": "Степен",
     "accreditation": "Акредитация",
@@ -182,6 +187,19 @@
     "no": "не"
   },
   "specialties": {
+    "teachersHeader": "Учители",
+    "applyButton": "Кандидатствай",
+    "additionalInfo": "Допълнителна Информация",
+    "requirements": "Изисквания",
+    "standardizedTest": "Стандартен тест минимален резултат",
+    "letterOfRecommendation": "Препоръчително писмо",
+    "personalStatement": "Мотивационно писмо",
+    "programDetails": "Информация за програмата",
+    "program": "Специалност",
+    "duration": "Продължителност в дни",
+    "days": "дни",
+    "minGrade": "Минимална оценка",
+    "languageProficiency": "Тест по Английски минимален резултат",
     "Computer Engineering": {
       "title": "Компютърно инженерство",
       "description": "Изучаване на хардуерни и софтуерни системи",
@@ -190,7 +208,9 @@
       "accreditation": "ABET - Пълна акредитация",
       "subjects": {
         "Computer Science": "Компютърни науки",
-        "Introduction to computer science and programming": "Въведение в компютърните науки и програмирането"
+        "Introduction to computer science and programming": "Въведение в компютърните науки и програмирането",
+        "Operating Systems": "Операционни системи",
+        "This subject explores the fundamental concepts of operating systems, including process management, memory management, file systems, and security. Students will gain an understanding of how operating systems work and how they manage hardware and software resources.": "Този предмет изследва основните концепции на операционните системи, включително управление на процеси, управление на паметта, файлови системи и сигурност. Студентите ще придобият разбиране за това как функционират операционните системи и как те управляват хардуерните и софтуерните ресурси."
       },
       "requirementDetails": "Минимална оценка от 3.0"
     },

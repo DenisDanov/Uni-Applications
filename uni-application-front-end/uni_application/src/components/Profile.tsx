@@ -10,14 +10,23 @@ import {
     Accordion,
     AccordionSummary,
     AccordionDetails,
-    Chip
+    Chip,
+    Grid,
+    Card,
+    CardContent,
 } from "@mui/material";
 import {useFormik} from "formik";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import AttachedFilesMenu from "./AttachedFilesMenu";
+import PersonIcon from '@mui/icons-material/Person';
+import EmailIcon from '@mui/icons-material/Email';
+import DateRangeIcon from '@mui/icons-material/DateRange';
+import PhoneIcon from '@mui/icons-material/Phone';
+import WorkIcon from '@mui/icons-material/Work';
+import BadgeIcon from '@mui/icons-material/Badge';
+import {useTranslation} from 'react-i18next';
 import {validationSchemaProfile} from "../types/validationSchema";
 import {downloadFile, generateApplicationProgram, getUserData, handleSubmit} from "../axios/requests";
-import {useTranslation} from 'react-i18next';
+import AttachedFilesMenu from "./AttachedFilesMenu";
 
 const Profile: React.FC = () => {
     const {t, i18n} = useTranslation();
@@ -75,7 +84,7 @@ const Profile: React.FC = () => {
                 roleDescription: "",
             },
         },
-        validationSchema: () => validationSchemaProfile(formik.values, localStorage.getItem('language') ? localStorage.getItem('language') : 'en'),
+        validationSchema: () => validationSchemaProfile(formik.values, localStorage.getItem('language') || 'en'),
         onSubmit: async (values) => {
             try {
                 await handleSubmit(values, formik, setSuccess, setErrorUpdate, t);
@@ -85,7 +94,7 @@ const Profile: React.FC = () => {
         },
     });
 
-    const isBgLanguage = i18n.language === 'bg'; // Check if the current language is Bulgarian
+    const isBgLanguage = i18n.language === 'bg';
 
     if (loading) {
         return (
@@ -108,11 +117,13 @@ const Profile: React.FC = () => {
     }
 
     return (
-        <Container>
-            <Box my={4}>
+        <Container maxWidth="md">
+            <Box my={4} textAlign="center">
                 <Typography variant="h4" component="h1" gutterBottom>
                     {isBgLanguage ? t('profile.title') : 'Profile'}
                 </Typography>
+            </Box>
+            <Box my={4}>
                 {errorUpdate && (
                     <Box mb={2}>
                         <Alert severity="error">{errorUpdate}</Alert>
@@ -123,121 +134,183 @@ const Profile: React.FC = () => {
                         <Alert severity="success">{success}</Alert>
                     </Box>
                 )}
-                <form onSubmit={formik.handleSubmit}>
-                    <TextField
-                        label={isBgLanguage ? t('profile.username') : 'Username'}
-                        value={formik.values.username}
-                        margin="normal"
-                        fullWidth
-                        InputProps={{
-                            readOnly: true,
-                        }}
-                    />
-                    {formik.values.roleDTO.role === 'STUDENT' && (
-                        <>
-                            <TextField
-                                label={isBgLanguage ? t('profile.email') : 'Email'}
-                                name="email"
-                                value={formik.values.email}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                margin="normal"
-                                fullWidth
-                                InputProps={{
-                                    readOnly: true,
-                                }}
-                                error={formik.touched.email && Boolean(formik.errors.email)}
-                                helperText={formik.touched.email && formik.errors.email}
-                            />
-                            <TextField
-                                label={isBgLanguage ? t('profile.dateOfBirth') : 'Date of Birth'}
-                                name="dateOfBirth"
-                                type="date"
-                                value={formik.values.dateOfBirth}
-                                onChange={formik.handleChange}
-                                onBlur={formik.handleBlur}
-                                margin="normal"
-                                fullWidth
-                                InputLabelProps={{
-                                    shrink: true,
-                                }}
-                                error={formik.touched.dateOfBirth && Boolean(formik.errors.dateOfBirth)}
-                                helperText={formik.touched.dateOfBirth && formik.errors.dateOfBirth}
-                            />
-                        </>
-                    )}
-                    <TextField
-                        label={isBgLanguage ? t('profile.firstName') : 'First Name'}
-                        name="firstName"
-                        value={formik.values.firstName}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        margin="normal"
-                        fullWidth
-                        error={formik.touched.firstName && Boolean(formik.errors.firstName)}
-                        helperText={formik.touched.firstName && formik.errors.firstName}
-                    />
-                    <TextField
-                        label={isBgLanguage ? t('profile.middleName') : 'Middle Name'}
-                        name="middleName"
-                        value={formik.values.middleName}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        margin="normal"
-                        fullWidth
-                        error={formik.touched.middleName && Boolean(formik.errors.middleName)}
-                        helperText={formik.touched.middleName && formik.errors.middleName}
-                    />
-                    <TextField
-                        label={isBgLanguage ? t('profile.lastName') : 'Last Name'}
-                        name="lastName"
-                        value={formik.values.lastName}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        margin="normal"
-                        fullWidth
-                        error={formik.touched.lastName && Boolean(formik.errors.lastName)}
-                        helperText={formik.touched.lastName && formik.errors.lastName}
-                    />
-                    {formik.values.roleDTO.role === 'STUDENT' && (
-                        <TextField
-                            label={isBgLanguage ? t('profile.phoneNumber') : 'Phone Number'}
-                            name="phoneNumber"
-                            value={formik.values.phoneNumber}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            margin="normal"
-                            fullWidth
-                            error={formik.touched.phoneNumber && Boolean(formik.errors.phoneNumber)}
-                            helperText={formik.touched.phoneNumber && formik.errors.phoneNumber}
-                        />
-                    )}
-                    <TextField
-                        label={isBgLanguage ? t('profile.accountType') : 'Account Type'}
-                        value={t(`profile.accountTypeValue.${formik.values.roleDTO.role}`, {defaultValue: formik.values.roleDTO.role})}
-                        margin="normal"
-                        fullWidth
-                        InputProps={{
-                            readOnly: true,
-                        }}
-                    />
-                    {formik.values.roleDTO.role === 'ADMIN' && (
-                        <TextField
-                            label={isBgLanguage ? t('profile.accessLevel') : 'Access Level'}
-                            value={t(`profile.accessLevelType.${formik.values.accessLevel.accessType}`, {defaultValue: formik.values.accessLevel.accessType})}
-                            margin="normal"
-                            fullWidth
-                            InputProps={{
-                                readOnly: true,
-                            }}
-                        />
-                    )}
-                    <Box mt={2}>
-                        <Button variant="contained" color="primary" type="submit">
-                            {isBgLanguage ? t('profile.saveChanges') : 'Save Changes'}
-                        </Button>
-                    </Box>
-                </form>
+                <Card variant="outlined">
+                    <CardContent>
+                        <Typography variant="h6" gutterBottom>
+                            {isBgLanguage ? t('profile.details') : 'Profile Details'}
+                        </Typography>
+                        <form onSubmit={formik.handleSubmit}>
+                            <Grid container spacing={2}>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField
+                                        label={
+                                            <Box display="flex" alignItems="center">
+                                                <PersonIcon sx={{mr: 1}}/>
+                                                {isBgLanguage ? t('profile.username') : 'Username'}
+                                            </Box>
+                                        }
+                                        value={formik.values.username}
+                                        margin="normal"
+                                        fullWidth
+                                        InputLabelProps={{shrink: true}}
+                                        InputProps={{readOnly: true}}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField
+                                        label={
+                                            <Box display="flex" alignItems="center">
+                                                <EmailIcon sx={{mr: 1}}/>
+                                                {isBgLanguage ? t('profile.email') : 'Email'}
+                                            </Box>
+                                        }
+                                        name="email"
+                                        value={formik.values.email}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        margin="normal"
+                                        fullWidth
+                                        InputLabelProps={{shrink: true}}
+                                        InputProps={{readOnly: true}}
+                                        error={formik.touched.email && Boolean(formik.errors.email)}
+                                        helperText={formik.touched.email && formik.errors.email}
+                                    />
+                                </Grid>
+                                {formik.values.roleDTO.role === 'STUDENT' && (
+                                    <>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                label={
+                                                    <Box display="flex" alignItems="center">
+                                                        <DateRangeIcon sx={{mr: 1}}/>
+                                                        {isBgLanguage ? t('profile.dateOfBirth') : 'Date of Birth'}
+                                                    </Box>
+                                                }
+                                                name="dateOfBirth"
+                                                type="date"
+                                                value={formik.values.dateOfBirth}
+                                                onChange={formik.handleChange}
+                                                onBlur={formik.handleBlur}
+                                                margin="normal"
+                                                fullWidth
+                                                InputLabelProps={{shrink: true}}
+                                                error={formik.touched.dateOfBirth && Boolean(formik.errors.dateOfBirth)}
+                                                helperText={formik.touched.dateOfBirth && formik.errors.dateOfBirth}
+                                            />
+                                        </Grid>
+                                        <Grid item xs={12} sm={6}>
+                                            <TextField
+                                                label={
+                                                    <Box display="flex" alignItems="center">
+                                                        <PhoneIcon sx={{mr: 1}}/>
+                                                        {isBgLanguage ? t('profile.phoneNumber') : 'Phone Number'}
+                                                    </Box>
+                                                }
+                                                name="phoneNumber"
+                                                value={formik.values.phoneNumber}
+                                                onChange={formik.handleChange}
+                                                onBlur={formik.handleBlur}
+                                                margin="normal"
+                                                fullWidth
+                                                error={formik.touched.phoneNumber && Boolean(formik.errors.phoneNumber)}
+                                                helperText={formik.touched.phoneNumber && formik.errors.phoneNumber}
+                                            />
+                                        </Grid>
+                                    </>
+                                )}
+                                <Grid item xs={12} sm={6}>
+                                    <TextField
+                                        label={
+                                            <Box display="flex" alignItems="center">
+                                                <PersonIcon sx={{mr: 1}}/>
+                                                {isBgLanguage ? t('profile.firstName') : 'First Name'}
+                                            </Box>
+                                        }
+                                        name="firstName"
+                                        value={formik.values.firstName}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        margin="normal"
+                                        fullWidth
+                                        error={formik.touched.firstName && Boolean(formik.errors.firstName)}
+                                        helperText={formik.touched.firstName && formik.errors.firstName}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField
+                                        label={
+                                            <Box display="flex" alignItems="center">
+                                                <PersonIcon sx={{mr: 1}}/>
+                                                {isBgLanguage ? t('profile.middleName') : 'Middle Name'}
+                                            </Box>
+                                        }
+                                        name="middleName"
+                                        value={formik.values.middleName}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        margin="normal"
+                                        fullWidth
+                                        error={formik.touched.middleName && Boolean(formik.errors.middleName)}
+                                        helperText={formik.touched.middleName && formik.errors.middleName}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField
+                                        label={
+                                            <Box display="flex" alignItems="center">
+                                                <PersonIcon sx={{mr: 1}}/>
+                                                {isBgLanguage ? t('profile.lastName') : 'Last Name'}
+                                            </Box>
+                                        }
+                                        name="lastName"
+                                        value={formik.values.lastName}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        margin="normal"
+                                        fullWidth
+                                        error={formik.touched.lastName && Boolean(formik.errors.lastName)}
+                                        helperText={formik.touched.lastName && formik.errors.lastName}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField
+                                        label={
+                                            <Box display="flex" alignItems="center">
+                                                <BadgeIcon sx={{mr: 1}}/>
+                                                {isBgLanguage ? t('profile.accountType') : 'Account Type'}
+                                            </Box>
+                                        }
+                                        value={t(`profile.accountTypeValue.${formik.values.roleDTO.role}`, {defaultValue: formik.values.roleDTO.role})}
+                                        margin="normal"
+                                        fullWidth
+                                        InputProps={{readOnly: true}}
+                                    />
+                                </Grid>
+                                {formik.values.roleDTO.role === 'ADMIN' && (
+                                    <Grid item xs={12} sm={6}>
+                                        <TextField
+                                            label={
+                                                <Box display="flex" alignItems="center">
+                                                    <WorkIcon sx={{mr: 1}}/>
+                                                    {isBgLanguage ? t('profile.accessLevel') : 'Access Level'}
+                                                </Box>
+                                            }
+                                            value={t(`profile.accessLevelType.${formik.values.accessLevel.accessType}`, {defaultValue: formik.values.accessLevel.accessType})}
+                                            margin="normal"
+                                            fullWidth
+                                            InputProps={{readOnly: true}}
+                                        />
+                                    </Grid>
+                                )}
+                            </Grid>
+                            <Box mt={2} textAlign="center">
+                                <Button variant="contained" color="primary" type="submit">
+                                    {isBgLanguage ? t('profile.saveChanges') : 'Save Changes'}
+                                </Button>
+                            </Box>
+                        </form>
+                    </CardContent>
+                </Card>
             </Box>
             <Box my={4}>
                 {formik.values.roleDTO.role === 'STUDENT' && (
@@ -247,96 +320,110 @@ const Profile: React.FC = () => {
                 )}
                 {studentApplications.length > 0 ? (
                     studentApplications.map((application, index) => (
-                        <Accordion key={index}>
-                            <AccordionSummary
-                                expandIcon={<ExpandMoreIcon/>}
-                                aria-controls={`panel${index}a-content`}
-                                id={`panel${index}a-header`}
-                            >
-                                <Typography>
-                                    {isBgLanguage ? t('profile.application', {
-                                        index: index + 1,
-                                        specialtyName: t(`profile.specialties.${application.specialtyName}`, {defaultValue: application.specialtyName})
-                                    }) : `Application #${index + 1} - ${application.specialtyName}`}
-                                </Typography>
-                            </AccordionSummary>
-                            <AccordionDetails>
-                                <Typography color="textSecondary" gutterBottom>
-                                    {isBgLanguage ? t('profile.faculty', {facultyName: t(`profile.faculties.${application.facultyName}`, {defaultValue: application.facultyName})}) : `Faculty: ${application.facultyName}`}
-                                </Typography>
-                                <Typography color="textSecondary">
-                                    {isBgLanguage ? t('profile.sent', {date: new Date(application.applicationSentDate).toLocaleDateString()}) : `Sent: ${new Date(application.applicationSentDate).toLocaleDateString()}`}
-                                </Typography>
-                                <Box mt={1} mb={1}>
-                                    <Chip
-                                        label={isBgLanguage ? t(`profile.status.${application.applicationStatus.applicationStatus}`) : application.applicationStatus.applicationStatus}
-                                        color={
-                                            application.applicationStatus.applicationStatus === "PENDING"
-                                                ? "warning"
-                                                : application.applicationStatus.applicationStatus === "DECLINED"
-                                                    ? "error"
-                                                    : "success"
-                                        }
-                                    />
-                                </Box>
-                                <Typography style={{
-                                    wordBreak: 'break-all',
-                                    wordWrap: 'break-word',
-                                    whiteSpace: 'normal',
-                                    maxWidth: '400px'
-                                }}>
-                                    {isBgLanguage ? t('profile.description', {description: application.applicationDescription}) : `Description: ${application.applicationDescription}`}
-                                </Typography>
-                                <Typography>
-                                    {isBgLanguage ? t('profile.averageGrade', {avgGrade: application.avgGrade}) : `Average Grade: ${application.avgGrade}`}
-                                </Typography>
-                                {application.languageProficiencyTestResult &&
-                                    <Typography>
-                                        {isBgLanguage ? t('profile.languageTest', {languageTest: application.languageProficiencyTestResult}) : `Language Test: ${application.languageProficiencyTestResult}`}
-                                    </Typography>}
-                                <Typography>
-                                    {isBgLanguage ? t('profile.standardizedTest', {standardizedTest: application.standardizedTestResult}) : `Standardized Test: ${application.standardizedTestResult}`}
-                                </Typography>
-                                {application.letterOfRecommendation && (
-                                    <Typography>
-                                        {isBgLanguage ? t('profile.recommendationLetter') : 'Recommendation Letter:'}
-                                        <Button
-                                            color="primary"
-                                            onClick={() => downloadFile(application)}
-                                        >
-                                            {isBgLanguage ? t('profile.download') : 'Download'}
-                                        </Button>
+                        <Card key={index} variant="outlined" sx={{mb: 2}}>
+                            <Accordion>
+                                <AccordionSummary
+                                    expandIcon={<ExpandMoreIcon/>}
+                                    aria-controls={`panel${index}a-content`}
+                                    id={`panel${index}a-header`}
+                                >
+                                    <Typography variant="h6">
+                                        {isBgLanguage ? t('profile.application', {
+                                            index: index + 1,
+                                            specialtyName: t(`profile.specialties.${application.specialtyName}`, {defaultValue: application.specialtyName})
+                                        }) : `Application #${index + 1} - ${application.specialtyName}`}
                                     </Typography>
-                                )}
-                                <Typography style={{
-                                    wordBreak: 'break-all',
-                                    wordWrap: 'break-word',
-                                    whiteSpace: 'normal',
-                                    maxWidth: '400px'
-                                }}>
-                                    {isBgLanguage ? t('profile.personalStatement', {personalStatement: application.personalStatement}) : `Personal Statement: ${application.personalStatement}`}
-                                </Typography>
-                                <AttachedFilesMenu
-                                    application={application}
-                                    setExpanded={(expanded) => {
-                                        const updatedApplications = [...studentApplications];
-                                        updatedApplications[index].expanded = expanded;
-                                        setStudentApplications(updatedApplications);
-                                    }}
-                                />
-                                {application.applicationStatus.applicationStatus === "ACCEPTED" && (
-                                    <Box mt={2}>
-                                        <Button variant="contained" color="primary"
-                                                onClick={() => handleDownloadProgram(application)}>
-                                            {isBgLanguage ? t('profile.downloadProgram') : 'Download Studying Program'}
-                                        </Button>
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                    <Box mb={2}>
+                                        <Typography color="textSecondary" gutterBottom>
+                                            {isBgLanguage ? t('profile.faculty', {facultyName: t(`profile.faculties.${application.facultyName}`, {defaultValue: application.facultyName})}) : `Faculty: ${application.facultyName}`}
+                                        </Typography>
+                                        <Typography color="textSecondary">
+                                            {isBgLanguage ? t('profile.sent', {date: new Date(application.applicationSentDate).toLocaleDateString()}) : `Sent: ${new Date(application.applicationSentDate).toLocaleDateString()}`}
+                                        </Typography>
                                     </Box>
-                                )}
-                            </AccordionDetails>
-                        </Accordion>
+                                    <Box mb={2}>
+                                        <Typography component={'span'} color="textSecondary">
+                                            {isBgLanguage
+                                                ? t('status')
+                                                : `Status`}
+                                            {": "}
+                                        </Typography>
+                                        <Chip
+                                            label={isBgLanguage ? t(`profile.status.${application.applicationStatus.applicationStatus}`) : application.applicationStatus.applicationStatus}
+                                            color={
+                                                application.applicationStatus.applicationStatus === "PENDING"
+                                                    ? "warning"
+                                                    : application.applicationStatus.applicationStatus === "DECLINED"
+                                                        ? "error"
+                                                        : "success"
+                                            }
+                                        />
+                                    </Box>
+                                    <Typography style={{
+                                        wordBreak: 'break-all',
+                                        wordWrap: 'break-word',
+                                        whiteSpace: 'normal',
+                                        maxWidth: '400px'
+                                    }}>
+                                        {isBgLanguage ? t('profile.description', {description: application.applicationDescription}) : `Description: ${application.applicationDescription}`}
+                                    </Typography>
+                                    <Typography>
+                                        {isBgLanguage ? t('profile.averageGrade', {avgGrade: application.avgGrade}) : `Average Grade: ${application.avgGrade}`}
+                                    </Typography>
+                                    {application.languageProficiencyTestResult &&
+                                        <Typography>
+                                            {isBgLanguage ? t('profile.languageTest', {languageTest: application.languageProficiencyTestResult}) : `Language Test: ${application.languageProficiencyTestResult}`}
+                                        </Typography>}
+                                    <Typography>
+                                        {isBgLanguage ? t('profile.standardizedTest', {standardizedTest: application.standardizedTestResult}) : `Standardized Test: ${application.standardizedTestResult}`}
+                                    </Typography>
+                                    <Typography style={{
+                                        marginBottom: "0",
+                                        wordBreak: 'break-all',
+                                        wordWrap: 'break-word',
+                                        whiteSpace: 'normal',
+                                        maxWidth: '400px'
+                                    }}>
+                                        {isBgLanguage ? t('profile.personalStatement', {personalStatement: application.personalStatement}) : `Personal Statement: ${application.personalStatement}`}
+                                    </Typography>
+                                    {application.letterOfRecommendation && (
+                                        <Typography>
+                                            {isBgLanguage ? t('profile.recommendationLetter') : 'Recommendation Letter:'}
+                                            <Button
+                                                color="primary"
+                                                onClick={() => downloadFile(application)}
+                                                sx={{ml: 1, padding: "0 8px"}}
+                                            >
+                                                {isBgLanguage ? t('profile.download') : 'Download'}
+                                            </Button>
+                                        </Typography>
+                                    )}
+                                    <AttachedFilesMenu
+                                        application={application}
+                                        setExpanded={(expanded) => {
+                                            const updatedApplications = [...studentApplications];
+                                            updatedApplications[index].expanded = expanded;
+                                            setStudentApplications(updatedApplications);
+                                        }}
+                                    />
+                                    {application.applicationStatus.applicationStatus === "ACCEPTED" && (
+                                        <Box mt={2} textAlign="center">
+                                            <Button variant="contained" color="primary"
+                                                    onClick={() => handleDownloadProgram(application)}>
+                                                {isBgLanguage ? t('profile.downloadProgram') : 'Download Studying Program'}
+                                            </Button>
+                                        </Box>
+                                    )}
+                                </AccordionDetails>
+                            </Accordion>
+                        </Card>
                     ))
-                ) : (
-                    <Typography>{formik.values.roleDTO.role === 'STUDENT' && (isBgLanguage ? t('profile.noApplications') : 'No applications to display.')}</Typography>
+                ) : formik.values.roleDTO.role === 'STUDENT' && (
+                    <Typography variant="body1" align="center">
+                        {isBgLanguage ? t('profile.noApplications') : 'No applications to display.'}
+                    </Typography>
                 )}
             </Box>
         </Container>
@@ -344,3 +431,4 @@ const Profile: React.FC = () => {
 };
 
 export default Profile;
+

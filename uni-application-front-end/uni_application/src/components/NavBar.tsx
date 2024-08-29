@@ -1,14 +1,19 @@
-import React, { useState } from 'react';
-import { Toolbar, IconButton, Typography, Menu, MenuItem, Box } from '@mui/material';
+import React, {useState, useEffect, useRef} from 'react';
+import {Toolbar, IconButton, Typography, Box} from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import { Link as RouterLink } from 'react-router-dom';
-import { useKeycloak } from '../keycloak';
-import { useTranslation } from 'react-i18next';
+import {useKeycloak} from '../keycloak';
+import {useTranslation} from 'react-i18next';
+import NavBarMenu from "./NavBarMenu";
+import {menuItems} from "../types/menuItems";
 
 const NavBar: React.FC = () => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const { keycloak } = useKeycloak();
-    const { t, i18n } = useTranslation();
+    const [displayInline, setDisplayInline] = useState(true);
+    const [isMobileMenu, setIsMobileMenu] = useState(false);
+    const navBarRef = useRef<HTMLDivElement>(null);
+    const menuItemsRef = useRef<HTMLDivElement>(null);
+    const {keycloak} = useKeycloak();
+    const {t, i18n} = useTranslation();
     const isBgLanguage = i18n.language === 'bg'; // Check if the current language is Bulgarian
 
     const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -24,82 +29,56 @@ const NavBar: React.FC = () => {
         handleClose();
     };
 
+    // Adjust the menu display based on the width
+    const adjustMenuDisplay = () => {
+        if (window.innerWidth <= 1050 || (window.innerWidth <= 1150 && isBgLanguage)) {
+            setIsMobileMenu(true);
+        } else {
+            setIsMobileMenu(false);
+            if (navBarRef.current && menuItemsRef.current) {
+                const navbarWidth = navBarRef.current.offsetWidth;
+                const menuItemsWidth = menuItemsRef.current.scrollWidth;
+
+                setDisplayInline(menuItemsWidth <= navbarWidth);
+            }
+        }
+    };
+
+    useEffect(() => {
+        adjustMenuDisplay();
+        window.addEventListener('resize', adjustMenuDisplay);
+        return () => {
+            window.removeEventListener('resize', adjustMenuDisplay);
+        };
+    }, []);
+
     return (
-        <div style={{ margin: "8px" }}>
+        <div style={{margin: '5px'}} ref={navBarRef}>
             <Toolbar>
-                <Box
-                    sx={{ display: 'flex', flexDirection: 'column', cursor: 'pointer' }}
-                    onClick={handleMenu}
-                >
-                    <IconButton style={{ padding: "0" }} color="inherit" aria-label="menu">
-                        <MenuIcon />
-                    </IconButton>
-                    <Typography variant="h6">
-                        {isBgLanguage ? t('menu.title') : 'Menu'}
-                    </Typography>
-                </Box>
-                <Menu
-                    id="menu-appbar"
+                {displayInline && !isMobileMenu ? (
+                    <Box sx={{display: 'flex', flexDirection: 'row'}} ref={menuItemsRef}>
+                        {menuItems(handleLogout, keycloak, isBgLanguage, t)}
+                    </Box>
+                ) : (
+                    <Box
+                        sx={{display: 'flex', flexDirection: 'column', cursor: 'pointer'}}
+                        onClick={handleMenu}
+                    >
+                        <IconButton style={{padding: '0'}} color="inherit" aria-label="menu">
+                            <MenuIcon/>
+                        </IconButton>
+                        <Typography variant="h6">
+                            {isBgLanguage ? t('menu.title') : 'Menu'}
+                        </Typography>
+                    </Box>
+                )}
+                <NavBarMenu
                     anchorEl={anchorEl}
-                    anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-                    keepMounted
-                    transformOrigin={{ vertical: 'top', horizontal: 'left' }}
-                    open={Boolean(anchorEl)}
-                    onClose={handleClose}
-                >
-                    <MenuItem onClick={handleClose} component={RouterLink} to="/">
-                        {isBgLanguage ? t('menu.home') : 'Home'}
-                    </MenuItem>
-                    {!keycloak.authenticated && (
-                        <MenuItem onClick={handleClose} component={RouterLink} to="/login">
-                            {isBgLanguage ? t('menu.login') : 'Login'}
-                        </MenuItem>
-                    )}
-                    {keycloak.authenticated && (
-                        <MenuItem onClick={handleLogout}>
-                            {isBgLanguage ? t('menu.logout') : 'Logout'}
-                        </MenuItem>
-                    )}
-                    {keycloak.authenticated && (
-                        <MenuItem onClick={handleClose} component={RouterLink} to="/profile">
-                            {isBgLanguage ? t('menu.profile') : 'Profile'}
-                        </MenuItem>
-                    )}
-                    <MenuItem onClick={handleClose} component={RouterLink} to="/faculties">
-                        {isBgLanguage ? t('menu.faculties') : 'Faculties'}
-                    </MenuItem>
-                    <MenuItem onClick={handleClose} component={RouterLink} to="/specialties">
-                        {isBgLanguage ? t('menu.specialties') : 'Specialties'}
-                    </MenuItem>
-                    {(keycloak.authenticated && keycloak.hasRealmRole("student") &&
-                        <MenuItem onClick={handleClose} component={RouterLink} to="/apply">
-                            {isBgLanguage ? t('menu.apply') : 'Apply'}
-                        </MenuItem>) || (!keycloak.authenticated &&
-                        <MenuItem onClick={handleClose} component={RouterLink} to="/apply">
-                            {isBgLanguage ? t('menu.apply') : 'Apply'}
-                        </MenuItem>)
-                    }
-                    {keycloak.authenticated && keycloak.hasRealmRole("student") &&
-                        <MenuItem onClick={handleClose} component={RouterLink} to="/requirements-tests">
-                            {isBgLanguage ? t('menu.requirementsTests') : 'Requirements Tests'}
-                        </MenuItem>
-                    }
-                    {keycloak.authenticated && keycloak.hasRealmRole("admin") &&
-                        <MenuItem onClick={handleClose} component={RouterLink} to="/manage-applications">
-                            {isBgLanguage ? t('menu.manageApplications') : 'Manage Applications'}
-                        </MenuItem>
-                    }
-                    {keycloak.authenticated && keycloak.hasRealmRole("admin") &&
-                        <MenuItem onClick={handleClose} component={RouterLink} to="/manage-users">
-                            {isBgLanguage ? t('menu.manageUsers') : 'Manage Users'}
-                        </MenuItem>
-                    }
-                    {keycloak.authenticated && keycloak.hasRealmRole("admin") &&
-                        <MenuItem onClick={handleClose} component={RouterLink} to="/admin-dashboard">
-                            {isBgLanguage ? t('menu.adminDashboard') : 'Admin Dashboard'}
-                        </MenuItem>
-                    }
-                </Menu>
+                    handleClose={handleClose}
+                    handleLogout={handleLogout}
+                    isBgLanguage={isBgLanguage}
+                    keycloak={keycloak}
+                />
             </Toolbar>
         </div>
     );

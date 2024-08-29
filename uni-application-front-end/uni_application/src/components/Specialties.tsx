@@ -1,99 +1,112 @@
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, Typography, Grid, Box } from '@mui/material';
-import { Specialty } from "../types/Specialty";
-import { fetchSpecialties } from "../axios/requests";
-import { useTranslation } from 'react-i18next';
+import React, {useState, useEffect} from 'react';
+import {Card, CardContent, Divider, Grid, Skeleton,} from '@mui/material';
+import {useLocation, useNavigate} from 'react-router-dom';
+import {fetchSpecialties} from "../axios/requests";
+import {Specialty} from "../types/Specialty";
+import SpecialtyCard from "./SpecialtyCard";
 
 const Specialties = () => {
     const [specialties, setSpecialties] = useState<Specialty[]>([]);
-    const { t, i18n } = useTranslation();
+    const [filteredSpecialties, setFilteredSpecialties] = useState<Specialty[]>([]);
+    const [loading, setLoading] = useState(true);
+    const location = useLocation();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 await fetchSpecialties(setSpecialties);
+                setLoading(false);
             } catch (err) {
                 console.error(err);
+                setLoading(false);
             }
         };
 
         fetchData();
     }, []);
 
-    const isBgLanguage = i18n.language === 'bg'; // Check if the current language is Bulgarian
+    useEffect(() => {
+        const queryParams = new URLSearchParams(location.search);
+        const facultyId = queryParams.get('facultyId') as unknown as number;
+        const specialtyName = queryParams.get('specialtyName');
 
-    // Helper function to get translated or raw data
-    const getTranslatedText = (key: string, fallback: string) => {
-        return isBgLanguage ? t(key) : fallback;
+        let filtered = specialties;
+        if (facultyId) {
+            filtered = filtered.filter(specialty => specialty.facultyID == facultyId);
+        }
+
+        if (specialtyName) {
+            filtered = filtered.filter(specialty => specialty.specialtyName === specialtyName);
+        }
+
+        setFilteredSpecialties(filtered);
+    }, [specialties, location.search]);
+
+    const handleApplyClick = (facultyId: number, specialtyId: number) => {
+        navigate(`/apply?facultyId=${facultyId}&specialtyId=${specialtyId}`);
     };
 
-    if (specialties.length === 0) {
-        return <div>{getTranslatedText('loading', 'Loading...')}</div>;
+    if (loading) {
+        return (
+            <Grid container spacing={2}>
+                {Array.from(new Array(6)).map((_, index) => (
+                    <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
+                        <Card
+                            elevation={4}
+                            sx={{
+                                maxWidth: 500,
+                                margin: 'auto',
+                                borderRadius: '16px',
+                                overflow: 'hidden',
+                                transition: 'transform 0.3s ease-in-out',
+                                '&:hover': {
+                                    transform: 'scale(1.03)',
+                                    boxShadow: 6
+                                }
+                            }}
+                        >
+                            <CardContent>
+                                <Skeleton variant="text" width="60%" sx={{ fontSize: '1.5rem', mb: 2 }} />
+                                <Divider sx={{ mb: 2, borderBottomWidth: 2 }}>
+                                    <Skeleton variant="rectangular" width={180} height={40} sx={{ borderRadius: '16px' }} />
+                                </Divider>
+
+                                <Skeleton variant="text" width="80%" sx={{ mb: 1 }} />
+                                <Skeleton variant="text" width="70%" sx={{ mb: 1 }} />
+                                <Skeleton variant="text" width="50%" sx={{ mb: 1 }} />
+                                <Skeleton variant="text" width="90%" sx={{ mb: 1 }} />
+                                <Skeleton variant="text" width="40%" sx={{ mb: 2 }} />
+
+                                <Divider sx={{ mb: 2, borderBottomWidth: 2 }} />
+                                <Skeleton variant="text" width="30%" sx={{ mb: 1 }} />
+                                <Skeleton variant="text" width="70%" sx={{ mb: 1 }} />
+                                <Skeleton variant="text" width="50%" sx={{ mb: 1 }} />
+                                <Skeleton variant="text" width="60%" sx={{ mb: 1 }} />
+
+                                <Divider sx={{ mb: 2, borderBottomWidth: 2 }} />
+                                <Skeleton variant="rectangular" width="100%" height={36} sx={{ borderRadius: '999px' }} />
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                ))}
+            </Grid>
+        );
     }
 
     return (
-        <Grid container spacing={2}>
-            {specialties.map((specialty, index) => (
-                <Grid item xs={12} sm={6} md={4} key={index}>
-                    <Card>
-                        <CardContent>
-                            <Typography variant="h5" component="div">
-                                {getTranslatedText(`specialties.${specialty.specialtyName}.title`, specialty.specialtyName)}
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary">
-                                {getTranslatedText(`specialties.${specialty.specialtyName}.description`, specialty.specialtyProgram.description)}
-                            </Typography>
-                            <Box mt={2}>
-                                <Typography variant="body1">
-                                    {getTranslatedText('specialties.employmentRate', 'Employment Rate')}: {specialty.employmentRate}%
-                                </Typography>
-                                <Typography variant="body1">
-                                    {getTranslatedText('specialties.degreeType', 'Degree Type')}: {getTranslatedText(`specialties.${specialty.specialtyName}.degreeType`, specialty.specialtyProgram.degreeType.degreeType)}
-                                </Typography>
-                                <Typography variant="body1">
-                                    {getTranslatedText('specialties.accreditation', 'Accreditation')}: {getTranslatedText(`specialties.${specialty.specialtyName}.accreditation`, `${specialty.specialtyProgram.accreditationStatus.accreditationType} - ${specialty.specialtyProgram.accreditationStatus.accreditationDescription}`)}
-                                </Typography>
-                                <Typography variant="body1">
-                                    {getTranslatedText('specialties.programDuration', 'Program Duration')}: {specialty.specialtyProgram.startsOn} to {specialty.specialtyProgram.endsOn}
-                                </Typography>
-                                <Typography variant="body1">
-                                    {getTranslatedText('specialties.totalCreditsRequired', 'Total Credits Required')}: {specialty.totalCreditsRequired}
-                                </Typography>
-                                <Typography variant="body1">
-                                    {getTranslatedText('specialties.subjectsHeader', 'Subjects')}:
-                                </Typography>
-                                <ul>
-                                    {specialty.subjects.map((subject, idx) => (
-                                        <li key={idx}>
-                                            <Typography variant="body1">
-                                                {getTranslatedText(`specialties.${specialty.specialtyName}.subjects.${subject.subjectName}`, subject.subjectName)}: {getTranslatedText(`specialties.${specialty.specialtyName}.subjects.${subject.subjectDescription}`, subject.subjectDescription)}
-                                            </Typography>
-                                        </li>
-                                    ))}
-                                </ul>
-                                <Typography variant="body1">
-                                    {getTranslatedText('specialties.standardizedTestMinResult', 'Standardized Test Minimum Result')}: {specialty.specialtyRequirement.standardizedTestMinResult}
-                                </Typography>
-                                <Typography variant="body1">
-                                    {getTranslatedText('specialties.languageProficiencyTestMinResult', 'Language Proficiency Test Minimum Result')}: {specialty.specialtyRequirement.languageProficiencyTestMinResult || 'N/A'}
-                                </Typography>
-                                <Typography variant="body1">
-                                    {getTranslatedText('specialties.minimumGrade', 'Minimum Grade')}: {specialty.specialtyRequirement.minGrade}
-                                </Typography>
-                                <Typography variant="body1">
-                                    {getTranslatedText('specialties.requirementDetails', 'Requirement Details')}: {getTranslatedText(`specialties.${specialty.specialtyName}.requirementDetails`, specialty.specialtyRequirement.requirementDetails)}
-                                </Typography>
-                                <Typography variant="body1">
-                                    {getTranslatedText('specialties.personalStatementRequired', 'Personal Statement Required')}: {specialty.specialtyRequirement.personalStatementRequired ? getTranslatedText('yes', 'Yes') : getTranslatedText('no', 'No')}
-                                </Typography>
-                                <Typography variant="body1">
-                                    {getTranslatedText('specialties.letterOfRecommendationRequired', 'Letter of Recommendation Required')}: {specialty.specialtyRequirement.letterOfRecommendationRequired ? getTranslatedText('yes', 'Yes') : getTranslatedText('no', 'No')}
-                                </Typography>
-                            </Box>
-                        </CardContent>
-                    </Card>
-                </Grid>
-            ))}
+        <Grid justifyContent={'center'} container spacing={2}>
+            {filteredSpecialties.length === 0 ? (
+                <div>No Specialties found.</div>
+            ) : (
+                filteredSpecialties.map((specialty) => (
+                    <SpecialtyCard
+                        key={specialty.id}
+                        specialty={specialty}
+                        handleApplyClick={handleApplyClick}
+                    />
+                ))
+            )}
         </Grid>
     );
 };

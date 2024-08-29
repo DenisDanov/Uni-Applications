@@ -1,7 +1,6 @@
 package bg.duosoft.uniapplicationdemo.validators;
 
 import bg.duosoft.uniapplicationdemo.models.dtos.TeacherDTO;
-import bg.duosoft.uniapplicationdemo.repositories.SubjectRepository;
 import bg.duosoft.uniapplicationdemo.validators.config.ValidationError;
 import bg.duosoft.uniapplicationdemo.validators.config.Validator;
 import lombok.RequiredArgsConstructor;
@@ -13,8 +12,6 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class TeacherValidator implements Validator<TeacherDTO> {
-
-    private final SubjectValidator subjectValidator;
 
     @Override
     public List<ValidationError> validate(TeacherDTO dto, Object... args) {
@@ -31,10 +28,6 @@ public class TeacherValidator implements Validator<TeacherDTO> {
         if (errors.isEmpty()) {
             rejectIfEmpty(errors, dto.getTeacherName(), "subjectName", "m.validator.subjectName.empty");
             rejectIfStringLengthBigger(errors,dto.getTeacherName(),255,"teacherName","m.validator.teacherName.length.tooLong");
-        }
-
-        if (!dto.getSubjects().isEmpty()) {
-            dto.getSubjects().forEach(subject -> errors.addAll(subjectValidator.validate(subject)));
         }
 
         if (isCreate != null && isCreate && errors.isEmpty()) {

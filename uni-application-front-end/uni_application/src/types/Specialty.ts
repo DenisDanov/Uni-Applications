@@ -4,6 +4,7 @@ import {SpecialtyProgram} from "./SpecialtyProgram";
 
 export interface Specialty {
     id: number;
+    facultyID: number;
     specialtyName: string;
     totalCreditsRequired: number;
     employmentRate: number;

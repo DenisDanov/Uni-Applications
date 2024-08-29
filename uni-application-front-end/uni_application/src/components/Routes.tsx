@@ -12,6 +12,7 @@ import ManageUsers from "./ManageUsers";
 import EvaluateApplication from "./EvaluateApplication";
 import RequirementsTests from "./RequirementsTests";
 import AdminDashboard from "./AdminDashboard";
+import News from "./News";
 
 const HomeRoute: React.FC = () => <Home/>;
 const ProfileRoute: React.FC = () => <Profile/>;
@@ -23,6 +24,7 @@ const ManageUsersRoute: React.FC = () => <ManageUsers/>;
 const EvaluateApplicationRoute: React.FC = () => <EvaluateApplication/>
 const RequirementsTestsRoute: React.FC = () => <RequirementsTests/>
 const AdminDashboardRoute: React.FC = () => <AdminDashboard/>
+const NewsRoute: React.FC = () => <News/>
 
 const Login: React.FC = () => {
     const {keycloak} = useKeycloak();
@@ -140,6 +142,10 @@ const routes = [
                 <RequirementsTestsRoute/>
             </SecurityGuard>
         )
+    },
+    {
+        path: "/news",
+        element: <NewsRoute/>
     }
 ];
 

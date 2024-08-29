@@ -23,9 +23,4 @@ public class TeacherEntity implements Serializable {
 
     @Column(name = "teacher_name", nullable = false)
     private String teacherName;
-
-    @ManyToMany
-    @JoinTable(schema = "uni_applications", name = "subjects_teachers", joinColumns = @JoinColumn(name = "teacher_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "subject_id", referencedColumnName = "id"))
-    private List<SubjectEntity> subjects;
 }

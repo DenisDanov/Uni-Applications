@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 @ToString
@@ -16,6 +17,8 @@ public class SubjectDTO extends BaseDTO<Long> implements Serializable {
     private String subjectName;
 
     private String subjectDescription;
+
+    private List<TeacherDTO> teachers;
 
     @Override
     public Long getId() {

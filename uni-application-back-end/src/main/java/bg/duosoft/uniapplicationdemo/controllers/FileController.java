@@ -3,6 +3,7 @@ package bg.duosoft.uniapplicationdemo.controllers;
 import bg.duosoft.uniapplicationdemo.models.dtos.SpecialtyDTO;
 import bg.duosoft.uniapplicationdemo.models.dtos.SpecialtySubjectInfoDTO;
 import bg.duosoft.uniapplicationdemo.models.dtos.StudentApplicationDTOUsers;
+import bg.duosoft.uniapplicationdemo.models.dtos.SubjectDTO;
 import bg.duosoft.uniapplicationdemo.services.SpecialtyService;
 import bg.duosoft.uniapplicationdemo.services.SpecialtySubjectInfoService;
 import bg.duosoft.uniapplicationdemo.services.StudentApplicationService;
@@ -29,7 +30,6 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static bg.duosoft.uniapplicationdemo.util.DetermineFileTypeUtil.detectFileType;
 import static bg.duosoft.uniapplicationdemo.util.DetermineFileTypeUtil.getFileExtension;
@@ -48,8 +48,6 @@ public class FileController {
     private final SpecialtySubjectInfoService specialtySubjectInfoService;
 
     private final StudentApplicationService studentApplicationService;
-
-    private final TeacherService teacherService;
 
     @GetMapping("/download-file/{username}/{facultyName}/{courseName}")
     public ResponseEntity<InputStreamResource> downloadFileTest(@PathVariable String username, @PathVariable String facultyName, @PathVariable String courseName) {
@@ -122,15 +120,6 @@ public class FileController {
                                                 finalSpecialtyDTO.getId().equals(subjectInfo.getSpecialtyId())))
                 .toList();
 
-        model.put("teacherInfo", teacherService.getAll().stream()
-                .filter(teacherDTO ->
-                        teacherDTO.getSubjects().stream().anyMatch(
-                                teacherSubject -> finalSpecialtyDTO.getSubjects().stream().anyMatch(
-                                        specialtySubject -> specialtySubject.getId().equals(teacherSubject.getId())
-                                )
-                        )
-                )
-                .collect(Collectors.toList()));
         model.put("subjectInfo", matchedSubjectsInfo);
 
         generatePdf("ApplicationProgram.ftl", model, "ApplicationProgram.pdf", response);
