@@ -1,5 +1,9 @@
 # University Applications - REST Spring Web Application
 
+<div align="center">
+  <span>Deployed: <a href="https://uni-application.ddns.net/">HERE</a></span>
+</div>
+
 ## Description
 
 Welcome to the **Student Application System**, a dynamic platform designed to streamline the process for students applying to various specialties across different faculties. Our system is crafted to simplify and enhance the application process, making it more accessible and manageable for students while providing robust control for administrators.
