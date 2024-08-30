@@ -1,4 +1,4 @@
-# University Applications - REST Spring Web Application
+# University Applications - Built with React TS and Spring REST API
 
 <div align="center">
   <span>Deployed: <a href="https://uni-application.ddns.net/">HERE</a></span>
