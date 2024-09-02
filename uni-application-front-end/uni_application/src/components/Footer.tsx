@@ -10,6 +10,7 @@ const Footer = () => {
                 textAlign: 'center',
                 mt: 'auto',
                 py: 2,
+                paddingTop: '15px'
             }}
         >
             <Container>

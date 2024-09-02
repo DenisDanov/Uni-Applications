@@ -55,23 +55,20 @@ const NavBar: React.FC = () => {
     return (
         <div style={{margin: '5px'}} ref={navBarRef}>
             <Toolbar>
-                {displayInline && !isMobileMenu ? (
-                    <Box sx={{display: 'flex', flexDirection: 'row'}} ref={menuItemsRef}>
-                        {menuItems(handleLogout, keycloak, isBgLanguage, t)}
-                    </Box>
-                ) : (
-                    <Box
-                        sx={{display: 'flex', flexDirection: 'column', cursor: 'pointer'}}
-                        onClick={handleMenu}
-                    >
-                        <IconButton style={{padding: '0'}} color="inherit" aria-label="menu">
-                            <MenuIcon/>
-                        </IconButton>
-                        <Typography variant="h6">
-                            {isBgLanguage ? t('menu.title') : 'Menu'}
-                        </Typography>
-                    </Box>
-                )}
+                <Box sx={{display: window.innerWidth <= 1050 || (window.innerWidth <= 1150 && isBgLanguage) ? 'none' : "flex" , flexDirection: 'row'}} ref={menuItemsRef}>
+                    {menuItems(handleLogout, keycloak, isBgLanguage, t)}
+                </Box>
+                <Box
+                    sx={{display: window.innerWidth <= 1050 || (window.innerWidth <= 1150 && isBgLanguage) ? 'flex' : "none" , flexDirection: 'column', cursor: 'pointer'}}
+                    onClick={handleMenu}
+                >
+                    <IconButton style={{padding: '0'}} color="inherit" aria-label="menu">
+                        <MenuIcon/>
+                    </IconButton>
+                    <Typography variant="h6">
+                        {isBgLanguage ? t('menu.title') : 'Menu'}
+                    </Typography>
+                </Box>
                 <NavBarMenu
                     anchorEl={anchorEl}
                     handleClose={handleClose}

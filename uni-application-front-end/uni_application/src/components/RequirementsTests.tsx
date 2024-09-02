@@ -14,7 +14,7 @@ import {
     FormControlLabel,
     FormControl,
     FormLabel,
-    Container,
+    Container, CircularProgress,
 } from '@mui/material';
 import {axiosClientDefault} from '../axios/axiosClient';
 import {useKeycloak} from '../keycloak';
@@ -34,6 +34,7 @@ const RequirementsTests: React.FC = () => {
     const [testName, setTestName] = useState<string | null>(null);
     const [submissionError, setSubmissionError] = useState<string | null>(null);
     const [submissionSuccess, setSubmissionSuccess] = useState<string | null>(null);
+    const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
         axiosClientDefault
@@ -42,6 +43,8 @@ const RequirementsTests: React.FC = () => {
                 setResults(response.data);
                 if (response.data.languageProficiencyTestResult === null || response.data.standardizedTestResult === null) {
                     checkExistingTestState();
+                } else {
+                    setLoading(false);
                 }
             })
             .catch((error) => {
@@ -58,9 +61,7 @@ const RequirementsTests: React.FC = () => {
                     setTestName(testName);
                     setAnswers(answers);
 
-                    const startTime = moment.unix(testStartTime).toDate();
-                    const deadline = moment(startTime).add(1, 'hour').subtract(1, 'second').toDate();
-                    setDeadline(deadline);
+                    setDeadline(moment.unix(testStartTime).toDate());
 
                     if (testName === 'language') {
                         setLanguageTestOpen(true);
@@ -71,7 +72,9 @@ const RequirementsTests: React.FC = () => {
             })
             .catch((error) => {
                 console.error('Error fetching test state:', error);
-            });
+            }).finally(() => {
+            setLoading(false);
+        });
     };
 
     const saveTestState = (newAnswers: number[], testOpen: boolean, deadline: Date | null, testName: string | null) => {
@@ -215,9 +218,13 @@ const RequirementsTests: React.FC = () => {
                 {submissionSuccess && (
                     <Alert severity="success">{submissionSuccess}</Alert>
                 )}
-                {results && (
+                {loading ? (
+                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
+                        <CircularProgress /> {/* Loading spinner */}
+                    </Box>
+                ) : (
                     <>
-                        {results.languageProficiencyTestResult === null && (
+                        {results?.languageProficiencyTestResult === null && (
                             <Card sx={{mb: 2}}>
                                 <CardContent>
                                     <Typography variant="h5"
@@ -243,7 +250,7 @@ const RequirementsTests: React.FC = () => {
                                                     {languageProficiencyQuestions.map((q, index) => (
                                                         <Box key={index} sx={{mt: 2}}>
                                                             <FormLabel
-                                                                component="legend">{q.question}</FormLabel>
+                                                                component="legend">{q.question.en}</FormLabel>
                                                             <RadioGroup
                                                                 value={answers[index]}
                                                                 onChange={(e) => handleAnswerChange(index, parseInt(e.target.value))}
@@ -251,7 +258,7 @@ const RequirementsTests: React.FC = () => {
                                                                 {q.options.map((option, i) => (
                                                                     <FormControlLabel key={i} value={i}
                                                                                       control={<Radio/>}
-                                                                                      label={option}/>
+                                                                                      label={option.en}/>
                                                                 ))}
                                                             </RadioGroup>
                                                         </Box>
@@ -277,7 +284,7 @@ const RequirementsTests: React.FC = () => {
                                 </CardContent>
                             </Card>
                         )}
-                        {results.standardizedTestResult === null && (
+                        {results?.standardizedTestResult === null && (
                             <Card>
                                 <CardContent>
                                     <Typography variant="h5"
@@ -333,7 +340,7 @@ const RequirementsTests: React.FC = () => {
                                 </CardContent>
                             </Card>
                         )}
-                        {(results.languageProficiencyTestResult !== null && results.standardizedTestResult !== null) &&
+                        {(results?.languageProficiencyTestResult !== null && results?.standardizedTestResult !== null) &&
                             <Alert
                                 severity="success">{i18n.language === 'bg' ? t('completedAllTests') : 'You have successfully completed all tests.'}</Alert>
                         }

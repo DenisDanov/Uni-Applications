@@ -6,6 +6,7 @@ import bg.duosoft.uniapplicationdemo.models.dtos.FilterUsersDTO;
 import bg.duosoft.uniapplicationdemo.models.dtos.UserDTO;
 import bg.duosoft.uniapplicationdemo.services.KeycloakUserService;
 import bg.duosoft.uniapplicationdemo.services.StudentApplicationService;
+import bg.duosoft.uniapplicationdemo.services.StudentsRequirementsResultsService;
 import bg.duosoft.uniapplicationdemo.services.UserService;
 import bg.duosoft.uniapplicationdemo.validators.UserValidator;
 import bg.duosoft.uniapplicationdemo.validators.config.ValidationError;
@@ -36,6 +37,8 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
 
     private final ApplicationEventPublisher eventPublisher;
+
+    private final StudentsRequirementsResultsService studentsRequirementsResultsService;
 
     @Override
     public ResponseEntity<Object> registerUser(UserDTO userDTO) {
@@ -87,6 +90,7 @@ public class UserServiceImpl implements UserService {
     public UserDTO updateUserRoles(UserDTO userDTO) throws Exception {
         if (userDTO.getRoleDTO().getRole().equals("ADMIN")) {
             studentApplicationService.deleteByUsername(userDTO.getUsername());
+            studentsRequirementsResultsService.deleteById(userDTO.getUsername());
         }
         return keycloakUserService.updateUserRoles(userDTO);
     }

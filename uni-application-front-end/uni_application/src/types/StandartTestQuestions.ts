@@ -1,5 +1,6 @@
 import { Question } from "./Question";
 
+
 export const entranceExamQuestions: Question[] = [
     {
         question: {

@@ -226,7 +226,7 @@ const News: React.FC = () => {
             ) : (
                 <Grid id={"news-main-container"} container spacing={3}>
                     {newsList.map(news => (
-                        <Grid item xs={12} md={6} lg={4} key={news.id}>
+                        <Grid style={{display: news.newsHeader.includes('Interview preparation') && !loggedUser.hasRealmRole("admin") ? "none" : "block"}} item xs={12} md={6} lg={4} key={news.id}>
                             <Box className={"news-container"} sx={{
                                 p: 2,
                                 border: '1px solid #ddd',

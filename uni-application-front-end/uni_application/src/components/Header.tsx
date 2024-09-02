@@ -41,13 +41,19 @@ const Header: React.FC = () => {
             </AppBar>
             <Box style={{marginTop: '10px', marginLeft: '1.1%'}}>
                 <Breadcrumbs aria-label="breadcrumb">
-                    <Link color="inherit" component={RouterLink} to="/">
+                    <Link style={{
+                        color: window.location.pathname === '/' ? 'white' : '',
+                        textDecorationColor: window.location.pathname === '/' ? "white" : ''
+                    }} component={RouterLink} to="/">
                         {breadcrumbNameMap['']}
                     </Link>
                     {pathNames.map((value, index) => {
                         const to = `/${pathNames.slice(0, index + 1).join('/')}`;
                         return (
-                            <Link key={to} color="inherit" component={RouterLink} to={to}>
+                            <Link style={{
+                                color: window.location.pathname === '/' ? 'white' : '',
+                                textDecorationColor: window.location.pathname === '/' ? "white" : ''
+                            }} key={to} component={RouterLink} to={to}>
                                 {breadcrumbNameMap[value] || value.charAt(0).toUpperCase() + value.slice(1)}
                             </Link>
                         );

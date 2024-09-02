@@ -51,3 +51,37 @@ export const validationSchemaApplication = (formRequirements: any, language: str
             : Yup.string().nullable(),
     });
 };
+
+export const validationSchemaRegister = Yup.object({
+    username: Yup.string()
+        .max(255, "Username cannot exceed 255 characters.")
+        .required("Username cannot be empty."),
+    email: Yup.string()
+        .matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, "Invalid email format.")
+        .max(255, "Email cannot exceed 255 characters.")
+        .required("Email cannot be empty."),
+    firstName: Yup.string()
+        .matches(/^[^0-9]*$/, "First name cannot contain numbers.")
+        .max(255, "First name cannot exceed 255 characters.")
+        .required("First name cannot be empty."),
+    middleName: Yup.string()
+        .matches(/^[^0-9]*$/, "Middle name cannot contain numbers.")
+        .max(255, "Middle name cannot exceed 255 characters.")
+        .required("Middle name cannot be empty."),
+    lastName: Yup.string()
+        .matches(/^[^0-9]*$/, "Last name cannot contain numbers.")
+        .max(255, "Last name cannot exceed 255 characters.")
+        .required("Last name cannot be empty."),
+    password: Yup.string()
+        .min(8, "Password must be at least 8 characters long.")
+        .matches(/^(?=.*[a-zA-Z])(?=.*\d).+$/, "Password must contain at least one letter and one number.")
+        .required("Password cannot be empty."),
+    confirmPassword: Yup.string()
+        // @ts-ignore
+        .oneOf([Yup.ref('password'), null], "Passwords must match")
+        .required("Confirm Password cannot be empty."),
+    dateOfBirth: Yup.date().required("Date of birth cannot be empty."),
+    facultyNumber: Yup.string()
+        .matches(/^\d{7}$/, "Invalid faculty number")
+        .required("Faculty number cannot be empty.")
+});

@@ -1,7 +1,6 @@
 import React from 'react';
-import {Navigate} from 'react-router-dom';
+import {Navigate, useNavigate} from 'react-router-dom';
 import SecurityGuard from '../security/SecurityGuard';
-import {useKeycloak} from '../keycloak';
 import Specialties from "./Specialties";
 import Faculties from "./Faculties";
 import Application from "./Application";
@@ -13,6 +12,7 @@ import EvaluateApplication from "./EvaluateApplication";
 import RequirementsTests from "./RequirementsTests";
 import AdminDashboard from "./AdminDashboard";
 import News from "./News";
+import Login from './Login';
 
 const HomeRoute: React.FC = () => <Home/>;
 const ProfileRoute: React.FC = () => <Profile/>;
@@ -25,14 +25,7 @@ const EvaluateApplicationRoute: React.FC = () => <EvaluateApplication/>
 const RequirementsTestsRoute: React.FC = () => <RequirementsTests/>
 const AdminDashboardRoute: React.FC = () => <AdminDashboard/>
 const NewsRoute: React.FC = () => <News/>
-
-const Login: React.FC = () => {
-    const {keycloak} = useKeycloak();
-    React.useEffect(() => {
-        keycloak.login();
-    }, [keycloak]);
-    return <Navigate to="/"/>;
-};
+const LoginRoute: React.FC = () => <Login/>
 
 const routes = [
     {
@@ -146,7 +139,11 @@ const routes = [
     {
         path: "/news",
         element: <NewsRoute/>
-    }
+    },
+    {
+        path: "*",
+        element: <Navigate to="/"/>,
+    },
 ];
 
 export default routes;

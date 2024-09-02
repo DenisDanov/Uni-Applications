@@ -18,7 +18,7 @@ const AdminDashboard: React.FC = () => {
                     throw new Error('Network response was not ok');
                 }
                 // @ts-ignore
-                document.querySelector(`.css-1oqqzyl-MuiContainer-root`).style.maxWidth = '100%';
+                document.querySelector(`.css-1qsxih2`).style.maxWidth = '100%';
                 return response.data;
             })
             .then(data => {

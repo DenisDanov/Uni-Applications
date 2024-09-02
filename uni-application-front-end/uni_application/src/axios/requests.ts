@@ -284,3 +284,12 @@ export const deleteNews = async (id: number): Promise<void> => {
         throw new Error("Failed to delete news.");
     }
 };
+
+export const submitUserRegistration = async (formData: any): Promise<void> => {
+    try {
+        await axiosClientDefault.post("/user/register", formData);
+        return;
+    } catch (err) {
+        throw err;
+    }
+};

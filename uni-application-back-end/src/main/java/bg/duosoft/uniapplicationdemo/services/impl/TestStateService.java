@@ -11,6 +11,8 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.*;
 
 @Service
@@ -83,6 +85,12 @@ public class TestStateService {
             ScheduledFuture<?> scheduledTask = scheduler.schedule(task, delayInSeconds, TimeUnit.SECONDS);
             scheduledTasks.put(username, scheduledTask);
             logger.info("Scheduled expiration task for user: {}", username);
+
+            Instant executionTime = Instant.now().plusSeconds(delayInSeconds);
+            String formattedExecutionTime = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+                    .withZone(ZoneId.systemDefault())
+                    .format(executionTime);
+            logger.info("Will execute at: {}", formattedExecutionTime);
         }
     }
 

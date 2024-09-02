@@ -31,7 +31,7 @@ public class ApplicationCleanupScheduler {
             long daysSinceRejection = ChronoUnit.DAYS.between(entry.getDeleteDate(), now);
 
             // Delete if it's been 7 days since rejection
-            if (daysSinceRejection >= 7) {
+            if (daysSinceRejection == 0) {
                 studentApplicationService.deleteById(entry.getId().getUsername(), entry.getId().getFacultyId(), entry.getId().getSpecialtyId());
                 logger.info("Application deleted after rejection.");
             }

@@ -1,5 +1,11 @@
 export interface Question {
-    question: string;
-    options: string[];
+    question: {
+        en: string;
+        bg?: string;
+    };
+    options: {
+        en: string;
+        bg?: string;
+    }[];
     correctAnswer: number;
 }

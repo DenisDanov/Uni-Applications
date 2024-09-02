@@ -16,7 +16,13 @@ public class CorsConfig {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
         config.addAllowedOrigin("http://localhost:8080");
-        config.getAllowedOrigins().addAll(List.of("http://localhost:5173", "http://localhost:5174"));
+        config.getAllowedOrigins().addAll(List.of(
+                "http://localhost:5173",
+                "http://localhost:5174",
+                "http://192.168.0.103:5173",
+                "http://92.247.126.131:5173",
+                "http://92.247.126.131:8080",
+                "https://uni-application.ddns.net"));
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         config.addExposedHeader("Content-Disposition");

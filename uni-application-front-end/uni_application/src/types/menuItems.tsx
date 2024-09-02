@@ -109,15 +109,20 @@ export const menuItems = (
                             height: 'auto',  // Allow each item to take only the space it needs
                         }}
                     >
-                        <ListItemIcon sx={{color: '#fff', minWidth: 'auto', marginBottom: '8px'}}>
+                        <ListItemIcon sx={{color: '#fff', minWidth: 'auto', marginBottom: "4px"}}>
                             {item.icon}
                         </ListItemIcon>
                         <ListItemText
                             primary={item.text}
                             sx={{
+                                marginTop: '4px',
+                                marginBottom: 0,
                                 textAlign: 'center',
                                 whiteSpace: 'normal',  // Allow text to wrap
                                 wordWrap: 'break-word', // Break long words if necessary
+                                '& span': { // Target the span inside the ListItemText
+                                    lineHeight: '1 !important',  // Override the line-height
+                                },
                             }}
                         />
                     </ListItem>

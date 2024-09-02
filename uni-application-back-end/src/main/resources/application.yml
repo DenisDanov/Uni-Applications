@@ -1,5 +1,6 @@
 # Server Configuration
 server:
+  address: 192.168.0.103
   port: 8081
 
 # Email server
@@ -54,11 +55,11 @@ spring:
       client:
         provider:
           keycloak:
-            issuer-uri: http://localhost:8080/realms/${KEYCLOAK_REALM}
+            issuer-uri: https://uni-application.ddns.net/auth/realms/${KEYCLOAK_REALM}
             user-name-attribute: preferred_username
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8080/realms/${KEYCLOAK_REALM}
+          issuer-uri: https://uni-application.ddns.net/auth/realms/${KEYCLOAK_REALM}
 
   # Caching config
   cache:
@@ -85,7 +86,7 @@ logging:
       swagger: DEBUG
 
 keycloak:
-  auth-server-url: http://localhost:8080
+  auth-server-url: https://uni-application.ddns.net/auth
   realm: ${KEYCLOAK_REALM}
   resource: spring-realm
   credentials:

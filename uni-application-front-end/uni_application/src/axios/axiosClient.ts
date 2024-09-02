@@ -3,7 +3,7 @@ import Keycloak from "keycloak-js";
 import {GENERIC_FAIL, NOT_FOUND_FAIL, SERVER_FAIL_TYPE, UNAUTHORIZED_FAIL} from "./serviceFails";
 
 export const keycloakInitObject = new Keycloak({
-    url: "http://localhost:8080" /*/auth*/,
+    url: "https://uni-application.ddns.net/auth/" /*/auth*/,
     realm: "SpringRealm",
     clientId: "uni-app-fe",
 });
@@ -53,7 +53,7 @@ export const createAxiosClient = ({baseUrl, keycloak}: AxiosClientProps) => {
 };
 
 const axiosClientDefault = createAxiosClient({
-    baseUrl: `http://localhost:8081/api/v1`,
+    baseUrl: `https://uni-application.ddns.net/backend/api/v1`,
     keycloak: keycloakInitObject,
 });
 
