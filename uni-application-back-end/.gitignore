@@ -1,5 +1,6 @@
 .env
 HELP.md
+../keycloakify-starter
 letsencrypt
 target/
 !.mvn/wrapper/maven-wrapper.jar
