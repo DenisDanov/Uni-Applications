@@ -22,7 +22,12 @@ public class EmailNotificationListener {
         UserDTO userDTO = event.getUserDTO();
         String to = userDTO.getEmail();
         String subject = "Welcome to our University Application Portal!";
-        String body = "Dear " + userDTO.getFirstName() + ",\n\nWelcome to our University Application Portal!\n\nYou can begin your journey by applying to the available specialties from the 'Apply' section!";
+        String body = """
+                Dear %s,
+                
+                Welcome to our University Application Portal!
+                
+                You can begin your journey by applying to the available specialties from the 'Apply' section!""".formatted(userDTO.getFirstName());
 
         // Send email asynchronously
         emailService.sendEmailAsync(to, subject, body);
