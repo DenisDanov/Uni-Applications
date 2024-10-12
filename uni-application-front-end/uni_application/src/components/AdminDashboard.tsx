@@ -18,6 +18,7 @@ const AdminDashboard: React.FC = () => {
                     throw new Error('Network response was not ok');
                 }
                 // @ts-ignore
+                // TODO FIX THIS TO NOT BREAK OTHER PAGES LAYOUT WHEN LEAVING THIS PAGE
                 document.querySelector(`.css-1qsxih2`).style.maxWidth = '100%';
                 return response.data;
             })

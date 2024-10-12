@@ -9,7 +9,7 @@ import {
     Typography,
     Collapse,
 } from "@mui/material";
-import { getFileIcon } from "../types/fileIcons";
+import { getFileIcon } from "./fileIcons";
 import { handleFileDownload } from "../types/fileDownloads";
 import { ExpandMore, ExpandLess } from "@mui/icons-material";
 import { useTranslation } from 'react-i18next';

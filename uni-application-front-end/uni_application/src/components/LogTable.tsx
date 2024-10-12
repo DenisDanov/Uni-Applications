@@ -121,7 +121,7 @@ const LogTable: React.FC<LogTableProps> = ({logs, logTableName}) => {
                             },
                         }}
                         pagination
-                        pageSizeOptions={[5, 10, 25, 50, 100]}
+                        pageSizeOptions={[5, 10, 15, 25, 50, 100]}
                         rows={rows}
                         columns={columns}
                         checkboxSelection

@@ -14,6 +14,7 @@ import BackgroundWrapper from "./components/BackgroundWrapper";
 LicenseInfo.setLicenseKey('e0d9bb8070ce0054c9d9ecb6e82cb58fTz0wLEU9MzI0NzIxNDQwMDAwMDAsUz1wcmVtaXVtLExNPXBlcnBldHVhbCxLVj0y');
 
 const App: React.FC = () => {
+
     return (
         <BrowserRouter basename="/">
             <AppSecurityProvider authClient={keycloakInitObject}>

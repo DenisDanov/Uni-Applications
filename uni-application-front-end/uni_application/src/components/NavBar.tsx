@@ -4,7 +4,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import {useKeycloak} from '../keycloak';
 import {useTranslation} from 'react-i18next';
 import NavBarMenu from "./NavBarMenu";
-import {menuItems} from "../types/menuItems";
+import {menuItems} from "./menuItems";
 
 const NavBar: React.FC = () => {
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);

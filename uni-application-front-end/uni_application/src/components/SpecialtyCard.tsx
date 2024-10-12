@@ -38,7 +38,7 @@ const SpecialtyCard: React.FC<SpecialtyCardProps> = ({specialty, handleApplyClic
     const isBgLanguage = i18n.language === 'bg';
 
     return (
-        <Grid className={"specialties-cards"} item xs={12} sm={6} md={4} lg={3}>
+        <Grid style={{marginBottom: "15px"}} className={"specialties-cards"} item xs={12} sm={6} md={4} lg={3}>
             <Card
                 elevation={4}
                 sx={{

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Navigate, useNavigate} from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import SecurityGuard from '../security/SecurityGuard';
 import Specialties from "./Specialties";
 import Faculties from "./Faculties";
@@ -12,37 +12,32 @@ import EvaluateApplication from "./EvaluateApplication";
 import RequirementsTests from "./RequirementsTests";
 import AdminDashboard from "./AdminDashboard";
 import News from "./News";
-import Login from './Login';
 
-const HomeRoute: React.FC = () => <Home/>;
-const ProfileRoute: React.FC = () => <Profile/>;
-const FacultiesRoute: React.FC = () => <Faculties/>;
-const SpecialtiesRoute: React.FC = () => <Specialties/>;
-const Apply: React.FC = () => <Application/>
-const ManageStudentApplicationsRoute: React.FC = () => <ManageStudentApplications/>;
-const ManageUsersRoute: React.FC = () => <ManageUsers/>;
-const EvaluateApplicationRoute: React.FC = () => <EvaluateApplication/>
-const RequirementsTestsRoute: React.FC = () => <RequirementsTests/>
-const AdminDashboardRoute: React.FC = () => <AdminDashboard/>
-const NewsRoute: React.FC = () => <News/>
-const LoginRoute: React.FC = () => <Login/>
+const HomeRoute: React.FC = () => <Home />;
+const ProfileRoute: React.FC = () => <Profile />;
+const FacultiesRoute: React.FC = () => <Faculties />;
+const SpecialtiesRoute: React.FC = () => <Specialties />;
+const Apply: React.FC = () => <Application />
+const ManageStudentApplicationsRoute: React.FC = () => <ManageStudentApplications />;
+const ManageUsersRoute: React.FC = () => <ManageUsers />;
+const EvaluateApplicationRoute: React.FC = () => <EvaluateApplication />
+const RequirementsTestsRoute: React.FC = () => <RequirementsTests />
+const AdminDashboardRoute: React.FC = () => <AdminDashboard />
+const NewsRoute: React.FC = () => <News />
+const NotFoundRoute: React.FC = () => <div>404 - Page Not Found</div>;
 
 const routes = [
     {
         path: "/",
-        element: <HomeRoute/>,
+        element: <HomeRoute />,
     },
     {
         path: "/faculties",
-        element: <FacultiesRoute/>,
+        element: <FacultiesRoute />,
     },
     {
         path: "/specialties",
-        element: <SpecialtiesRoute/>,
-    },
-    {
-        path: "/login",
-        element: <Login/>,
+        element: <SpecialtiesRoute />,
     },
     {
         path: "/profile",
@@ -52,9 +47,9 @@ const routes = [
                 checkForRoles={["admin", "student"]}
                 roleOperator="or"
                 loginOnUnauthorized={false}
-                displayOnUnauthorized={<Navigate to={"/"}/>}
+                displayOnUnauthorized={<Navigate to={"/"} />}
             >
-                <ProfileRoute/>
+                <ProfileRoute />
             </SecurityGuard>
         ),
     },
@@ -64,10 +59,10 @@ const routes = [
             <SecurityGuard
                 doCheck={true}
                 checkForRoles={['student']}
-                loginOnUnauthorized={false}
-                displayOnUnauthorized={<Navigate to={"/login"}/>}
+                loginOnUnauthorized={true}
+                displayOnUnauthorized={<Navigate to={"/"} />}
             >
-                <Apply/>
+                <Apply />
             </SecurityGuard>
         ),
     },
@@ -78,9 +73,9 @@ const routes = [
                 doCheck={true}
                 checkForRoles={['admin']}
                 loginOnUnauthorized={false}
-                displayOnUnauthorized={<Navigate to="/"/>}
+                displayOnUnauthorized={<Navigate to="/" />}
             >
-                <ManageStudentApplicationsRoute/>
+                <ManageStudentApplicationsRoute />
             </SecurityGuard>
         )
     },
@@ -91,9 +86,9 @@ const routes = [
                 doCheck={true}
                 checkForRoles={['admin']}
                 loginOnUnauthorized={false}
-                displayOnUnauthorized={<Navigate to="/"/>}
+                displayOnUnauthorized={<Navigate to="/" />}
             >
-                <ManageUsersRoute/>
+                <ManageUsersRoute />
             </SecurityGuard>
         )
     },
@@ -104,9 +99,9 @@ const routes = [
                 doCheck={true}
                 checkForRoles={['admin']}
                 loginOnUnauthorized={false}
-                displayOnUnauthorized={<Navigate to="/"/>}
+                displayOnUnauthorized={<Navigate to="/" />}
             >
-                <EvaluateApplicationRoute/>
+                <EvaluateApplicationRoute />
             </SecurityGuard>
         )
     },
@@ -117,9 +112,9 @@ const routes = [
                 doCheck={true}
                 checkForRoles={['admin']}
                 loginOnUnauthorized={false}
-                displayOnUnauthorized={<Navigate to="/"/>}
+                displayOnUnauthorized={<Navigate to="/" />}
             >
-                <AdminDashboardRoute/>
+                <AdminDashboardRoute />
             </SecurityGuard>
         )
     },
@@ -130,19 +125,19 @@ const routes = [
                 doCheck={true}
                 checkForRoles={['student']}
                 loginOnUnauthorized={false}
-                displayOnUnauthorized={<Navigate to="/"/>}
+                displayOnUnauthorized={<Navigate to="/" />}
             >
-                <RequirementsTestsRoute/>
+                <RequirementsTestsRoute />
             </SecurityGuard>
         )
     },
     {
         path: "/news",
-        element: <NewsRoute/>
+        element: <NewsRoute />
     },
     {
         path: "*",
-        element: <Navigate to="/"/>,
+        element: <NotFoundRoute />,
     },
 ];
 

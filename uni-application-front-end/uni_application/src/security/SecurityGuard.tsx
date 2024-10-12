@@ -3,6 +3,7 @@ import {HasAccessParams} from "../types/HasAccessParams";
 import {WithChildren} from "../types";
 import {useKeycloak} from "../keycloak";
 import {hasAccess} from "./HasAccess";
+import { getAuthUrl } from "../util/RedirectToLogin";
 
 export type SecurityGuardProps = HasAccessParams & {
     displayOnUnauthorized?: React.ReactNode;
@@ -22,12 +23,12 @@ const SecurityGuard = ({
 
     if (allowAccess) {
         return <React.Fragment>{children}</React.Fragment>;
+    } else if (loginOnUnauthorized) {
+        window.location.href = getAuthUrl();
+        return <React.Fragment>{displayOnUnauthorized}</React.Fragment>;
     } else if (displayOnUnauthorized) {
         return <React.Fragment>{displayOnUnauthorized}</React.Fragment>;
-    } else if (loginOnUnauthorized) {
-        keycloak.login();
-        return null;
-    } else {
+    }  else {
         return null;
     }
 };

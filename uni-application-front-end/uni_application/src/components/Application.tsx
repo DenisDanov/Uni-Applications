@@ -26,7 +26,7 @@ import { axiosClientDefault } from "../axios/axiosClient";
 import { useKeycloak } from "../keycloak";
 import { LoadingButton } from "@mui/lab";
 import UploadFileIcon from '@mui/icons-material/UploadFile';
-import { getFileIcon } from "../types/fileIcons";
+import { getFileIcon } from "./fileIcons";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useTranslation } from 'react-i18next';
 

@@ -11,9 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
 
 @Service
 public class KafkaLogRetrieverService {
@@ -21,8 +18,6 @@ public class KafkaLogRetrieverService {
     private static final Logger logger = LoggerFactory.getLogger(KafkaLogRetrieverService.class);
 
     private final Properties baseConsumerProps;
-
-    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     private final TopicPartition topicPartition = new TopicPartition("applications_log", 0);
 
@@ -36,40 +31,39 @@ public class KafkaLogRetrieverService {
         baseConsumerProps.put(JsonDeserializer.VALUE_DEFAULT_TYPE, ApplicationLogEventDTO.class.getName());
         baseConsumerProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         baseConsumerProps.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
+        baseConsumerProps.put(ConsumerConfig.FETCH_MIN_BYTES_CONFIG, "1024");
+        baseConsumerProps.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "500");
     }
 
     public List<ApplicationLogEventDTO> retrieveLogs() {
         List<ApplicationLogEventDTO> logs = new ArrayList<>();
-        Consumer<String, ApplicationLogEventDTO> consumer = creatConsumer();
-        try {
-            ConsumerRecords<String, ApplicationLogEventDTO> records = consumer.poll(Duration.ofMillis(5000));
-
-            return records.isEmpty() ? new ArrayList<>() : records.records(topicPartition) // Replace with correct partition handling
-                    .stream()
-                    .map(ConsumerRecord::value)
-                    .collect(Collectors.toList());
+        try (Consumer<String, ApplicationLogEventDTO> consumer = createConsumer()) {
+            while (true) {
+                ConsumerRecords<String, ApplicationLogEventDTO> records = consumer.poll(Duration.ofMillis(100));
+                if (!records.isEmpty()) {
+                    logs.addAll(records.records(topicPartition)
+                            .stream()
+                            .map(ConsumerRecord::value)
+                            .toList());
+                } else {
+                    break;
+                }
+            }
         } catch (Exception e) {
             logger.error("Error occurred while retrieving logs: {}", e.getMessage(), e);
         } finally {
-            executorService.submit(() -> {
-                try {
-                    consumer.close();
-                    logger.info("Consumer closed.");
-                } catch (Exception e) {
-                    logger.error("Error occurred while closing Kafka consumer: {}", e.getMessage(), e);
-                }
-            });
+            logger.info("Consumer closed.");
         }
         return logs;
     }
 
-    private Consumer<String, ApplicationLogEventDTO> creatConsumer() {
-        String uniqueGroupId = "log-retriever-group-" + UUID.randomUUID();
+    private Consumer<String, ApplicationLogEventDTO> createConsumer() {
+        String staticGroupId = "log-retriever-group";
 
-        // Create new consumer properties with the unique group ID
+        // Create new consumer properties with a static group ID
         Properties consumerProps = new Properties();
         consumerProps.putAll(baseConsumerProps);
-        consumerProps.put(ConsumerConfig.GROUP_ID_CONFIG, uniqueGroupId);
+        consumerProps.put(ConsumerConfig.GROUP_ID_CONFIG, staticGroupId);
 
         Consumer<String, ApplicationLogEventDTO> consumer = new KafkaConsumer<>(consumerProps);
         consumer.subscribe(Collections.singletonList("applications_log"));
