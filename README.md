@@ -18,9 +18,9 @@ Our platform offers a user-friendly experience where students can:
 ### For Administrators
 
 We provide two types of administrative access to manage the platform effectively:
-
+- **All Admins**: All Admins also benefit from a robust tracking system that logs every action, such as application submissions and status changes.
 - **Read-Only Admins**: View data, including user profiles, applications, and status updates without making any changes.
-- **Full-Access Admins**: Have comprehensive control, including the ability to accept or decline applications, remove applications, block user access, and modify user roles. All Admins also benefit from a robust tracking system that logs every action, such as application submissions and status changes.
+- **Full-Access Admins**: Have comprehensive control, including the ability to accept or decline applications, remove applications, block user access, and modify user roles.
 
 ### Key Features
 
@@ -84,6 +84,22 @@ We provide two types of administrative access to manage the platform effectively
 
 
 ## Front-End
+
+### Front-End Implementation Overview
+
+The front-end is implemented as a **Single Page React Application**. The key features and technologies used include:
+
+- **React Router DOM**: For routing within the application, enabling smooth navigation between different routes.
+- **Material-UI (MUI)**: For styling components, alongside custom CSS for additional design elements.
+- **Redux**: Implemented for efficient state management throughout the application.
+- **Axios**: Used as the client for making API calls to the backend.
+- **Keycloak Integration**: Provides security, authentication, and authorization management, including:
+  - **Role and Access Level Checks**: Security guards and providers ensure that users are redirected to the home page if they attempt to access routes they don't have permission for.
+- **Internationalization (i18n)**: The application supports multiple languages, defaulting to English, with a language switcher that allows users to change to Bulgarian seamlessly.
+- **Formik**: Utilized for managing forms effectively, making form handling easier.
+- **Yup**: Used for field validation and checking, ensuring robust form inputs.
+- **Input Sanitization**: Implemented using **dompurify** and React’s built-in sanitization features to ensure security against XSS attacks.
+- **Custom 404 Error Page**: Displays a user-friendly error page when users attempt to access a non-existing route.
 
 <details id="register-page">
 <summary><h4>Register Page</h4></summary>
