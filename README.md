@@ -48,6 +48,7 @@ We provide two types of administrative access to manage the platform effectively
   - [Evaluate Applications Page](#evaluate-applications-page)
   - [Manage Users Page](#manage-users-page)
   - [Admin Dashboard Page](#admin-dashboard-page)
+  - [News Page](#news)
 - </details>
   <details>
   <summary><b>Backend</b></summary>
@@ -304,6 +305,25 @@ The admin dashboard provides an overview of all actions made regarding student a
   - Creation of applications
   - Deletion of applications
   - Updated statuses of existing applications
+
+</details>
+
+<details id="news">
+<summary><h4>News Page</h4></summary>
+
+The news page shows important information and news about the platform.
+
+![Screenshot_509](https://github.com/user-attachments/assets/61984d36-260e-473f-8f41-f621d127a633)
+
+- **Public Access**: This page is available for all users to view.
+- **Important Updates**: Displays important information and news related to the site.
+- **Admin Functions**: Admins with full access levels can add or delete news items, ensuring that the information remains relevant and up-to-date.
+- **Adding News**: When admins click to add news, a menu appears where they can provide:
+  - ![Screenshot_559](https://github.com/user-attachments/assets/6a37123f-2530-429a-9950-4be558b2646f)
+  - **Header**: The title of the news item.
+  - **Content**: The main body of the news, which supports HTML, Markdown, or plain text.
+  - The format of the text added will be preserved, ensuring that it displays the same way when published, maintaining the integrity of the content.
+- **Admin Oversight**: Only admins with full access levels can audit and manage the content on this page.
 
 </details>
 
