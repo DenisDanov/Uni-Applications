@@ -45,9 +45,9 @@ We provide two types of administrative access to manage the platform effectively
   - [Requirements Tests](#requirements-tests)
   - [Profile Page](#profile-page)
   - [Manage Applications Page](#manage-applications-page)
+  - [Evaluate Applications Page](#evaluate-applications-page)
   - [Manage Users Page](#manage-users-page)
   - [Admin Dashboard Page](#admin-dashboard-page)
-  - [Evaluate Applications Page](#evaluate-applications-page)
 - </details>
   <details>
   <summary><b>Backend</b></summary>
@@ -251,6 +251,20 @@ The manage applications page allows administrators review and manage application
 
 </details>
 
+<details id="evaluate-applications-page">
+<summary><h4>Evaluate Applications Page</h4></summary>
+
+The evaluate applications page is used for assessing and making decisions on applications.
+
+![Screenshot_517](https://github.com/user-attachments/assets/43da38a2-54ed-4899-8911-0b3270cc9e59)
+
+- **Admin-Only Access**: This page is exclusively accessible to users with admin privileges.
+- **Application Evaluation**: Displays the application selected by the admin for evaluation.
+- **Application Information**: Shows detailed information about the application being reviewed.
+- **Specialty Requirements**: Presents the requirements for the specialty related to the application and indicates whether they have been met.
+
+</details>
+
 <details id="manage-users-page">
 <summary><h4>Manage Users Page</h4></summary>
 
@@ -290,20 +304,6 @@ The admin dashboard provides an overview of all actions made regarding student a
   - Creation of applications
   - Deletion of applications
   - Updated statuses of existing applications
-
-</details>
-
-<details id="evaluate-applications-page">
-<summary><h4>Evaluate Applications Page</h4></summary>
-
-The evaluate applications page is used for assessing and making decisions on applications.
-
-![Screenshot_517](https://github.com/user-attachments/assets/43da38a2-54ed-4899-8911-0b3270cc9e59)
-
-- **Admin-Only Access**: This page is exclusively accessible to users with admin privileges.
-- **Application Evaluation**: Displays the application selected by the admin for evaluation.
-- **Application Information**: Shows detailed information about the application being reviewed.
-- **Specialty Requirements**: Presents the requirements for the specialty related to the application and indicates whether they have been met.
 
 </details>
 
