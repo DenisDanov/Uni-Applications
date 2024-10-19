@@ -18,9 +18,9 @@ Our platform offers a user-friendly experience where students can:
 ### For Administrators
 
 We provide two types of administrative access to manage the platform effectively:
-
+- **All Admins**: All Admins also benefit from a robust tracking system that logs every action, such as application submissions and status changes.
 - **Read-Only Admins**: View data, including user profiles, applications, and status updates without making any changes.
-- **Full-Access Admins**: Have comprehensive control, including the ability to accept or decline applications, remove applications, block user access, and modify user roles. Full-Access Admins also benefit from a robust tracking system that logs every action, such as application submissions and status changes.
+- **Full-Access Admins**: Have comprehensive control, including the ability to accept or decline applications, remove applications, block user access, and modify user roles.
 
 ### Key Features
 
@@ -42,11 +42,13 @@ We provide two types of administrative access to manage the platform effectively
   - [Specialties Page](#specialties-page)
   - [Faculties Page](#faculties-page)
   - [Apply Page](#apply-page)
+  - [Requirements Tests](#requirements-tests)
   - [Profile Page](#profile-page)
   - [Manage Applications Page](#manage-applications-page)
+  - [Evaluate Applications Page](#evaluate-applications-page)
   - [Manage Users Page](#manage-users-page)
   - [Admin Dashboard Page](#admin-dashboard-page)
-  - [Evaluate Applications Page](#evaluate-applications-page)
+  - [News Page](#news)
 - </details>
   <details>
   <summary><b>Backend</b></summary>
@@ -83,19 +85,42 @@ We provide two types of administrative access to manage the platform effectively
 
 ## Front-End
 
+### Front-End Implementation Overview
+
+The front-end is implemented as a **Single Page React Application**. The key features and technologies used include:
+
+- **React Router DOM**: For routing within the application, enabling smooth navigation between different routes.
+- **Material-UI (MUI)**: For styling components, alongside custom CSS for additional design elements.
+- **Redux**: Implemented for efficient state management throughout the application.
+- **Axios**: Used as the client for making API calls to the backend.
+- **Keycloak Integration**: Provides security, authentication, and authorization management, including:
+  - **Role and Access Level Checks**: Security guards and providers ensure that users are redirected to the home page if they attempt to access routes they don't have permission for.
+- **Internationalization (i18n)**: The application supports multiple languages, defaulting to English, with a language switcher that allows users to change to Bulgarian seamlessly.
+- **Formik**: Utilized for managing forms effectively, making form handling easier.
+- **Yup**: Used for field validation and checking, ensuring robust form inputs.
+- **Input Sanitization**: Implemented using **dompurify** and React’s built-in sanitization features to ensure security against XSS attacks.
+- **Custom 404 Error Page**: Displays a user-friendly error page when users attempt to access a non-existing route.
+
 <details id="register-page">
 <summary><h4>Register Page</h4></summary>
 
 The registration page is designed to be user-friendly and efficient for new users looking to create an account.
 
-![Register Page Screenshot](#)  <!-- Replace with actual screenshot URL -->
+![Screenshot_518](https://github.com/user-attachments/assets/7b7f8f52-53ac-4fd4-ab96-bad1b73a1dab)
 
-- Users are prompted to enter their full name, email address, and a secure password.
-- Input validation ensures:
-  - Names must be properly formatted and cannot be left blank.
-  - Email addresses must be valid and unique; duplicate or improperly formatted emails will be rejected.
-  - Passwords must be at least 8 characters long and meet complexity requirements.
-- After completing registration, users are redirected to the login page to access their account.
+- **Customized Keycloak Page**: The registration page is modified from the default Keycloak page using **keycloakify**, which upgrades it to a React-based interface.
+- **Additional Fields**: Includes extra fields required by the application:
+  - Username
+  - Email
+  - First Name
+  - Middle Name
+  - Last Name
+  - Password (minimum 8 characters, with at least one letter and one digit)
+  - Confirm Password
+  - Birth Date
+  - Phone Number
+- **Frontend Validation**: Prevents form submission if fields are invalid, ensuring users meet all criteria before registering.
+- **Backend Validation**: Mirrors the frontend checks and applies them server-side for data integrity and security.
 
 </details>
 
@@ -104,16 +129,11 @@ The registration page is designed to be user-friendly and efficient for new user
 
 The login page provides a secure entry point for returning users.
 
-![Login Page Screenshot](#)  <!-- Replace with actual screenshot URL -->
+![Screenshot_505](https://github.com/user-attachments/assets/56c40784-389c-4c6f-add6-b66b7ed01c5e)
 
-- Users need to enter their registered email address and password.
-- For users who forget their password, a password reset option is available:
-  - An email with a password reset link is sent if the provided email matches a registered account.
-  - The link expires after 24 hours or once the password has been successfully reset.
-- Anti-bot measures are in place to prevent unauthorized access:
-  - After 5 failed login attempts, users are temporarily locked out for 15 minutes.
-  - Further failed attempts result in a longer lockout period.
-- Successful login redirects users to their dashboard or home page.
+- **Customized Keycloak Page**: The login page is modified using **keycloakify**, upgrading the default Keycloak login page to a React-based interface.
+- **Login Credentials**: Users can log in with their **username** and **password**.
+- **Secure Authentication**: Ensures secure login using Keycloak’s authentication mechanisms, with the custom frontend integrated seamlessly.
 
 </details>
 
@@ -122,11 +142,12 @@ The login page provides a secure entry point for returning users.
 
 The home page serves as the main entry point to the application.
 
-![Home Page Screenshot](#)  <!-- Replace with actual screenshot URL -->
+![Screenshot_515](https://github.com/user-attachments/assets/a617ea10-7028-4a55-b6e4-bb82ed1b38b9)
 
-- Features a navigation bar with links to other sections of the site.
-- Displays a welcome banner and highlights key features or announcements.
-- Includes a section with quick links to popular pages or actions.
+- **Minimalistic Design**: A simple, clean interface that only displays essential elements for easy navigation.
+- **Explore Prompt**: Text encourages users to explore the available faculties and specialties.
+- **Navigation Buttons**: Includes buttons for exploring different sections of the site.
+- **Apply Button**: Provides a button that redirects users to the application page, where they can submit an application (only accessible if logged in with a student account).
 
 </details>
 
@@ -135,36 +156,72 @@ The home page serves as the main entry point to the application.
 
 The specialties page showcases various specializations or areas of focus.
 
-![Specialties Page Screenshot](#)  <!-- Replace with actual screenshot URL -->
+![Screenshot_512](https://github.com/user-attachments/assets/f04a6bc0-9924-4ed2-987d-e1746d565891)
 
-- Lists all available specialties with brief descriptions and links to detailed information.
-- Provides filters to narrow down the list based on user preferences or requirements.
-- Each specialty entry includes a link to more detailed content or application options.
+- **Public Access**: Available to all users, regardless of their role or login status.
+- **Specialty Information**: Displays detailed information about each specialty offered by the university, including:
+  - Program details
+  - Admission requirements
+  - Subjects
+  - List of teachers associated with each specialty
+- **User-Friendly Display**: Allows users to browse and learn about all the available specialties without needing to log in.
 
 </details>
 
 <details id="faculties-page">
 <summary><h4>Faculties Page</h4></summary>
 
-The faculties page provides information about different academic faculties or departments.
+The faculties page provides information about different academic faculties.
 
-![Faculties Page Screenshot](#)  <!-- Replace with actual screenshot URL -->
+![Screenshot_511](https://github.com/user-attachments/assets/cbdd4dfa-1eea-4157-9eb1-9c011f16a552)
 
-- Displays a list of faculties with names, brief descriptions, and key contact information.
-- Users can click on each faculty to view more details, including faculty members, research areas, and academic programs.
+- **Faculty Overview**: Displays all available faculties in the university, along with detailed information about each one.
+- **Specialties within Faculties**: Shows the specialties offered by each faculty, providing a structured view for easy navigation.
+- **Specialty Links**: Each specialty is clickable, redirecting users to the **Specialties Page** and automatically filtering the list to show only the specialties from the selected faculty.
+- **Public Access**: Accessible to all users, regardless of their login status.
 
 </details>
 
 <details id="apply-page">
 <summary><h4>Apply Page</h4></summary>
 
-The apply page allows users to submit applications for programs or positions.
+The apply page allows users to submit applications for selected specialty.
 
-![Apply Page Screenshot](#)  <!-- Replace with actual screenshot URL -->
+![Screenshot_507](https://github.com/user-attachments/assets/ef4d3e90-68b1-4b0e-bffa-fa79e11efb1a)
 
-- Users can fill out an application form, providing necessary details such as personal information, qualifications, and supporting documents.
-- Includes validation to ensure all required fields are completed accurately.
-- Provides confirmation and status updates upon submission.
+- **Student-Only Access**: This page is only accessible to users who are logged in with a student account.
+- **Specialty Selection**: Allows students to select a specialty from a dropdown menu. Upon selection, the specific requirements for that specialty are displayed.
+- **Dynamic Requirements**: Requirements vary based on the selected specialty and are shown dynamically on the page.
+- **Application Fields**: Students can enter their data, including:
+  - Application description
+  - Letter of recommendation
+  - Average grade
+  - Personal statement
+  - Uploading necessary documents (supported file types: `.txt`, `.pdf`, `.doc`, `.docx`, `.png`, `.jpeg`, `.jpg`)
+- **File Upload**: Supports file uploads for required documents with clear validation for file type.
+- **Frontend & Backend Validation**: The page won't allow submission unless all fields meet the required rules, with validation checks on both the frontend and backend.
+- **Test Requirements**: Some specialties require specific tests (e.g., Standard Test, Language Proficiency Test). Students must complete these tests before they can submit their application if the tests are listed as part of the specialty's requirements.
+- **Smooth Submission**: After meeting all requirements, students can successfully submit their application for review.
+
+</details>
+
+<details id="requirements-tests">
+<summary><h4>Requirements Tests Page</h4></summary>
+
+The Requirements Tests page allows students to complete the necessary tests required for certain specialties.
+
+![Screenshot_514](https://github.com/user-attachments/assets/d4b91c62-96d0-4f9a-b152-54c969b41232)
+
+- **Student-Only Access**: This page is exclusively accessible to logged-in students.
+- **Available Tests**: Presents two tests for students to complete:
+  - **Standard Test**
+  - **Language Proficiency Test**
+- **Time Limit**: Students have a total of **1 hour** to complete each test. Once started, the tests cannot be stopped or reset.
+- **Question Format**: Each test consists of **10 multiple-choice questions**, with only one correct answer per question.
+- **Automatic Results**: Upon completion, the test results are automatically calculated and saved for the student.
+- **Application Integration**: When students apply for a specialty that requires the test results, their scores will be provided automatically.
+- **One-Time Completion**: Each test can only be completed once; students cannot retake the tests.
+- **One Test at a Time**: Only one test can be started at a time.
 
 </details>
 
@@ -173,47 +230,41 @@ The apply page allows users to submit applications for programs or positions.
 
 The profile page offers account management features for logged-in users.
 
-![Profile Page Screenshot](#)  <!-- Replace with actual screenshot URL -->
+![Screenshot_510](https://github.com/user-attachments/assets/b20f2ed5-1afa-4d26-adea-ba725ac050f7)
 
-- Users can update their personal information, such as name, email, and password.
-- Displays a summary of the user's activity, including applications and interactions.
-- Includes options to manage account settings and view recent activity.
-
+- **User Access**: Only accessible to logged-in users.
+- **Editable Profile Data**: Users can update their personal information such as:
+  - First Name
+  - Middle Name
+  - Last Name
+  - Phone Number
+- **Non-Editable Fields**: Users cannot change their role, email, or username.
+- **Student Applications**: Students can view all the applications they’ve submitted, along with all the data and documents they provided for each application.
+  - **File Download**: Uploaded files are displayed as links. Students can click on the file names to download them.
+- **Accepted Applications**: For applications that have been accepted, students will see a button. Clicking it will show the study program for the selected specialty.
+  - **Program in PDF Format**: The study program is available as a downloadable PDF file for easy access and offline viewing.
+    - ![Screenshot_557](https://github.com/user-attachments/assets/a6a80348-4de6-4544-864e-bf88ae1b7cc0)
+ 
 </details>
 
 <details id="manage-applications-page">
 <summary><h4>Manage Applications Page</h4></summary>
 
-The manage applications page allows administrators or users to review and manage applications.
+The manage applications page allows administrators review and manage applications.
 
-![Manage Applications Page Screenshot](#)  <!-- Replace with actual screenshot URL -->
+![Screenshot_516](https://github.com/user-attachments/assets/4e1da1c8-b3a8-4d80-a99c-f6a474e32cb1)
 
-- Lists all applications with filtering options based on status, date, or other criteria.
-- Provides functionality to view, approve, reject, or request additional information for each application.
-
-</details>
-
-<details id="manage-users-page">
-<summary><h4>Manage Users Page</h4></summary>
-
-The manage users page is used for administrative tasks related to user management.
-
-![Manage Users Page Screenshot](#)  <!-- Replace with actual screenshot URL -->
-
-- Displays a list of users with options to view their profiles, modify user roles, or deactivate accounts.
-- Includes search and filter functionalities to efficiently manage user data.
-
-</details>
-
-<details id="admin-dashboard-page">
-<summary><h4>Admin Dashboard Page</h4></summary>
-
-The admin dashboard provides an overview of key metrics and system status.
-
-![Admin Dashboard Page Screenshot](#)  <!-- Replace with actual screenshot URL -->
-
-- Displays summary statistics and charts related to user activity, application statuses, and system performance.
-- Offers quick access to management tools and system settings.
+- **Admin-Only Access**: This page is only accessible to users with admin privileges.
+- **Application Overview**: Displays all submitted student applications, along with the data provided for each, including uploaded files.
+  - **File Download**: Files uploaded by students are available as clickable links for admins to download.
+- **Filtering Options**: A filter menu allows admins to easily sort and search through applications based on various criteria.
+- **Admin Actions**:
+  - **Full Access Admins**: Admins with full access can take actions such as:
+    - **Accept**, **Decline**, or **Delete** applications using dedicated buttons.
+  - **All Admins**:
+    - **Receipt Generator**: Generates a PDF format of the selected application and downloads it to the admin’s device.
+      - ![Screenshot_558](https://github.com/user-attachments/assets/8ebc46cc-3884-4e53-be0a-bb842242643d)
+    - **Evaluate Application**: Redirects the admin to the **Evaluate Application Page** for further review and evaluation of the application.
 
 </details>
 
@@ -222,10 +273,73 @@ The admin dashboard provides an overview of key metrics and system status.
 
 The evaluate applications page is used for assessing and making decisions on applications.
 
-![Evaluate Applications Page Screenshot](#)  <!-- Replace with actual screenshot URL -->
+![Screenshot_517](https://github.com/user-attachments/assets/43da38a2-54ed-4899-8911-0b3270cc9e59)
 
-- Lists applications awaiting evaluation with details for each application.
-- Provides tools for scoring, commenting, and making decisions on applications.
+- **Admin-Only Access**: This page is exclusively accessible to users with admin privileges.
+- **Application Evaluation**: Displays the application selected by the admin for evaluation.
+- **Application Information**: Shows detailed information about the application being reviewed.
+- **Specialty Requirements**: Presents the requirements for the specialty related to the application and indicates whether they have been met.
+
+</details>
+
+<details id="manage-users-page">
+<summary><h4>Manage Users Page</h4></summary>
+
+The manage users page is used for administrative tasks related to user management.
+
+![Screenshot_506](https://github.com/user-attachments/assets/5cddaf51-4df9-459a-b722-dda425a98478)
+
+- **Admin-Only Access**: This page is exclusively accessible to users with admin privileges.
+- **User Overview**: Displays a list of all users along with their relevant data (excluding passwords for security).
+- **Filtering Options**: A filter menu allows admins to easily search and sort through users based on various criteria.
+- **Full Access Admin Functions**: Admins with full access can perform the following actions:
+  - **Change Role and Access Level**: Admins can modify the role and access level of users using dropdown menus. After selecting the desired options, clicking the **Update** button will apply the changes.
+  - **Block User**: An option to block users, which restricts their access to the site. If the user is logged in, they will be logged out immediately and cannot log back in until they are unblocked.
+- **Account Protection**: Accounts of full access admins cannot be altered. Their roles and access levels cannot be changed, nor can their accounts be blocked.
+
+</details>
+
+<details id="admin-dashboard-page">
+<summary><h4>Admin Dashboard Page</h4></summary>
+
+The admin dashboard provides an overview of all actions made regarding student applications.
+
+![Screenshot_504](https://github.com/user-attachments/assets/bcaa5bcb-25d9-4925-9bf2-69a8eb9bc924)
+
+- **Admin-Only Access**: This page is exclusively accessible to users with admin privileges.
+- **Activity Tracking System**: The dashboard serves as a tracking system that logs and monitors all activities related to student applications.
+- **Application Submissions**: Each time a student submits an application, it is recorded with details including:
+  - The student who made the application
+  - The faculty and specialty applied for
+  - Timestamp of the action
+- **Modification Tracking**: Logs any changes made to existing applications, such as:
+  - Accepted
+  - Declined
+  - Deleted
+- **Action Details**: Each log entry includes the timestamp of the action and additional information about which user performed the action.
+- **Filtering Options**: Admins can filter the activity logs to display specific actions, such as:
+  - Creation of applications
+  - Deletion of applications
+  - Updated statuses of existing applications
+
+</details>
+
+<details id="news">
+<summary><h4>News Page</h4></summary>
+
+The news page shows important information and news about the platform.
+
+![Screenshot_509](https://github.com/user-attachments/assets/61984d36-260e-473f-8f41-f621d127a633)
+
+- **Public Access**: This page is available for all users to view.
+- **Important Updates**: Displays important information and news related to the site.
+- **Admin Functions**: Admins with full access levels can add or delete news items, ensuring that the information remains relevant and up-to-date.
+- **Adding News**: When admins click to add news, a menu appears where they can provide:
+  - ![Screenshot_559](https://github.com/user-attachments/assets/6a37123f-2530-429a-9950-4be558b2646f)
+  - **Header**: The title of the news item.
+  - **Content**: The main body of the news, which supports HTML, Markdown, or plain text.
+  - The format of the text added will be preserved, ensuring that it displays the same way when published, maintaining the integrity of the content.
+- **Admin Oversight**: Only admins with full access levels can audit and manage the content on this page.
 
 </details>
 
