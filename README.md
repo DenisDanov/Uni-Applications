@@ -345,7 +345,46 @@ The news page shows important information and news about the platform.
 
 ## Backend
 
+### Backend Implementation Overview
 
+The backend is developed with **Spring Boot** and is designed as a **REST API**. It provides secure and efficient data handling, user management, and integrates various tools for data storage and security.
+
+### 1. **Database Layer**
+   - **Primary Database**: MySQL 
+     - **Schema Management**: Managed by Liquibase for tracking database state, schema versioning, and easy rollback of changes.
+   - **ORM Layer**: Spring Data JPA with Hibernate for seamless data persistence and retrieval.
+   - **Caching**: Ehcache is configured to cache frequently requested non-volatile data, reducing database load and improving performance.
+   - **File Storage**: MinIO is used to store files uploaded by users, enabling fast file retrieval and reducing the load on the main database by offloading file-heavy operations.
+
+### 2. **Backend Framework**
+   - **Framework**: Spring Boot (Java 21)
+     - **API Type**: REST-only API, designed for handling HTTP requests and responses without UI rendering.
+     - **Asynchronous Processing**: Implemented with Spring’s async configuration and `ThreadPoolTaskExecutor` for managing resource-intensive tasks (e.g., email notifications) without blocking main threads.
+     - **PDF Generation**: Uses Freemarker with FTL templates to create PDFs dynamically, particularly for applications and program documents.
+
+### 3. **Security Layer**
+   - **Authentication and Authorization**: Managed with Spring Security and OAuth2.
+   - **Identity Provider**: Keycloak for user management and SSO (Single Sign-On).
+     - **Session Management**: Keycloak issues JWT tokens for user sessions, handling both authentication and authorization.
+     - **JWT-Based Authorization**: Keycloak-issued tokens validate users across protected API endpoints.
+   - **CORS Configuration**: Configured to allow cross-origin requests from the separate React TypeScript frontend.
+
+### 4. **Messaging and Logging**
+   - **Event Streaming**: Kafka is integrated for message streaming, primarily used to log actions taken on student applications.
+   - **Log Storage**: Kafka stores logs for operations such as application processing, deletion, and creation, enabling scalable and asynchronous logging.
+
+### 5. **In-Memory Database for State Management**
+   - **Redis**: Maintains stateful data for transient sessions, such as when students start tests.
+     - **Use Case**: By storing test states, Redis helps enforce rules, ensuring students cannot modify their test progress and minimizing opportunities for cheating.
+
+### 6. **Third-Party Integrations**
+   - **Email Service**: Configured to use Google’s SMTP server for sending automatic emails for notifications and updates.
+
+### 7. **Testing**
+   - **Unit and Integration Tests**: The backend includes comprehensive unit and integration tests, covering approximately 70% of the code in the service layer. These tests ensure that core functionalities perform as expected, allowing for early detection of issues and maintaining code reliability across new deployments and updates.
+
+### 8. **API Documentation**
+   - **Swagger**: Swagger is implemented for clear and accessible API documentation. This documentation is auto-generated, ensuring it stays up-to-date with any changes in API functionality, making integration and debugging easier for frontend and third-party developers.
 
 <details id="license">
 <summary><h4>License</h4></summary>
