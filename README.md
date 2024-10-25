@@ -358,10 +358,11 @@ The backend is developed with **Spring Boot** and is designed as a **REST API**.
 
 ### 2. **Backend Framework**
    - **Framework**: Spring Boot (Java 21)
+     - **Code Design**: The backend code is built with heavy abstraction and the use of generics, allowing for a flexible architecture that is easy to extend with new functionalities and models. This design pattern enhances maintainability, simplifies the addition of new features, and reduces code duplication. 
      - **API Type**: REST-only API, designed for handling HTTP requests and responses without UI rendering.
      - **Asynchronous Processing**: Implemented with Spring’s async configuration and `ThreadPoolTaskExecutor` for managing resource-intensive tasks (e.g., email notifications) without blocking main threads.
      - **PDF Generation**: Uses Freemarker with FTL templates to create PDFs dynamically, particularly for applications and program documents.
-
+     
 ### 3. **Security Layer**
    - **Authentication and Authorization**: Managed with Spring Security and OAuth2.
    - **Identity Provider**: Keycloak for user management and SSO (Single Sign-On).
